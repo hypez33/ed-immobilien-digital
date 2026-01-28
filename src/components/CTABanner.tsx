@@ -57,7 +57,7 @@ export function CTABanner({
             <Button
               size="lg"
               asChild
-              className="bg-gold-light text-primary hover:bg-gold hover:text-cream h-13 px-8 rounded-none"
+              className="bg-gold-light text-primary hover:bg-gold hover:text-cream rounded-none"
             >
               <Link to={primaryHref}>
                 <Phone className="w-4 h-4 mr-2" />
@@ -69,7 +69,7 @@ export function CTABanner({
               size="lg"
               variant="outline"
               asChild
-              className="border-cream/30 text-cream hover:bg-cream/10 h-13 px-8 rounded-none"
+              className="border-cream/30 text-cream hover:bg-cream/10 rounded-none"
             >
               <Link to={secondaryHref}>
                 <Mail className="w-4 h-4 mr-2" />

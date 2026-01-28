@@ -184,7 +184,7 @@ export function FilterBar({ filters, onFilterChange, onReset }: FilterBarProps) 
             variant="ghost" 
             size="sm"
             onClick={() => setExpanded(!expanded)}
-            className="sm:hidden text-muted-foreground h-10"
+            className="sm:hidden text-muted-foreground"
           >
             <SlidersHorizontal className="w-4 h-4 mr-2" />
             {expanded ? 'Weniger' : 'Mehr Filter'}
@@ -193,8 +193,9 @@ export function FilterBar({ filters, onFilterChange, onReset }: FilterBarProps) 
           {hasActiveFilters && (
             <Button 
               variant="ghost" 
+              size="sm"
               onClick={onReset} 
-              className="text-muted-foreground hover:text-foreground h-10 ml-auto sm:ml-0"
+              className="text-muted-foreground hover:text-foreground ml-auto sm:ml-0"
             >
               <RotateCcw className="w-4 h-4 mr-2" />
               Zurücksetzen

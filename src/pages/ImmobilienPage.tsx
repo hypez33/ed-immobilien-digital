@@ -168,11 +168,11 @@ export default function ImmobilienPage() {
               <Button
                 variant="outline"
                 onClick={() => setFilters(defaultFilters)}
-                className="h-12 rounded-none border-border/60"
+                className="rounded-none border-border/60"
               >
                 Filter zurücksetzen
               </Button>
-              <Button asChild className="h-12 rounded-none bg-gold text-cream hover:bg-gold-dark">
+              <Button asChild className="rounded-none bg-gold text-cream hover:bg-gold-dark">
                 <a href="#suchauftrag">
                   Suchauftrag senden
                   <ArrowRight className="w-4 h-4 ml-2" />
@@ -254,7 +254,7 @@ export default function ImmobilienPage() {
                 />
               </div>
             </div>
-            <Button type="submit" size="lg" className="w-full h-13 rounded-none bg-gold text-cream hover:bg-gold-dark">
+            <Button type="submit" size="lg" className="w-full rounded-none bg-gold text-cream hover:bg-gold-dark">
               <FileSearch className="w-4 h-4 mr-2" />
               Suchauftrag absenden
             </Button>

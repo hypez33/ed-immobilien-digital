@@ -135,7 +135,7 @@ export default function UeberUnsPage() {
                   </span>
                 ))}
               </div>
-              <Button asChild className="h-12 rounded-none bg-gold text-cream hover:bg-gold-dark">
+              <Button size="lg" asChild className="rounded-none bg-gold text-cream hover:bg-gold-dark">
                 <Link to="/kontakt">
                   Erstberatung vereinbaren
                   <ArrowRight className="w-4 h-4 ml-2" />
@@ -250,13 +250,13 @@ export default function UeberUnsPage() {
             Ob Verkauf, Vermietung oder erste Orientierung – wir beraten Sie gerne persönlich und unverbindlich.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" asChild className="h-13 px-8 rounded-none bg-gold text-cream hover:bg-gold-dark">
+            <Button size="lg" asChild className="rounded-none bg-gold text-cream hover:bg-gold-dark">
               <Link to="/kontakt">
                 Erstberatung vereinbaren
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild className="h-13 px-8 rounded-none border-border/60">
+            <Button size="lg" variant="outline" asChild className="rounded-none border-border/60">
               <Link to="/kontakt?anliegen=bewertung">
                 Immobilie bewerten lassen
               </Link>

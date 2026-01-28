@@ -50,9 +50,13 @@ export function Header() {
               {/* Gold corner accent */}
               <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-gold transition-transform group-hover:scale-110" />
             </div>
-            <div className="hidden sm:block">
-              <span className="block text-foreground font-serif text-xl tracking-wide">ED Immobilien</span>
-              <span className="block text-2xs text-muted-foreground uppercase tracking-[0.15em] mt-0.5">Rhein-Neckar-Kreis</span>
+            <div className="block max-w-[10.5rem] sm:max-w-none">
+              <span className="block text-foreground font-serif text-base sm:text-xl tracking-wide leading-tight truncate">
+                ED Immobilien
+              </span>
+              <span className="block text-[0.6rem] sm:text-2xs text-muted-foreground uppercase tracking-[0.15em] mt-0.5 truncate">
+                Rhein-Neckar-Kreis
+              </span>
             </div>
           </Link>
 
@@ -89,7 +93,7 @@ export function Header() {
               variant="ghost"
               size="sm"
               asChild
-              className="text-muted-foreground hover:text-gold hover:bg-gold/5 h-10 transition-colors"
+              className="text-muted-foreground hover:text-gold hover:bg-gold/5"
             >
               <Link to="/kontakt?anliegen=bewertung">
                 <FileText className="w-4 h-4 mr-2" />
@@ -99,7 +103,7 @@ export function Header() {
             <Button
               size="sm"
               asChild
-              className="h-10 px-6 bg-primary hover:bg-primary/90 text-cream border-0 rounded-none"
+              className="rounded-none"
             >
               <Link to="/kontakt">
                 <Phone className="w-4 h-4 mr-2" />
@@ -152,7 +156,8 @@ export function Header() {
               <div className="pt-6 space-y-3">
                 <Button
                   variant="outline"
-                  className="w-full justify-between h-13 rounded-none border-border/60 hover:border-gold hover:text-gold"
+                  size="lg"
+                  className="w-full justify-between rounded-none border-border/60 hover:border-gold hover:text-gold"
                   asChild
                 >
                   <Link to="/kontakt?anliegen=bewertung" onClick={() => setMobileMenuOpen(false)}>
@@ -164,7 +169,8 @@ export function Header() {
                   </Link>
                 </Button>
                 <Button
-                  className="w-full justify-between h-13 rounded-none bg-primary hover:bg-primary/90"
+                  size="lg"
+                  className="w-full justify-between rounded-none"
                   asChild
                 >
                   <Link to="/kontakt" onClick={() => setMobileMenuOpen(false)}>

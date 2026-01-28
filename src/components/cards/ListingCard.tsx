@@ -80,7 +80,7 @@ export function ListingCard({ listing }: ListingCardProps) {
 
         {/* Single elegant CTA */}
         <Button
-          className="w-full mt-5 bg-primary hover:bg-primary/90 text-cream h-12 rounded-none"
+          className="w-full mt-5 rounded-none"
           asChild
         >
           <Link to={`/kontakt?anliegen=besichtigung&objekt=${listing.id}`}>

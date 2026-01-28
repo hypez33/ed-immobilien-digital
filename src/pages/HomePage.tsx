@@ -149,7 +149,7 @@ export default function HomePage() {
                 <Button
                   size="lg"
                   asChild
-                  className="bg-gold-light text-primary hover:bg-gold hover:text-cream h-14 px-8 text-base rounded-none"
+                  className="bg-gold-light text-primary hover:bg-gold hover:text-cream rounded-none"
                 >
                   <Link to="/kontakt">
                     Kostenlose Beratung
@@ -160,7 +160,7 @@ export default function HomePage() {
                   size="lg"
                   variant="outline"
                   asChild
-                  className="border-cream/30 bg-transparent text-cream hover:bg-cream/10 h-14 px-8 rounded-none"
+                  className="border-cream/30 bg-transparent text-cream hover:bg-cream/10 rounded-none"
                 >
                   <Link to="/immobilien">
                     Objekte entdecken
@@ -289,7 +289,7 @@ export default function HomePage() {
         </div>
 
         <div className="mt-16 text-center">
-          <Button size="lg" asChild className="bg-primary hover:bg-primary/90 h-13 px-8 rounded-none">
+          <Button size="lg" asChild className="rounded-none">
             <Link to="/kontakt">
               Erstberatung vereinbaren
               <ArrowRight className="w-4 h-4 ml-2" />

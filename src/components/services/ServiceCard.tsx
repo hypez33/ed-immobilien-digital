@@ -32,7 +32,7 @@ export function ServiceCard({ service, onStart }: ServiceCardProps) {
       </ul>
 
       <Button
-        className="w-full justify-between bg-primary text-primary-foreground hover:bg-primary/90"
+        className="w-full justify-between"
         onClick={() => onStart(service)}
       >
         Anfrage starten

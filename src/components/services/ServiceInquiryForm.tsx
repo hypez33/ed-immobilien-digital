@@ -265,7 +265,7 @@ export function ServiceInquiryForm({ open, onOpenChange, activeService }: Servic
               Falls Sie ergänzende Informationen haben, erreichen Sie uns jederzeit über die Kontaktseite.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button asChild className="bg-primary text-primary-foreground">
+              <Button asChild>
                 <Link to="/kontakt">Kontaktseite öffnen</Link>
               </Button>
               {mailtoHref && (
@@ -289,11 +289,11 @@ export function ServiceInquiryForm({ open, onOpenChange, activeService }: Servic
                   </Button>
                 )}
                 {step < 3 ? (
-                  <Button type="button" onClick={goNext} className="bg-primary text-primary-foreground">
+                  <Button type="button" onClick={goNext}>
                     Weiter
                   </Button>
                 ) : (
-                  <Button type="submit" className="bg-primary text-primary-foreground">
+                  <Button type="submit">
                     Anfrage absenden
                   </Button>
                 )}

@@ -59,7 +59,7 @@ export function BackToTopButton() {
         size="icon"
         onClick={handleClick}
         aria-label="Nach oben"
-        className="rounded-full bg-primary text-primary-foreground shadow-card hover:shadow-card-hover hover:bg-primary/90"
+        className="rounded-full"
       >
         <ArrowUp className={reduceMotion ? '' : 'animate-gentle-float'} />
       </Button>
