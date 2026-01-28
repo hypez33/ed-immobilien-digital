@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Phone, FileText, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { getLenisInstance } from '@/lib/smoothScroll';
 
 const navigation = [
   { name: 'Home', href: '/' },
@@ -15,22 +16,115 @@ const navigation = [
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const scrolledRef = useRef(false);
+  const hiddenRef = useRef(false);
+  const menuOpenRef = useRef(false);
   const location = useLocation();
 
   useEffect(() => {
+    menuOpenRef.current = mobileMenuOpen;
+    if (mobileMenuOpen) {
+      hiddenRef.current = false;
+      setHidden(false);
+    }
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const HIDE_AFTER_PX = 96;
+    const SCROLLED_AFTER_PX = 28;
+    const DEAD_ZONE_PX = 12;
+    const TOP_RESET_PX = 4;
+
     let rafId = 0;
-    const handleScroll = () => {
+    let lastScroll = window.scrollY;
+
+    const applyState = (currentScroll: number, direction?: number) => {
+      const nextScrolled = currentScroll > SCROLLED_AFTER_PX;
+      if (nextScrolled !== scrolledRef.current) {
+        scrolledRef.current = nextScrolled;
+        setScrolled(nextScrolled);
+      }
+
+      if (menuOpenRef.current) {
+        if (hiddenRef.current) {
+          hiddenRef.current = false;
+          setHidden(false);
+        }
+        lastScroll = currentScroll;
+        return;
+      }
+
+      if (currentScroll <= TOP_RESET_PX) {
+        if (hiddenRef.current) {
+          hiddenRef.current = false;
+          setHidden(false);
+        }
+        lastScroll = currentScroll;
+        return;
+      }
+
+      const delta = currentScroll - lastScroll;
+      if (Math.abs(delta) < DEAD_ZONE_PX) {
+        lastScroll = currentScroll;
+        return;
+      }
+
+      if (currentScroll < HIDE_AFTER_PX) {
+        if (hiddenRef.current) {
+          hiddenRef.current = false;
+          setHidden(false);
+        }
+        lastScroll = currentScroll;
+        return;
+      }
+
+      const goingDown = typeof direction === 'number' ? direction > 0 : delta > 0;
+      if (goingDown && !hiddenRef.current) {
+        hiddenRef.current = true;
+        setHidden(true);
+      } else if (!goingDown && hiddenRef.current) {
+        hiddenRef.current = false;
+        setHidden(false);
+      }
+
+      lastScroll = currentScroll;
+    };
+
+    const schedule = (callback: () => void) => {
       if (rafId) return;
       rafId = window.requestAnimationFrame(() => {
-        setScrolled(window.scrollY > 28);
+        callback();
         rafId = 0;
       });
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
+
+    const onLenisScroll = (event: { scroll: number; direction?: number }) => {
+      schedule(() => applyState(event.scroll, event.direction));
+    };
+
+    const onWindowScroll = () => {
+      schedule(() => applyState(window.scrollY));
+    };
+
+    const lenis = getLenisInstance();
+
+    if (lenis) {
+      lenis.on('scroll', onLenisScroll);
+      applyState(lenis.scroll ?? window.scrollY);
+      return () => {
+        if (rafId) window.cancelAnimationFrame(rafId);
+        lenis.off('scroll', onLenisScroll);
+      };
+    }
+
+    window.addEventListener('scroll', onWindowScroll, { passive: true });
+    applyState(window.scrollY);
     return () => {
       if (rafId) window.cancelAnimationFrame(rafId);
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', onWindowScroll);
     };
   }, []);
 
@@ -39,7 +133,8 @@ export function Header() {
       {/* Main Header */}
       <header
         className={cn(
-          'fixed top-0 inset-x-0 z-50 transition-all motion-safe:duration-300 motion-reduce:transition-none',
+          'fixed top-0 inset-x-0 z-50 will-change-transform transition-all motion-safe:duration-300 motion-reduce:transition-none',
+          hidden ? '-translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100 pointer-events-auto',
           scrolled
             ? 'bg-background/70 backdrop-blur-xl shadow-elegant border-b border-border/40'
             : 'bg-background/85 border-b border-transparent'

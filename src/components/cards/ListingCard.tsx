@@ -20,7 +20,7 @@ export function ListingCard({ listing }: ListingCardProps) {
   return (
     <article className="group relative" data-stagger-item>
       {/* Image with parallax effect */}
-      <div className="relative aspect-[4/3] bg-surface">
+      <div className="relative z-10 aspect-[4/3] bg-surface">
         <div className="absolute inset-0 overflow-hidden">
           <img
             src={listing.image}
@@ -41,17 +41,17 @@ export function ListingCard({ listing }: ListingCardProps) {
 
         {/* Overlapping price tag */}
         <div className="absolute -bottom-4 sm:-bottom-6 right-4 sm:right-6 bg-card px-4 sm:px-5 py-2.5 sm:py-3 shadow-luxe z-10">
-          <span className="block text-2xs uppercase tracking-[0.15em] text-muted-foreground mb-1">
+          <span className="block text-2xs uppercase tracking-[0.15em] text-muted-foreground mb-1 whitespace-nowrap">
             {listing.priceType === 'kauf' ? 'Kaufpreis' : 'Monatlich'}
           </span>
-          <span className="text-xl sm:text-2xl font-serif font-semibold text-foreground">
+          <span className="text-xl sm:text-2xl font-serif font-semibold text-foreground whitespace-nowrap">
             {formatPrice(listing.price, listing.priceType)}
           </span>
         </div>
       </div>
 
       {/* Content with extra top padding for overlap */}
-      <div className="p-5 sm:p-6 pt-8 sm:pt-10 bg-card border border-t-0 border-border/40">
+      <div className="relative z-0 p-5 sm:p-6 pt-8 sm:pt-10 bg-card border border-t-0 border-border/40">
         {/* Location with gold icon */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
           <MapPin className="w-4 h-4 text-gold" />
