@@ -4,6 +4,41 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 type LenisOptions = ConstructorParameters<typeof Lenis>[0];
 
+let activeLenis: Lenis | null = null;
+
+export const getLenisInstance = () => activeLenis;
+
+interface ScrollToOptions {
+  offset?: number;
+  duration?: number;
+  immediate?: boolean;
+}
+
+export const scrollToTarget = (
+  target: number | string | HTMLElement,
+  { offset = 0, duration = 0.9, immediate = false }: ScrollToOptions = {}
+) => {
+  const lenis = getLenisInstance();
+  if (lenis) {
+    lenis.scrollTo(target, {
+      offset,
+      duration: immediate ? 0 : duration,
+      immediate,
+    });
+    return;
+  }
+
+  if (typeof target === 'number') {
+    window.scrollTo({ top: target + offset, behavior: immediate ? 'auto' : 'smooth' });
+    return;
+  }
+
+  const element = typeof target === 'string' ? document.querySelector(target) : target;
+  if (!element) return;
+  const top = element.getBoundingClientRect().top + window.scrollY + offset;
+  window.scrollTo({ top, behavior: immediate ? 'auto' : 'smooth' });
+};
+
 const defaultOptions: LenisOptions = {
   // Keep wheel feel crisp (no floaty lag)
   lerp: 0.1,
@@ -60,6 +95,7 @@ export function createSmoothScrollController(options: LenisOptions = {}): Smooth
       ...options,
       autoRaf: false,
     });
+    activeLenis = lenis;
 
     scrollCallback = () => ScrollTrigger.update();
     lenis.on('scroll', scrollCallback);
@@ -103,6 +139,7 @@ export function createSmoothScrollController(options: LenisOptions = {}): Smooth
 
     lenis.destroy();
     lenis = null;
+    activeLenis = null;
   };
 
   return {

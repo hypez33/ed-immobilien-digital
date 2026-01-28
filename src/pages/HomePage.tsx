@@ -12,6 +12,7 @@ import { CTABanner } from '@/components/CTABanner';
 import { ServiceSection } from '@/components/services/ServiceSection';
 import { listings } from '@/data/listings';
 import { homeFAQ } from '@/data/faq';
+import { scrollToTarget } from '@/lib/smoothScroll';
 import heroImage from '@/assets/hero-home.jpg';
 
 const services = [
@@ -79,6 +80,16 @@ const processSteps = [
 
 export default function HomePage() {
   const featuredListings = listings.slice(0, 3);
+  const handleDiscoverClick = () => {
+    if (typeof window === 'undefined') return;
+    const header = document.querySelector('header');
+    const headerOffset = header ? header.getBoundingClientRect().height : 0;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    scrollToTarget('#services', {
+      offset: -(headerOffset + 8),
+      immediate: reduceMotion,
+    });
+  };
 
   return (
     <Layout>
@@ -174,14 +185,19 @@ export default function HomePage() {
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-2 text-cream/50">
+        <button
+          type="button"
+          onClick={handleDiscoverClick}
+          aria-label="Zu den Leistungen scrollen"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-2 text-cream/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cream/60 focus-visible:ring-offset-4 focus-visible:ring-offset-primary"
+        >
           <span className="text-xs uppercase tracking-[0.2em]">Entdecken</span>
           <ChevronDown className="w-5 h-5 animate-gentle-float" />
-        </div>
+        </button>
       </section>
 
       {/* Services - Staggered layout */}
-      <Section size="lg">
+      <Section size="lg" id="services">
         <div className="text-center mb-16">
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="w-12 h-px bg-gold" />
