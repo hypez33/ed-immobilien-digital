@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, FileText, ArrowRight } from 'lucide-react';
+import { Phone, FileText, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { getLenisInstance } from '@/lib/smoothScroll';
@@ -324,11 +324,12 @@ export function Header() {
           {/* Mobile Menu Button */}
           <button
             type="button"
-            className="lg:hidden p-3 hover:bg-muted/50 transition-colors"
+            className="lg:hidden p-3 text-foreground hover:bg-muted/50 transition-colors motion-safe:active:scale-[0.98]"
             onClick={handleBurgerClick}
             aria-label={mobileMenuOpen ? 'Menü schließen' : 'Menü öffnen'}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-menu"
+            data-state={mobileMenuOpen ? 'open' : 'closed'}
             data-bounce={burgerBouncing ? 'true' : 'false'}
           >
             <span
@@ -338,11 +339,11 @@ export function Header() {
               )}
               onAnimationEnd={handleBurgerAnimationEnd}
             >
-              {mobileMenuOpen ? (
-                <X className="w-5 h-5" />
-              ) : (
-                <Menu className="w-5 h-5" />
-              )}
+              <span className="burger-lines" aria-hidden="true">
+                <span className="burger-line burger-line--top" />
+                <span className="burger-line burger-line--middle" />
+                <span className="burger-line burger-line--bottom" />
+              </span>
             </span>
           </button>
         </nav>

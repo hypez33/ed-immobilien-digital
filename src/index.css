@@ -407,6 +407,59 @@
   transform-origin: center;
 }
 
+.burger-lines {
+  position: relative;
+  width: 20px;
+  height: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.burger-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: currentColor;
+  border-radius: 9999px;
+  transform-origin: center;
+  transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 200ms ease-out;
+}
+
+.burger-line--top {
+  top: 0;
+}
+
+.burger-line--middle {
+  top: 50%;
+  transform: translateY(-50%);
+  transition-delay: 20ms;
+}
+
+.burger-line--bottom {
+  bottom: 0;
+}
+
+button[data-state="open"] .burger-line--top {
+  transform: translateY(6px) rotate(45deg);
+}
+
+button[data-state="open"] .burger-line--middle {
+  opacity: 0;
+  transform: translateY(-50%) scaleX(0.6);
+}
+
+button[data-state="open"] .burger-line--bottom {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .burger-line {
+    transition: none;
+  }
+}
+
 @keyframes gentle-float {
   0%, 100% {
     transform: translateY(0);
