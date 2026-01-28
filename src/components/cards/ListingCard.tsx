@@ -18,24 +18,26 @@ export function ListingCard({ listing }: ListingCardProps) {
   };
 
   return (
-    <article className="group relative overflow-hidden" data-stagger-item>
+    <article className="group relative" data-stagger-item>
       {/* Image with parallax effect */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-surface">
-        <img
-          src={listing.image}
-          alt={`${listing.title} in ${listing.location}`}
-          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-          loading="lazy"
-        />
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-primary/10 to-transparent" />
+      <div className="relative aspect-[4/3] bg-surface">
+        <div className="absolute inset-0 overflow-hidden">
+          <img
+            src={listing.image}
+            alt={`${listing.title} in ${listing.location}`}
+            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+            loading="lazy"
+          />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-primary/10 to-transparent" />
 
-        {/* Featured badge */}
-        {listing.featured && (
-          <div className="absolute top-4 left-4 bg-gold text-cream px-4 py-1.5 text-xs font-medium uppercase tracking-wider">
-            Empfohlen
-          </div>
-        )}
+          {/* Featured badge */}
+          {listing.featured && (
+            <div className="absolute top-4 left-4 bg-gold text-cream px-4 py-1.5 text-xs font-medium uppercase tracking-wider">
+              Empfohlen
+            </div>
+          )}
+        </div>
 
         {/* Overlapping price tag */}
         <div className="absolute -bottom-4 sm:-bottom-6 right-4 sm:right-6 bg-card px-4 sm:px-5 py-2.5 sm:py-3 shadow-luxe z-10">

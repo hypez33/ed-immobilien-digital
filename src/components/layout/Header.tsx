@@ -18,11 +18,20 @@ export function Header() {
   const location = useLocation();
 
   useEffect(() => {
+    let rafId = 0;
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 28);
+        rafId = 0;
+      });
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => {
+      if (rafId) window.cancelAnimationFrame(rafId);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   return (
@@ -30,11 +39,12 @@ export function Header() {
       {/* Main Header */}
       <header
         className={cn(
-          'fixed top-0 inset-x-0 z-50 transition-all duration-300',
+          'fixed top-0 inset-x-0 z-50 transition-all motion-safe:duration-300 motion-reduce:transition-none',
           scrolled
-            ? 'bg-background/95 backdrop-blur-xl shadow-elegant border-b border-border/50'
-            : 'bg-background/80 backdrop-blur-md border-b border-transparent'
+            ? 'bg-background/70 backdrop-blur-xl shadow-elegant border-b border-border/40'
+            : 'bg-background/85 border-b border-transparent'
         )}
+        style={scrolled ? { WebkitBackdropFilter: 'blur(24px)' } : undefined}
       >
         <nav className="container flex items-center justify-between h-18 md:h-20">
           {/* Logo with Gold Accent */}
