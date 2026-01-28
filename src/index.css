@@ -383,17 +383,6 @@
   }
 }
 
-@keyframes logo-reveal {
-  0% {
-    opacity: 0;
-    transform: translateY(2px) scale(0.96);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
 @keyframes burger-bounce {
   0% {
     transform: scale(1);

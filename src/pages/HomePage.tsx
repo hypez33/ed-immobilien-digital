@@ -12,7 +12,7 @@ import { CTABanner } from '@/components/CTABanner';
 import { ServiceSection } from '@/components/services/ServiceSection';
 import { BlogCard } from '@/components/cards/BlogCard';
 import { listings } from '@/data/listings';
-import { blogPosts } from '@/data/blog';
+import { useBlogPosts } from '@/hooks/useBlogPosts';
 import { homeFAQ } from '@/data/faq';
 import { scrollToTarget } from '@/lib/smoothScroll';
 import heroImage from '@/assets/hero-home.jpg';
@@ -82,7 +82,7 @@ const processSteps = [
 
 export default function HomePage() {
   const featuredListings = listings.slice(0, 3);
-  const featuredPosts = blogPosts.slice(0, 2);
+  const featuredPosts = useBlogPosts({ publicOnly: true }).slice(0, 2);
   const handleDiscoverClick = () => {
     if (typeof window === 'undefined') return;
     const header = document.querySelector('header');

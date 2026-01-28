@@ -3,12 +3,13 @@ import { Layout } from '@/components/layout/Layout';
 import { SEO } from '@/components/seo/SEO';
 import { Section } from '@/components/ui/Section';
 import { Button } from '@/components/ui/button';
-import { blogPosts } from '@/data/blog';
+import { useBlogPosts } from '@/hooks/useBlogPosts';
 import NotFound from '@/pages/NotFound';
 
 export default function BlogPostPage() {
   const { slug } = useParams();
-  const post = blogPosts.find((entry) => entry.slug === slug);
+  const posts = useBlogPosts({ publicOnly: true });
+  const post = posts.find((entry) => entry.slug === slug);
 
   if (!post) {
     return <NotFound />;

@@ -2,9 +2,11 @@ import { Layout } from '@/components/layout/Layout';
 import { SEO } from '@/components/seo/SEO';
 import { Section } from '@/components/ui/Section';
 import { BlogCard } from '@/components/cards/BlogCard';
-import { blogPosts } from '@/data/blog';
+import { useBlogPosts } from '@/hooks/useBlogPosts';
 
 export default function BlogPage() {
+  const posts = useBlogPosts({ publicOnly: true });
+
   return (
     <Layout>
       <SEO
@@ -27,7 +29,7 @@ export default function BlogPage() {
 
       <Section size="lg" variant="surface">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8" data-stagger>
-          {blogPosts.map((post) => (
+          {posts.map((post) => (
             <BlogCard key={post.id} post={post} />
           ))}
         </div>

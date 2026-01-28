@@ -18,13 +18,11 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
-  const [logoAnimKey, setLogoAnimKey] = useState(0);
   const [burgerBouncing, setBurgerBouncing] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
   const scrolledRef = useRef(false);
   const hiddenRef = useRef(false);
   const menuOpenRef = useRef(false);
-  const prevHiddenRef = useRef<boolean | null>(null);
   const bounceRafRef = useRef<number | null>(null);
   const shouldSetClosedRef = useRef(false);
   const scrollLockRef = useRef<{
@@ -134,22 +132,6 @@ export function Header() {
       }
     }
   }, [mobileMenuOpen]);
-
-  useEffect(() => {
-    const prev = prevHiddenRef.current;
-    if (prev === null) {
-      prevHiddenRef.current = hidden;
-      if (!hidden) {
-        setLogoAnimKey((key) => key + 1);
-      }
-      return;
-    }
-
-    if (prev && !hidden) {
-      setLogoAnimKey((key) => key + 1);
-    }
-    prevHiddenRef.current = hidden;
-  }, [hidden]);
 
   useEffect(() => {
     return () => {
@@ -324,8 +306,7 @@ export function Header() {
           >
             <div className="relative">
               <div
-                key={logoAnimKey}
-                className="w-12 h-12 bg-primary flex items-center justify-center text-cream font-serif text-xl tracking-wide motion-safe:animate-[logo-reveal_0.35s_ease-out] motion-reduce:animate-none"
+                className="w-12 h-12 bg-primary flex items-center justify-center text-cream font-serif text-xl tracking-wide"
               >
                 ED
               </div>
