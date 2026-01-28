@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 const navigation = [
   { name: 'Home', href: '/' },
   { name: 'Immobilien', href: '/immobilien' },
+  { name: 'Leistungen', href: '/leistungen' },
   { name: 'Über uns', href: '/ueber-uns' },
   { name: 'Kontakt', href: '/kontakt' },
 ];

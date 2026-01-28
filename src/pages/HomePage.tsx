@@ -1,18 +1,17 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, FileSearch, Home, Key, Clock, CheckCircle, Users, Star, ChevronDown } from 'lucide-react';
+import { ArrowRight, FileSearch, Home, Key, Star, ChevronDown } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { SEO } from '@/components/seo/SEO';
 import { SchemaOrg } from '@/components/seo/SchemaOrg';
-import { Section, SectionHeader } from '@/components/ui/Section';
+import { Section } from '@/components/ui/Section';
 import { Button } from '@/components/ui/button';
 import { ServiceCard } from '@/components/cards/ServiceCard';
 import { ListingCard } from '@/components/cards/ListingCard';
-import { TestimonialCard } from '@/components/cards/TestimonialCard';
 import { FAQAccordion } from '@/components/FAQAccordion';
 import { CTABanner } from '@/components/CTABanner';
+import { ServiceSection } from '@/components/services/ServiceSection';
 import { listings } from '@/data/listings';
 import { homeFAQ } from '@/data/faq';
-import { testimonials } from '@/data/testimonials';
 import heroImage from '@/assets/hero-home.jpg';
 
 const services = [
@@ -77,29 +76,9 @@ const processSteps = [
   },
 ];
 
-const stats = [
-  {
-    icon: Clock,
-    value: '< 24h',
-    label: 'Reaktionszeit',
-    description: 'auf Ihre Anfrage',
-  },
-  {
-    icon: CheckCircle,
-    value: '100%',
-    label: 'Transparenz',
-    description: 'regelmäßige Updates',
-  },
-  {
-    icon: Users,
-    value: 'Vor Ort',
-    label: 'Rhein-Neckar-Kreis',
-    description: 'persönlich für Sie da',
-  },
-];
 
 export default function HomePage() {
-  const featuredListings = listings.slice(0, 6);
+  const featuredListings = listings.slice(0, 3);
 
   return (
     <Layout>
@@ -170,7 +149,7 @@ export default function HomePage() {
                   size="lg"
                   variant="outline"
                   asChild
-                  className="border-cream/30 text-cream hover:bg-cream/10 h-14 px-8 rounded-none"
+                  className="border-cream/30 bg-transparent text-cream hover:bg-cream/10 h-14 px-8 rounded-none"
                 >
                   <Link to="/immobilien">
                     Objekte entdecken
@@ -222,6 +201,9 @@ export default function HomePage() {
           ))}
         </div>
       </Section>
+
+      {/* Services */}
+      <ServiceSection />
 
       {/* Listings */}
       <Section variant="surface" size="lg">
@@ -297,39 +279,6 @@ export default function HomePage() {
               <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
           </Button>
-        </div>
-      </Section>
-
-      {/* Testimonials */}
-      <Section size="lg">
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="w-12 h-px bg-gold" />
-            <span className="text-gold text-sm uppercase tracking-[0.15em]">Referenzen</span>
-            <div className="w-12 h-px bg-gold" />
-          </div>
-          <h2 className="font-serif">Was unsere Kunden sagen</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8" data-stagger>
-          {testimonials.map((testimonial) => (
-            <TestimonialCard key={testimonial.id} testimonial={testimonial} />
-          ))}
-        </div>
-
-        {/* Stats */}
-        <div className="mt-20 pt-16 border-t border-border/40">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-12" data-stagger>
-            {stats.map((stat) => (
-              <div key={stat.label} className="text-center" data-stagger-item>
-                <div className="w-14 h-14 rounded-full border-2 border-gold/30 flex items-center justify-center mx-auto mb-4">
-                  <stat.icon className="w-6 h-6 text-gold" />
-                </div>
-                <span className="font-serif text-4xl text-foreground block mb-2">{stat.value}</span>
-                <p className="font-medium text-foreground">{stat.label}</p>
-                <p className="text-sm text-muted-foreground">{stat.description}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </Section>
 

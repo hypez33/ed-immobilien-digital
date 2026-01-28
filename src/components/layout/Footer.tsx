@@ -10,6 +10,7 @@ const services = [
 const navigation = [
   { name: 'Startseite', href: '/' },
   { name: 'Immobilienangebote', href: '/immobilien' },
+  { name: 'Leistungen', href: '/leistungen' },
   { name: 'Über uns', href: '/ueber-uns' },
   { name: 'Kontakt', href: '/kontakt' },
 ];
