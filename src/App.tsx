@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import ImmobilienPage from "./pages/ImmobilienPage";
 import LeistungenPage from "./pages/LeistungenPage";
+import BlogPage from "./pages/BlogPage";
+import BlogPostPage from "./pages/BlogPostPage";
 import UeberUnsPage from "./pages/UeberUnsPage";
 import KontaktPage from "./pages/KontaktPage";
 import NotFound from "./pages/NotFound";
@@ -27,6 +29,8 @@ const App = () => (
           <Route path="/" element={<HomePage />} />
           <Route path="/immobilien" element={<ImmobilienPage />} />
           <Route path="/leistungen" element={<LeistungenPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/ueber-uns" element={<UeberUnsPage />} />
           <Route path="/kontakt" element={<KontaktPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

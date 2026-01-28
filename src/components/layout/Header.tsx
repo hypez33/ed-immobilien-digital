@@ -9,6 +9,7 @@ const navigation = [
   { name: 'Home', href: '/' },
   { name: 'Immobilien', href: '/immobilien' },
   { name: 'Leistungen', href: '/leistungen' },
+  { name: 'Blog', href: '/blog' },
   { name: 'Über uns', href: '/ueber-uns' },
   { name: 'Kontakt', href: '/kontakt' },
 ];
@@ -351,7 +352,7 @@ export function Header() {
               >
                 <span className={cn(
                   'relative z-10 transition-colors',
-                  location.pathname === item.href
+                  (item.href === '/' ? location.pathname === '/' : location.pathname.startsWith(item.href))
                     ? 'text-foreground'
                     : 'text-muted-foreground group-hover:text-foreground'
                 )}>
@@ -361,7 +362,9 @@ export function Header() {
                 <span
                   className={cn(
                     'absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-gold transition-all duration-300',
-                    location.pathname === item.href ? 'w-6' : 'w-0 group-hover:w-6'
+                    (item.href === '/' ? location.pathname === '/' : location.pathname.startsWith(item.href))
+                      ? 'w-6'
+                      : 'w-0 group-hover:w-6'
                   )}
                 />
               </Link>
@@ -431,7 +434,7 @@ export function Header() {
                   onClick={() => setMobileMenuOpen(false)}
                   className={cn(
                     'flex items-center justify-between py-4 px-4 text-base font-medium transition-colors border-b border-border/30',
-                    location.pathname === item.href
+                    (item.href === '/' ? location.pathname === '/' : location.pathname.startsWith(item.href))
                       ? 'text-foreground'
                       : 'text-muted-foreground'
                   )}
@@ -439,7 +442,9 @@ export function Header() {
                   <span>{item.name}</span>
                   <ArrowRight className={cn(
                     'w-4 h-4 transition-colors',
-                    location.pathname === item.href ? 'text-gold' : 'opacity-30'
+                    (item.href === '/' ? location.pathname === '/' : location.pathname.startsWith(item.href))
+                      ? 'text-gold'
+                      : 'opacity-30'
                   )} />
                 </Link>
               ))}

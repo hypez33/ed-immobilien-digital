@@ -10,7 +10,9 @@ import { ListingCard } from '@/components/cards/ListingCard';
 import { FAQAccordion } from '@/components/FAQAccordion';
 import { CTABanner } from '@/components/CTABanner';
 import { ServiceSection } from '@/components/services/ServiceSection';
+import { BlogCard } from '@/components/cards/BlogCard';
 import { listings } from '@/data/listings';
+import { blogPosts } from '@/data/blog';
 import { homeFAQ } from '@/data/faq';
 import { scrollToTarget } from '@/lib/smoothScroll';
 import heroImage from '@/assets/hero-home.jpg';
@@ -80,6 +82,7 @@ const processSteps = [
 
 export default function HomePage() {
   const featuredListings = listings.slice(0, 3);
+  const featuredPosts = blogPosts.slice(0, 2);
   const handleDiscoverClick = () => {
     if (typeof window === 'undefined') return;
     const header = document.querySelector('header');
@@ -220,6 +223,34 @@ export default function HomePage() {
 
       {/* Services */}
       <ServiceSection />
+
+      {/* Blog */}
+      <Section size="lg">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12" data-reveal>
+          <div>
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-12 h-px bg-gold" />
+              <span className="text-gold text-sm uppercase tracking-[0.15em]">Blog</span>
+            </div>
+            <h2 className="font-serif">Aktuelle Einblicke</h2>
+            <p className="text-muted-foreground mt-3 max-w-2xl">
+              Marktentwicklungen, Checklisten und Tipps – kompakt für Sie zusammengefasst.
+            </p>
+          </div>
+          <Button variant="ghost" asChild className="text-gold hover:text-gold hover:bg-gold/5">
+            <Link to="/blog">
+              Alle Beiträge ansehen
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Link>
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8" data-stagger>
+          {featuredPosts.map((post) => (
+            <BlogCard key={post.id} post={post} />
+          ))}
+        </div>
+      </Section>
 
       {/* Listings */}
       <Section variant="surface" size="lg">
