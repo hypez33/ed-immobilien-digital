@@ -2,69 +2,32 @@ import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ScrollSmoother } from 'gsap/ScrollSmoother';
+import { createSmoothScrollController, SmoothScrollController } from '@/lib/smoothScroll';
 
-gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+gsap.registerPlugin(ScrollTrigger);
 
 export function useGsapPage() {
   const location = useLocation();
-  const smootherRef = useRef<ScrollSmoother | null>(null);
+  const controllerRef = useRef<SmoothScrollController | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const wrapper = document.querySelector('#smooth-wrapper');
-    const content = document.querySelector('#smooth-content');
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    controllerRef.current = createSmoothScrollController();
 
-    let cancelled = false;
-    let rafId = 0;
+    const syncMotionPreference = () => {
+      if (media.matches) {
+        controllerRef.current?.destroy();
+        controllerRef.current = null;
+      } else {
+        controllerRef.current ??= createSmoothScrollController();
+        controllerRef.current.start();
+      }
+    };
 
-    if (prefersReducedMotion) {
-      smootherRef.current?.kill();
-      smootherRef.current = null;
-    } else if (wrapper && content) {
-      const waitForImages = () => {
-        const images = Array.from(content.querySelectorAll('img'));
-        if (!images.length) return Promise.resolve();
-        return Promise.all(
-          images.map(
-            (img) =>
-              img.complete
-                ? Promise.resolve()
-                : new Promise<void>((resolve) => {
-                    const done = () => resolve();
-                    img.addEventListener('load', done, { once: true });
-                    img.addEventListener('error', done, { once: true });
-                  })
-          )
-        );
-      };
-
-      const waitForFonts = () => {
-        if (!('fonts' in document)) return Promise.resolve();
-        return (document as Document & { fonts: FontFaceSet }).fonts.ready;
-      };
-
-      const initSmoother = async () => {
-        await Promise.all([waitForImages(), waitForFonts()]);
-        if (cancelled) return;
-        rafId = window.requestAnimationFrame(() => {
-          smootherRef.current?.kill();
-          smootherRef.current = ScrollSmoother.create({
-            wrapper: '#smooth-wrapper',
-            content: '#smooth-content',
-            smooth: 1,
-            effects: true,
-            smoothTouch: 0.1,
-            normalizeScroll: true,
-          });
-          ScrollTrigger.refresh(true);
-        });
-      };
-
-      void initSmoother();
-    }
+    syncMotionPreference();
+    media.addEventListener('change', syncMotionPreference);
 
     const ctx = gsap.context(() => {
       const indicator = document.querySelector<HTMLElement>('[data-scroll-indicator]');
@@ -79,7 +42,7 @@ export function useGsapPage() {
         });
       }
 
-      if (prefersReducedMotion) return;
+      if (media.matches) return;
 
       gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((el) => {
         gsap.fromTo(
@@ -121,13 +84,45 @@ export function useGsapPage() {
       });
     });
 
-    ScrollTrigger.refresh();
     return () => {
-      cancelled = true;
-      if (rafId) window.cancelAnimationFrame(rafId);
       ctx.revert();
-      smootherRef.current?.kill();
-      smootherRef.current = null;
+      media.removeEventListener('change', syncMotionPreference);
+      controllerRef.current?.destroy();
+      controllerRef.current = null;
     };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const waitForImages = (container: Element | null) => {
+      if (!container) return Promise.resolve();
+      const images = Array.from(container.querySelectorAll('img'));
+      if (!images.length) return Promise.resolve();
+      return Promise.all(
+        images.map(
+          (img) =>
+            img.complete
+              ? Promise.resolve()
+              : new Promise<void>((resolve) => {
+                  const done = () => resolve();
+                  img.addEventListener('load', done, { once: true });
+                  img.addEventListener('error', done, { once: true });
+                })
+        )
+      );
+    };
+
+    const waitForFonts = () => {
+      if (!('fonts' in document)) return Promise.resolve();
+      return (document as Document & { fonts: FontFaceSet }).fonts.ready;
+    };
+
+    const refreshAfterAssets = async () => {
+      await Promise.all([waitForFonts(), waitForImages(document.querySelector('#smooth-content'))]);
+      controllerRef.current?.refresh(true);
+    };
+
+    void refreshAfterAssets();
   }, [location.pathname]);
 }
