@@ -376,6 +376,32 @@
   }
 }
 
+@keyframes logo-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(2px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes burger-bounce {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(0.94);
+  }
+  80% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 @keyframes gentle-float {
   0%, 100% {
     transform: translateY(0);

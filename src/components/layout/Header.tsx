@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Phone, FileText, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,9 +17,15 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [logoAnimKey, setLogoAnimKey] = useState(0);
+  const [burgerBouncing, setBurgerBouncing] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
   const scrolledRef = useRef(false);
   const hiddenRef = useRef(false);
   const menuOpenRef = useRef(false);
+  const prevHiddenRef = useRef<boolean | null>(null);
+  const bounceTimeoutRef = useRef<number | null>(null);
+  const shouldSetClosedRef = useRef(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -29,6 +35,101 @@ export function Header() {
       setHidden(false);
     }
   }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setReduceMotion(media.matches);
+    update();
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const body = document.body;
+    const updateClasses = (open: boolean) => {
+      if (open) {
+        body.classList.add('menu_open');
+        body.classList.remove('menu_closed');
+        shouldSetClosedRef.current = true;
+      } else if (shouldSetClosedRef.current) {
+        body.classList.add('menu_closed');
+        body.classList.remove('menu_open');
+      } else {
+        body.classList.remove('menu_open');
+        body.classList.remove('menu_closed');
+      }
+    };
+
+    updateClasses(mobileMenuOpen);
+
+    return () => {
+      body.classList.remove('menu_open');
+      body.classList.remove('menu_closed');
+    };
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const body = document.body;
+    if (mobileMenuOpen) {
+      const prevOverflow = body.style.overflow;
+      const prevTouchAction = body.style.touchAction;
+      body.style.overflow = 'hidden';
+      body.style.touchAction = 'none';
+      return () => {
+        body.style.overflow = prevOverflow;
+        body.style.touchAction = prevTouchAction;
+      };
+    }
+    return;
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    const prev = prevHiddenRef.current;
+    if (prev === null) {
+      prevHiddenRef.current = hidden;
+      if (!hidden) {
+        setLogoAnimKey((key) => key + 1);
+      }
+      return;
+    }
+
+    if (prev && !hidden) {
+      setLogoAnimKey((key) => key + 1);
+    }
+    prevHiddenRef.current = hidden;
+  }, [hidden]);
+
+  useEffect(() => {
+    return () => {
+      if (bounceTimeoutRef.current) {
+        window.clearTimeout(bounceTimeoutRef.current);
+        bounceTimeoutRef.current = null;
+      }
+    };
+  }, []);
+
+  const triggerBurgerBounce = useCallback(() => {
+    if (reduceMotion) return;
+    setBurgerBouncing(false);
+    if (bounceTimeoutRef.current) {
+      window.clearTimeout(bounceTimeoutRef.current);
+    }
+    bounceTimeoutRef.current = window.setTimeout(() => {
+      setBurgerBouncing(true);
+    }, 10);
+  }, [reduceMotion]);
+
+  const handleBurgerAnimationEnd = () => {
+    setBurgerBouncing(false);
+  };
+
+  const handleBurgerClick = () => {
+    triggerBurgerBounce();
+    setMobileMenuOpen((open) => !open);
+  };
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -149,7 +250,10 @@ export function Header() {
             aria-label="ED Immobilien - Zur Startseite"
           >
             <div className="relative">
-              <div className="w-12 h-12 bg-primary flex items-center justify-center text-cream font-serif text-xl tracking-wide">
+              <div
+                key={logoAnimKey}
+                className="w-12 h-12 bg-primary flex items-center justify-center text-cream font-serif text-xl tracking-wide motion-safe:animate-[logo-reveal_0.35s_ease-out] motion-reduce:animate-none"
+              >
                 ED
               </div>
               {/* Gold corner accent */}
@@ -220,10 +324,15 @@ export function Header() {
           {/* Mobile Menu Button */}
           <button
             type="button"
-            className="lg:hidden p-3 hover:bg-muted/50 transition-colors"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className={cn(
+              'lg:hidden p-3 hover:bg-muted/50 transition-colors',
+              burgerBouncing && !reduceMotion && 'motion-safe:animate-[burger-bounce_0.24s_cubic-bezier(0.22,1,0.36,1)]'
+            )}
+            onClick={handleBurgerClick}
+            onAnimationEnd={handleBurgerAnimationEnd}
             aria-label={mobileMenuOpen ? 'Menü schließen' : 'Menü öffnen'}
             aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-menu"
           >
             {mobileMenuOpen ? (
               <X className="w-5 h-5" />
@@ -235,7 +344,7 @@ export function Header() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-border/50 bg-background animate-fade-in">
+          <div id="mobile-menu" className="lg:hidden border-t border-border/50 bg-background animate-fade-in">
             <div className="container py-6 space-y-1">
               {navigation.map((item) => (
                 <Link
