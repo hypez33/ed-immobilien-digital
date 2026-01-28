@@ -24,7 +24,7 @@ export function Header() {
   const hiddenRef = useRef(false);
   const menuOpenRef = useRef(false);
   const prevHiddenRef = useRef<boolean | null>(null);
-  const bounceTimeoutRef = useRef<number | null>(null);
+  const bounceRafRef = useRef<number | null>(null);
   const shouldSetClosedRef = useRef(false);
   const location = useLocation();
 
@@ -104,9 +104,9 @@ export function Header() {
 
   useEffect(() => {
     return () => {
-      if (bounceTimeoutRef.current) {
-        window.clearTimeout(bounceTimeoutRef.current);
-        bounceTimeoutRef.current = null;
+      if (bounceRafRef.current) {
+        window.cancelAnimationFrame(bounceRafRef.current);
+        bounceRafRef.current = null;
       }
     };
   }, []);
@@ -114,12 +114,12 @@ export function Header() {
   const triggerBurgerBounce = useCallback(() => {
     if (reduceMotion) return;
     setBurgerBouncing(false);
-    if (bounceTimeoutRef.current) {
-      window.clearTimeout(bounceTimeoutRef.current);
+    if (bounceRafRef.current) {
+      window.cancelAnimationFrame(bounceRafRef.current);
     }
-    bounceTimeoutRef.current = window.setTimeout(() => {
+    bounceRafRef.current = window.requestAnimationFrame(() => {
       setBurgerBouncing(true);
-    }, 10);
+    });
   }, [reduceMotion]);
 
   const handleBurgerAnimationEnd = () => {
@@ -324,21 +324,26 @@ export function Header() {
           {/* Mobile Menu Button */}
           <button
             type="button"
-            className={cn(
-              'lg:hidden p-3 hover:bg-muted/50 transition-colors',
-              burgerBouncing && !reduceMotion && 'motion-safe:animate-[burger-bounce_0.24s_cubic-bezier(0.22,1,0.36,1)]'
-            )}
+            className="lg:hidden p-3 hover:bg-muted/50 transition-colors"
             onClick={handleBurgerClick}
-            onAnimationEnd={handleBurgerAnimationEnd}
             aria-label={mobileMenuOpen ? 'Menü schließen' : 'Menü öffnen'}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-menu"
+            data-bounce={burgerBouncing ? 'true' : 'false'}
           >
-            {mobileMenuOpen ? (
-              <X className="w-5 h-5" />
-            ) : (
-              <Menu className="w-5 h-5" />
-            )}
+            <span
+              className={cn(
+                'inline-flex items-center justify-center',
+                burgerBouncing && !reduceMotion && 'animate-burger-bounce'
+              )}
+              onAnimationEnd={handleBurgerAnimationEnd}
+            >
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
+            </span>
           </button>
         </nav>
 

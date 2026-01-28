@@ -402,6 +402,11 @@
   }
 }
 
+.animate-burger-bounce {
+  animation: burger-bounce 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: center;
+}
+
 @keyframes gentle-float {
   0%, 100% {
     transform: translateY(0);
