@@ -66,6 +66,7 @@ export function createSmoothScrollController(options: LenisOptions = {}): Smooth
   let scrollCallback: (() => void) | null = null;
   let resizeCallback: (() => void) | null = null;
   let refreshTimeout: number | null = null;
+  let prevScrollRestoration: ScrollRestoration | null = null;
 
   const refresh = (immediate = false) => {
     if (refreshTimeout) {
@@ -97,6 +98,13 @@ export function createSmoothScrollController(options: LenisOptions = {}): Smooth
     });
     activeLenis = lenis;
 
+    if ('scrollRestoration' in window.history) {
+      if (prevScrollRestoration === null) {
+        prevScrollRestoration = window.history.scrollRestoration;
+      }
+      window.history.scrollRestoration = 'manual';
+    }
+
     scrollCallback = () => ScrollTrigger.update();
     lenis.on('scroll', scrollCallback);
 
@@ -106,7 +114,16 @@ export function createSmoothScrollController(options: LenisOptions = {}): Smooth
     gsap.ticker.add(rafCallback);
     gsap.ticker.lagSmoothing(0);
 
-    resizeCallback = () => refresh();
+    resizeCallback = () => {
+      const active = document.activeElement;
+      const isEditable =
+        active instanceof HTMLInputElement ||
+        active instanceof HTMLTextAreaElement ||
+        active instanceof HTMLSelectElement ||
+        (active instanceof HTMLElement && active.isContentEditable);
+      if (isEditable) return;
+      refresh();
+    };
     window.addEventListener('resize', resizeCallback, { passive: true });
     window.addEventListener('orientationchange', resizeCallback);
     window.visualViewport?.addEventListener('resize', resizeCallback);
@@ -140,6 +157,11 @@ export function createSmoothScrollController(options: LenisOptions = {}): Smooth
     lenis.destroy();
     lenis = null;
     activeLenis = null;
+
+    if (prevScrollRestoration !== null) {
+      window.history.scrollRestoration = prevScrollRestoration;
+      prevScrollRestoration = null;
+    }
   };
 
   return {

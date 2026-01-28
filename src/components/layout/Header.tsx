@@ -26,6 +26,18 @@ export function Header() {
   const prevHiddenRef = useRef<boolean | null>(null);
   const bounceRafRef = useRef<number | null>(null);
   const shouldSetClosedRef = useRef(false);
+  const scrollLockRef = useRef<{
+    scrollY: number;
+    styles: {
+      position: string;
+      top: string;
+      left: string;
+      right: string;
+      width: string;
+      overflow: string;
+      touchAction: string;
+    };
+  } | null>(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -73,17 +85,53 @@ export function Header() {
   useEffect(() => {
     if (typeof document === 'undefined') return;
     const body = document.body;
+    const lenis = getLenisInstance();
+
     if (mobileMenuOpen) {
-      const prevOverflow = body.style.overflow;
-      const prevTouchAction = body.style.touchAction;
+      const scrollY = window.scrollY;
+      scrollLockRef.current = {
+        scrollY,
+        styles: {
+          position: body.style.position,
+          top: body.style.top,
+          left: body.style.left,
+          right: body.style.right,
+          width: body.style.width,
+          overflow: body.style.overflow,
+          touchAction: body.style.touchAction,
+        },
+      };
+
+      lenis?.stop();
+
+      body.style.position = 'fixed';
+      body.style.top = `-${scrollY}px`;
+      body.style.left = '0';
+      body.style.right = '0';
+      body.style.width = '100%';
       body.style.overflow = 'hidden';
       body.style.touchAction = 'none';
-      return () => {
-        body.style.overflow = prevOverflow;
-        body.style.touchAction = prevTouchAction;
-      };
+      return;
     }
-    return;
+
+    if (scrollLockRef.current) {
+      const { scrollY, styles } = scrollLockRef.current;
+      body.style.position = styles.position;
+      body.style.top = styles.top;
+      body.style.left = styles.left;
+      body.style.right = styles.right;
+      body.style.width = styles.width;
+      body.style.overflow = styles.overflow;
+      body.style.touchAction = styles.touchAction;
+      scrollLockRef.current = null;
+
+      if (lenis) {
+        lenis.start();
+        lenis.scrollTo(scrollY, { immediate: true });
+      } else {
+        window.scrollTo({ top: scrollY, behavior: 'auto' });
+      }
+    }
   }, [mobileMenuOpen]);
 
   useEffect(() => {
@@ -107,6 +155,30 @@ export function Header() {
       if (bounceRafRef.current) {
         window.cancelAnimationFrame(bounceRafRef.current);
         bounceRafRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (!scrollLockRef.current) return;
+      const { scrollY, styles } = scrollLockRef.current;
+      const body = document.body;
+      body.style.position = styles.position;
+      body.style.top = styles.top;
+      body.style.left = styles.left;
+      body.style.right = styles.right;
+      body.style.width = styles.width;
+      body.style.overflow = styles.overflow;
+      body.style.touchAction = styles.touchAction;
+      scrollLockRef.current = null;
+
+      const lenis = getLenisInstance();
+      if (lenis) {
+        lenis.start();
+        lenis.scrollTo(scrollY, { immediate: true });
+      } else {
+        window.scrollTo({ top: scrollY, behavior: 'auto' });
       }
     };
   }, []);
