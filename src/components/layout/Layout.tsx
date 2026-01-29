@@ -12,7 +12,7 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   useGsapPage();
   return (
-    <div id="smooth-wrapper">
+    <div id="smooth-wrapper" className="overflow-x-hidden">
       <div
         data-scroll-indicator
         className="fixed top-0 left-0 h-1 w-full origin-left scale-x-0 bg-gold z-[60] pointer-events-none"
