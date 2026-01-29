@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, FileSearch, Home, Key, Star, ChevronDown } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
@@ -65,6 +66,12 @@ const processSteps = [
 export default function HomePage() {
   const featuredListings = listings.slice(0, 3);
   const featuredPosts = useBlogPosts({ publicOnly: true }).slice(0, 2);
+  const [heroMounted, setHeroMounted] = useState(false);
+
+  useEffect(() => {
+    const raf = window.requestAnimationFrame(() => setHeroMounted(true));
+    return () => window.cancelAnimationFrame(raf);
+  }, []);
   const handleDiscoverClick = () => {
     if (typeof window === 'undefined') return;
     const header = document.querySelector('header');
@@ -117,10 +124,21 @@ export default function HomePage() {
               </div>
 
               {/* Main headline - serif */}
-              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-cream leading-[1.05] mb-8" data-stagger-item>
-                Exklusive Immobilien.
-                <br />
-                <span className="text-gold-light">Persönliche Betreuung.</span>
+              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-cream leading-[1.05] mb-8">
+                <span
+                  className={`block will-change-transform transition-[transform,opacity] duration-[420ms] ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-x-0 ${
+                    heroMounted ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'
+                  }`}
+                >
+                  Exklusive Immobilien.
+                </span>
+                <span
+                  className={`block text-gold-light will-change-transform transition-[transform,opacity] duration-[420ms] ease-[cubic-bezier(0.2,0.8,0.2,1)] delay-100 motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-x-0 ${
+                    heroMounted ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'
+                  }`}
+                >
+                  Persönliche Betreuung.
+                </span>
               </h1>
 
               {/* Subline */}

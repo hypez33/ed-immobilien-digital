@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Phone, FileText, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { BurgerButton } from '@/components/nav/BurgerButton';
 import { cn } from '@/lib/utils';
 import { getLenisInstance } from '@/lib/smoothScroll';
 
@@ -402,31 +403,17 @@ export function Header() {
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            type="button"
-            className="lg:hidden p-3 text-foreground hover:bg-muted/50 transition-colors motion-safe:active:scale-[0.98]"
-            onClick={handleBurgerClick}
-            aria-label={mobileMenuOpen ? 'Menü schließen' : 'Menü öffnen'}
-            aria-expanded={mobileMenuOpen}
-            aria-controls="mobile-menu-panel"
-            data-state={mobileMenuOpen ? 'open' : 'closed'}
-            data-bounce={burgerBouncing ? 'true' : 'false'}
+          <BurgerButton
             ref={burgerButtonRef}
-          >
-            <span
-              className={cn(
-                'inline-flex items-center justify-center',
-                burgerBouncing && !reduceMotion && 'animate-burger-bounce'
-              )}
-              onAnimationEnd={handleBurgerAnimationEnd}
-            >
-              <span className="burger-lines" aria-hidden="true">
-                <span className="burger-line burger-line--top" />
-                <span className="burger-line burger-line--middle" />
-                <span className="burger-line burger-line--bottom" />
-              </span>
-            </span>
-          </button>
+            open={mobileMenuOpen}
+            onToggle={handleBurgerClick}
+            bouncing={burgerBouncing}
+            reduceMotion={reduceMotion}
+            onAnimationEnd={handleBurgerAnimationEnd}
+            className={cn('lg:hidden', mobileMenuOpen && 'opacity-0 pointer-events-none')}
+            aria-hidden={mobileMenuOpen}
+            tabIndex={mobileMenuOpen ? -1 : undefined}
+          />
         </nav>
 
         {/* Mobile Menu */}
@@ -455,7 +442,7 @@ export function Header() {
               mobileMenuOpen && 'translate-x-0 opacity-100'
             )}
             style={{
-              paddingTop: 'calc(2.5rem + env(safe-area-inset-top))',
+              paddingTop: 'calc(4rem + env(safe-area-inset-top))',
               paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))',
             }}
           >
@@ -521,6 +508,21 @@ export function Header() {
           </div>
         </div>
       </header>
+
+      {mobileMenuOpen && (
+        <div
+          className="lg:hidden fixed right-3 z-[999] pointer-events-auto"
+          style={{ top: 'calc(0.75rem + env(safe-area-inset-top))' }}
+        >
+          <BurgerButton
+            open={mobileMenuOpen}
+            onToggle={handleBurgerClick}
+            bouncing={burgerBouncing}
+            reduceMotion={reduceMotion}
+            onAnimationEnd={handleBurgerAnimationEnd}
+          />
+        </div>
+      )}
     </>
   );
 }
