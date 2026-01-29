@@ -1,46 +1,126 @@
-import { createContext, useCallback, useContext, useMemo, useState } from 'react';
-import { AuthSession, AuthUser, clearSession, createSession, getStoredSession, storeSession, verifyCredentials } from '@/lib/auth';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { Session, User } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabase';
 
 interface AuthContextValue {
-  user: AuthUser | null;
-  session: AuthSession | null;
+  user: User | null;
+  session: Session | null;
   loading: boolean;
-  login: (identifier: string, password: string) => Promise<{ ok: boolean; error?: string }>;
-  logout: () => void;
+  isAdmin: boolean;
+  login: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
+  logout: () => Promise<void>;
+  signUp: (email: string, password: string, fullName?: string) => Promise<{ ok: boolean; error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [session, setSession] = useState<AuthSession | null>(() => getStoredSession());
-  const [loading, setLoading] = useState(false);
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  const login = useCallback(async (identifier: string, password: string) => {
-    setLoading(true);
-    const result = await verifyCredentials(identifier, password);
-    if (!result.ok) {
-      setLoading(false);
-      return result;
+  // Check admin role via user_roles table
+  const checkAdminRole = useCallback(async (userId: string) => {
+    const { data, error } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId)
+      .eq('role', 'admin')
+      .maybeSingle();
+    
+    if (error) {
+      console.error('Error checking admin role:', error);
+      setIsAdmin(false);
+      return;
     }
-    const nextSession = createSession(identifier);
-    storeSession(nextSession);
-    setSession(nextSession);
-    setLoading(false);
-    return { ok: true } as const;
+    setIsAdmin(!!data);
   }, []);
 
-  const logout = useCallback(() => {
-    clearSession();
+  useEffect(() => {
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setLoading(false);
+
+        // Defer Supabase calls with setTimeout to avoid deadlock
+        if (session?.user) {
+          setTimeout(() => {
+            checkAdminRole(session.user.id);
+          }, 0);
+        } else {
+          setIsAdmin(false);
+        }
+      }
+    );
+
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+      if (session?.user) {
+        checkAdminRole(session.user.id);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [checkAdminRole]);
+
+  const login = useCallback(async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.trim().toLowerCase(),
+      password,
+    });
+
+    if (error) {
+      return { ok: false, error: error.message };
+    }
+    return { ok: true };
+  }, []);
+
+  const signUp = useCallback(async (email: string, password: string, fullName?: string) => {
+    const redirectUrl = `${window.location.origin}/`;
+
+    const { error } = await supabase.auth.signUp({
+      email: email.trim().toLowerCase(),
+      password,
+      options: {
+        emailRedirectTo: redirectUrl,
+        data: {
+          full_name: fullName || '',
+        },
+      },
+    });
+
+    if (error) {
+      // Handle common errors with friendly messages
+      if (error.message.includes('already registered')) {
+        return { ok: false, error: 'Diese E-Mail ist bereits registriert.' };
+      }
+      return { ok: false, error: error.message };
+    }
+    return { ok: true };
+  }, []);
+
+  const logout = useCallback(async () => {
+    await supabase.auth.signOut();
     setSession(null);
+    setUser(null);
+    setIsAdmin(false);
   }, []);
 
   const value = useMemo<AuthContextValue>(() => ({
-    user: session?.user ?? null,
+    user,
     session,
     loading,
+    isAdmin,
     login,
     logout,
-  }), [session, loading, login, logout]);
+    signUp,
+  }), [user, session, loading, isAdmin, login, logout, signUp]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

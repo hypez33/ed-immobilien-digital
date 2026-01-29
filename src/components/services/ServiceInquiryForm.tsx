@@ -37,7 +37,7 @@ import {
   ServiceQuestion,
   inquiryQuestions,
 } from '@/data/services';
-import { createInquiry } from '@/lib/inquiriesStore';
+import { createInquiry } from '@/lib/inquiriesService';
 
 interface ServiceInquiryFormProps {
   open: boolean;
@@ -131,7 +131,7 @@ export function ServiceInquiryForm({ open, onOpenChange, activeService }: Servic
       }
 
       try {
-        createInquiry({
+        await createInquiry({
           name: values.name,
           email: values.email,
           phone: values.phone,
@@ -141,7 +141,7 @@ export function ServiceInquiryForm({ open, onOpenChange, activeService }: Servic
           status: 'new',
         });
       } catch (inquiryError) {
-        console.warn('Inquiry store failed', inquiryError);
+        console.warn('Inquiry service failed', inquiryError);
       }
 
       setSubmittedPayload(values);

@@ -11,8 +11,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { toast } from '@/components/ui/use-toast';
-import { addInquiryNote, createInquiry, deleteInquiry, Inquiry, InquiryStatus, setInquiryStatus } from '@/lib/inquiriesStore';
+import { 
+  addInquiryNote, 
+  createInquiry, 
+  deleteInquiry, 
+  Inquiry, 
+  InquiryStatus, 
+  setInquiryStatus 
+} from '@/lib/inquiriesService';
 import { useInquiries } from '@/hooks/useInquiries';
+import { Loader2 } from 'lucide-react';
 
 const statusLabels: Record<InquiryStatus, string> = {
   new: 'Neu',
@@ -29,7 +37,7 @@ const statusBadgeClass: Record<InquiryStatus, string> = {
 };
 
 export default function AdminLeadsPage() {
-  const inquiries = useInquiries();
+  const { inquiries, loading, error, refetch } = useInquiries();
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | InquiryStatus>('all');
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -44,7 +52,7 @@ export default function AdminLeadsPage() {
       return (
         inquiry.name.toLowerCase().includes(normalized) ||
         inquiry.email.toLowerCase().includes(normalized) ||
-        inquiry.serviceOrAnliegen.toLowerCase().includes(normalized)
+        inquiry.service_or_anliegen.toLowerCase().includes(normalized)
       );
     });
   }, [inquiries, query, statusFilter]);
@@ -55,38 +63,58 @@ export default function AdminLeadsPage() {
     setNoteText('');
   }, [selectedId]);
 
-  const handleAddNote = () => {
+  const handleAddNote = async () => {
     if (!selected) return;
     if (!noteText.trim()) return;
-    addInquiryNote(selected.id, noteText.trim());
-    toast({ title: 'Notiz gespeichert', description: 'Die Notiz wurde hinzugefügt.' });
-    setNoteText('');
-  };
-
-  const handleStatusChange = (status: InquiryStatus) => {
-    if (!selected) return;
-    setInquiryStatus(selected.id, status);
-    toast({ title: 'Status aktualisiert', description: `Status: ${statusLabels[status]}` });
-  };
-
-  const handleDelete = (inquiry: Inquiry) => {
-    deleteInquiry(inquiry.id);
-    if (selectedId === inquiry.id) {
-      setSelectedId(null);
+    try {
+      await addInquiryNote(selected.id, noteText.trim());
+      toast({ title: 'Notiz gespeichert', description: 'Die Notiz wurde hinzugefügt.' });
+      setNoteText('');
+      refetch();
+    } catch {
+      toast({ title: 'Fehler', description: 'Notiz konnte nicht gespeichert werden.', variant: 'destructive' });
     }
-    toast({ title: 'Gelöscht', description: 'Die Anfrage wurde entfernt.' });
   };
 
-  const handleCreateSample = () => {
-    createInquiry({
-      name: 'Max Mustermann',
-      email: 'max@example.com',
-      phone: '+49 123 456789',
-      serviceOrAnliegen: 'Bewertung',
-      message: 'Bitte um Rückruf zur Wertermittlung.',
-      source: 'dev-seed',
-      status: 'new',
-    });
+  const handleStatusChange = async (status: InquiryStatus) => {
+    if (!selected) return;
+    try {
+      await setInquiryStatus(selected.id, status);
+      toast({ title: 'Status aktualisiert', description: `Status: ${statusLabels[status]}` });
+      refetch();
+    } catch {
+      toast({ title: 'Fehler', description: 'Status konnte nicht aktualisiert werden.', variant: 'destructive' });
+    }
+  };
+
+  const handleDelete = async (inquiry: Inquiry) => {
+    try {
+      await deleteInquiry(inquiry.id);
+      if (selectedId === inquiry.id) {
+        setSelectedId(null);
+      }
+      toast({ title: 'Gelöscht', description: 'Die Anfrage wurde entfernt.' });
+      refetch();
+    } catch {
+      toast({ title: 'Fehler', description: 'Anfrage konnte nicht gelöscht werden.', variant: 'destructive' });
+    }
+  };
+
+  const handleCreateSample = async () => {
+    try {
+      await createInquiry({
+        name: 'Max Mustermann',
+        email: 'max@example.com',
+        phone: '+49 123 456789',
+        serviceOrAnliegen: 'Bewertung',
+        message: 'Bitte um Rückruf zur Wertermittlung.',
+        source: 'dev-seed',
+        status: 'new',
+      });
+      refetch();
+    } catch {
+      toast({ title: 'Fehler', description: 'Test-Anfrage konnte nicht erstellt werden.', variant: 'destructive' });
+    }
   };
 
   return (
@@ -128,49 +156,61 @@ export default function AdminLeadsPage() {
               </Select>
             </div>
 
-            <div className="space-y-4">
-              {filtered.map((inquiry) => (
-                <div key={inquiry.id} className="border border-border/40 p-4 flex flex-col gap-3">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="font-medium text-foreground">{inquiry.name}</p>
-                      <p className="text-sm text-muted-foreground">{inquiry.email}</p>
-                      <p className="text-sm text-muted-foreground">{inquiry.serviceOrAnliegen}</p>
+            {loading && (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-6 h-6 animate-spin text-gold" />
+              </div>
+            )}
+
+            {error && (
+              <div className="text-sm text-destructive py-4">{error}</div>
+            )}
+
+            {!loading && !error && (
+              <div className="space-y-4">
+                {filtered.map((inquiry) => (
+                  <div key={inquiry.id} className="border border-border/40 p-4 flex flex-col gap-3">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="font-medium text-foreground">{inquiry.name}</p>
+                        <p className="text-sm text-muted-foreground">{inquiry.email}</p>
+                        <p className="text-sm text-muted-foreground">{inquiry.service_or_anliegen}</p>
+                      </div>
+                      <Badge className={statusBadgeClass[inquiry.status]}>
+                        {statusLabels[inquiry.status]}
+                      </Badge>
                     </div>
-                    <Badge className={statusBadgeClass[inquiry.status]}>
-                      {statusLabels[inquiry.status]}
-                    </Badge>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Button variant="outline" size="sm" className="rounded-none" onClick={() => setSelectedId(inquiry.id)}>
-                      Details
-                    </Button>
-                    <Button variant="ghost" size="sm" className="text-muted-foreground" asChild>
-                      <a
-                        href={`mailto:${inquiry.email}?subject=${encodeURIComponent(`Anfrage: ${inquiry.serviceOrAnliegen}`)}&body=${encodeURIComponent(inquiry.message)}`}
-                      >
-                        Mail antworten
-                      </a>
-                    </Button>
-                    <Button variant="ghost" size="sm" className="text-destructive" onClick={() => setDeleteTarget(inquiry)}>
-                      Löschen
-                    </Button>
-                  </div>
-                </div>
-              ))}
-              {!filtered.length && (
-                <div className="text-sm text-muted-foreground">
-                  Keine Anfragen gefunden.
-                  {import.meta.env.DEV && (
-                    <div className="mt-3">
-                      <Button size="sm" className="rounded-none" onClick={handleCreateSample}>
-                        Test-Anfrage anlegen
+                    <div className="flex flex-wrap gap-2">
+                      <Button variant="outline" size="sm" className="rounded-none" onClick={() => setSelectedId(inquiry.id)}>
+                        Details
+                      </Button>
+                      <Button variant="ghost" size="sm" className="text-muted-foreground" asChild>
+                        <a
+                          href={`mailto:${inquiry.email}?subject=${encodeURIComponent(`Anfrage: ${inquiry.service_or_anliegen}`)}&body=${encodeURIComponent(inquiry.message)}`}
+                        >
+                          Mail antworten
+                        </a>
+                      </Button>
+                      <Button variant="ghost" size="sm" className="text-destructive" onClick={() => setDeleteTarget(inquiry)}>
+                        Löschen
                       </Button>
                     </div>
-                  )}
-                </div>
-              )}
-            </div>
+                  </div>
+                ))}
+                {!filtered.length && (
+                  <div className="text-sm text-muted-foreground">
+                    Keine Anfragen gefunden.
+                    {import.meta.env.DEV && (
+                      <div className="mt-3">
+                        <Button size="sm" className="rounded-none" onClick={handleCreateSample}>
+                          Test-Anfrage anlegen
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </Section>
@@ -189,7 +229,7 @@ export default function AdminLeadsPage() {
               </div>
               <div>
                 <p className="font-medium text-foreground">Anliegen</p>
-                <p>{selected.serviceOrAnliegen}</p>
+                <p>{selected.service_or_anliegen}</p>
               </div>
               <div>
                 <p className="font-medium text-foreground">Nachricht</p>
