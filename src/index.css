@@ -526,7 +526,7 @@ button[data-state="open"] .burger-line--bottom {
 }
 
 .animate-shimmer {
-  background: linear-gradient(90deg, transparent, hsl(var(--accent) / 0.1), transparent);
+  background: linear-gradient(90deg, transparent 0%, hsl(var(--accent) / 0.08) 50%, transparent 100%);
   background-size: 200% 100%;
-  animation: shimmer 2s infinite;
+  animation: shimmer 2s infinite linear;
 }

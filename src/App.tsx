@@ -8,6 +8,7 @@ import { ConsentProvider } from "@/context/ConsentContext";
 import { RequireAuth } from "@/components/admin/RequireAuth";
 import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 import { ScrollToTop } from "@/components/routing/ScrollToTop";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import HomePage from "./pages/HomePage";
 import ImmobilienPage from "./pages/ImmobilienPage";
 import LeistungenPage from "./pages/LeistungenPage";
@@ -27,45 +28,47 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <AuthProvider>
-        <ConsentProvider>
-          <BrowserRouter
-            future={{
-              v7_startTransition: true,
-              v7_relativeSplatPath: true,
-            }}
-          >
-            <ScrollToTop />
-            <AnalyticsTracker />
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/immobilien" element={<ImmobilienPage />} />
-              <Route path="/leistungen" element={<LeistungenPage />} />
-              <Route path="/blog" element={<BlogPage />} />
-              <Route path="/blog/:slug" element={<BlogPostPage />} />
-              <Route path="/ueber-uns" element={<UeberUnsPage />} />
-              <Route path="/kontakt" element={<KontaktPage />} />
-              <Route path="/impressum" element={<ImpressumPage />} />
-              <Route path="/datenschutz" element={<DatenschutzPage />} />
-              <Route path="/admin/login" element={<AdminLoginPage />} />
-              <Route element={<RequireAuth />}>
-                <Route path="/admin" element={<AdminDashboardPage />} />
-                <Route path="/admin/blog" element={<AdminBlogPage />} />
-                <Route path="/admin/anfragen" element={<AdminLeadsPage />} />
-                <Route path="/admin/analytics" element={<AdminAnalyticsPage />} />
-              </Route>
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </ConsentProvider>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <AuthProvider>
+          <ConsentProvider>
+            <BrowserRouter
+              future={{
+                v7_startTransition: true,
+                v7_relativeSplatPath: true,
+              }}
+            >
+              <ScrollToTop />
+              <AnalyticsTracker />
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/immobilien" element={<ImmobilienPage />} />
+                <Route path="/leistungen" element={<LeistungenPage />} />
+                <Route path="/blog" element={<BlogPage />} />
+                <Route path="/blog/:slug" element={<BlogPostPage />} />
+                <Route path="/ueber-uns" element={<UeberUnsPage />} />
+                <Route path="/kontakt" element={<KontaktPage />} />
+                <Route path="/impressum" element={<ImpressumPage />} />
+                <Route path="/datenschutz" element={<DatenschutzPage />} />
+                <Route path="/admin/login" element={<AdminLoginPage />} />
+                <Route element={<RequireAuth />}>
+                  <Route path="/admin" element={<AdminDashboardPage />} />
+                  <Route path="/admin/blog" element={<AdminBlogPage />} />
+                  <Route path="/admin/anfragen" element={<AdminLeadsPage />} />
+                  <Route path="/admin/analytics" element={<AdminAnalyticsPage />} />
+                </Route>
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </ConsentProvider>
+        </AuthProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;

@@ -3,13 +3,15 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { useGsapPage } from '@/hooks/useGsapPage';
 import { BackToTopButton } from '@/components/BackToTopButton';
+import { MobileCTA } from '@/components/MobileCTA';
 import { CookieBanner } from '@/components/consent/CookieBanner';
 
 interface LayoutProps {
   children: ReactNode;
+  showMobileCTA?: boolean;
 }
 
-export function Layout({ children }: LayoutProps) {
+export function Layout({ children, showMobileCTA = true }: LayoutProps) {
   useGsapPage();
   return (
     <div id="smooth-wrapper" className="overflow-x-hidden">
@@ -19,6 +21,7 @@ export function Layout({ children }: LayoutProps) {
         aria-hidden="true"
       />
       <BackToTopButton />
+      {showMobileCTA && <MobileCTA />}
       <CookieBanner />
       <Header />
       <div id="smooth-content" className="flex min-h-screen flex-col pt-18 md:pt-20">

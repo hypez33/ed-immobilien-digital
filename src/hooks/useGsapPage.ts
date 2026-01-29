@@ -44,50 +44,102 @@ export function useGsapPage() {
 
       if (media.matches) return;
 
+      // Enhanced reveal animations with subtle parallax
       gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((el) => {
-        gsap.fromTo(
-          el,
-          { opacity: 0, y: 20 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 85%',
-              toggleActions: 'play none none none',
-            },
-          }
-        );
+        const variant = el.dataset.revealVariant || 'up';
+        const fromProps: gsap.TweenVars = { opacity: 0 };
+        
+        switch (variant) {
+          case 'left':
+            fromProps.x = -30;
+            break;
+          case 'right':
+            fromProps.x = 30;
+            break;
+          case 'scale':
+            fromProps.scale = 0.95;
+            break;
+          default:
+            fromProps.y = 24;
+        }
+
+        gsap.fromTo(el, fromProps, {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          scale: 1,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 88%',
+            toggleActions: 'play none none none',
+          },
+        });
       });
 
+      // Section parallax effect for images
+      gsap.utils.toArray<HTMLElement>('[data-parallax]').forEach((el) => {
+        const speed = parseFloat(el.dataset.parallaxSpeed || '0.15');
+        gsap.to(el, {
+          yPercent: speed * 100,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: el.parentElement || el,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 0.5,
+          },
+        });
+      });
+
+      // Fade-in from sides for split layouts
+      gsap.utils.toArray<HTMLElement>('[data-split-reveal]').forEach((group) => {
+        const left = group.querySelector('[data-split-left]');
+        const right = group.querySelector('[data-split-right]');
+        
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: group,
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        });
+
+        if (left) {
+          tl.fromTo(left, { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, 0);
+        }
+        if (right) {
+          tl.fromTo(right, { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, 0.1);
+        }
+      });
+
+      // Process timeline with alternating directions
       gsap.utils.toArray<HTMLElement>('[data-process]').forEach((group) => {
         const items = group.querySelectorAll<HTMLElement>('[data-process-item]');
         if (!items.length) return;
-        gsap.fromTo(
-          items,
-          {
-            opacity: 0,
-            x: (index, target) =>
-              (target as HTMLElement).dataset.direction === 'right' ? 40 : -40,
-          },
-          {
-            opacity: 1,
-            x: 10,
-            duration: 1.2,
-            ease: 'power2.out',
-            stagger: 0.1,
-            scrollTrigger: {
-              trigger: group,
-              start: 'top 85%',
-              toggleActions: 'play none none none',
-              once: true,
-            },
-          }
-        );
+        
+        items.forEach((item, index) => {
+          const direction = item.dataset.direction === 'right' ? 1 : -1;
+          gsap.fromTo(
+            item,
+            { opacity: 0, x: direction * 50 },
+            {
+              opacity: 1,
+              x: 0,
+              duration: 0.9,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: item,
+                start: 'top 88%',
+                toggleActions: 'play none none none',
+              },
+            }
+          );
+        });
       });
 
+      // Staggered children animations
       gsap.utils.toArray<HTMLElement>('[data-stagger]').forEach((group) => {
         const items = group.querySelectorAll<HTMLElement>('[data-stagger-item]');
         if (!items.length) return;
@@ -95,20 +147,44 @@ export function useGsapPage() {
         const isFast = speed === 'fast';
         gsap.fromTo(
           items,
-          { opacity: 0, y: isFast ? 16 : 24 },
+          { opacity: 0, y: isFast ? 16 : 28 },
           {
             opacity: 1,
             y: 0,
-            duration: isFast ? 0.38 : 0.75,
+            duration: isFast ? 0.45 : 0.8,
             ease: 'power3.out',
             stagger: isFast ? 0.08 : 0.12,
             scrollTrigger: {
               trigger: group,
-              start: isFast ? 'top 90%' : 'top 85%',
+              start: isFast ? 'top 92%' : 'top 88%',
               toggleActions: 'play none none none',
             },
           }
         );
+      });
+
+      // Counter animation for stats
+      gsap.utils.toArray<HTMLElement>('[data-counter]').forEach((el) => {
+        const target = parseFloat(el.dataset.counterTarget || el.textContent || '0');
+        const suffix = el.dataset.counterSuffix || '';
+        const duration = parseFloat(el.dataset.counterDuration || '2');
+        
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top 90%',
+          once: true,
+          onEnter: () => {
+            gsap.fromTo(
+              { val: 0 },
+              { val: target, duration, ease: 'power2.out' },
+              {
+                onUpdate() {
+                  el.textContent = Math.round(this.targets()[0].val) + suffix;
+                },
+              }
+            );
+          },
+        });
       });
     });
 
