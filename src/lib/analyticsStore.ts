@@ -136,3 +136,11 @@ export const subscribeToAnalytics = (callback: () => void) => {
     window.removeEventListener(UPDATE_EVENT, handler);
   };
 };
+
+export const clearAnalytics = () => {
+  if (typeof window === 'undefined') return;
+  window.localStorage.removeItem(STORAGE_KEY);
+  window.localStorage.removeItem(VISITOR_KEY);
+  window.localStorage.removeItem(SESSION_TS_KEY);
+  window.dispatchEvent(new Event(UPDATE_EVENT));
+};

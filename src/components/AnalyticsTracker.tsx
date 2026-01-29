@@ -10,6 +10,7 @@ export function AnalyticsTracker() {
 
   useEffect(() => {
     if (!allowAnalytics) return;
+    if (location.pathname.startsWith('/admin')) return;
     logPageView(location.pathname);
   }, [location.pathname, allowAnalytics]);
 

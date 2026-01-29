@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { createInquiry } from '@/lib/inquiriesStore';
+import { toast } from '@/components/ui/use-toast';
 import {
   Select,
   SelectContent,
@@ -65,6 +66,7 @@ export function ContactForm() {
       datenschutz: false,
     },
   });
+  const hasConsent = form.watch('datenschutz');
 
   const onSubmit = async (data: ContactFormData) => {
     setStatus('loading');
@@ -75,12 +77,19 @@ export function ContactForm() {
     // For demo purposes, always succeed
     console.log('Form submitted:', data);
     try {
+      const details = [
+        `Anliegen: ${data.anliegen}`,
+        data.objektadresse ? `Objektadresse: ${data.objektadresse}` : null,
+      ]
+        .filter(Boolean)
+        .join('\n');
+      const message = details ? `${details}\n\n${data.nachricht}` : data.nachricht;
       createInquiry({
         name: data.name,
         email: data.email,
         phone: data.telefon,
-        serviceOrAnliegen: data.anliegen,
-        message: data.nachricht || 'Kontaktanfrage',
+        serviceOrAnliegen: 'Kontakt',
+        message: message || 'Kontaktanfrage',
         source: 'kontakt-form',
         status: 'new',
       });
@@ -89,6 +98,10 @@ export function ContactForm() {
     }
     setStatus('success');
     form.reset();
+    toast({
+      title: 'Anfrage gesendet',
+      description: 'Wir melden uns innerhalb von 24 Stunden bei Ihnen.',
+    });
   };
 
   if (status === 'success') {
@@ -232,7 +245,7 @@ export function ContactForm() {
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel className="font-normal text-sm text-muted-foreground">
-                  Ich stimme der Verarbeitung meiner Daten gemäß der{' '}
+                  Ich habe die Datenschutzerklärung gelesen und stimme der Verarbeitung meiner Daten zu.{' '}
                   <a href="/datenschutz" className="text-accent hover:underline">
                     Datenschutzerklärung
                   </a>{' '}
@@ -244,7 +257,7 @@ export function ContactForm() {
           )}
         />
 
-        <Button type="submit" size="lg" className="w-full" disabled={status === 'loading'}>
+        <Button type="submit" size="lg" className="w-full" disabled={status === 'loading' || !hasConsent}>
           {status === 'loading' ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />

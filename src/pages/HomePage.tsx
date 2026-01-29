@@ -88,7 +88,7 @@ export default function HomePage() {
     const header = document.querySelector('header');
     const headerOffset = header ? header.getBoundingClientRect().height : 0;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    scrollToTarget('#services', {
+    scrollToTarget('#angebotene-leistungen', {
       offset: -(headerOffset + 8),
       immediate: reduceMotion,
     });
@@ -152,7 +152,7 @@ export default function HomePage() {
                 <Button
                   size="lg"
                   asChild
-                  className="bg-gold-light text-primary hover:bg-gold hover:text-cream rounded-none"
+                  className="bg-cream text-primary hover:bg-gold-light hover:text-primary rounded-none"
                 >
                   <Link to="/kontakt">
                     Kostenlose Beratung
@@ -200,8 +200,8 @@ export default function HomePage() {
       </section>
 
       {/* Services - Staggered layout */}
-      <Section size="lg" id="services">
-        <div className="text-center mb-16">
+      <Section size="default">
+        <div className="text-center mb-10 md:mb-12">
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="w-12 h-px bg-gold" />
             <span className="text-gold text-sm uppercase tracking-[0.15em]">Leistungen</span>
@@ -225,8 +225,8 @@ export default function HomePage() {
       <ServiceSection />
 
       {/* Blog */}
-      <Section size="lg">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12" data-reveal>
+      <Section size="default">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8 md:mb-10" data-reveal>
           <div>
             <div className="flex items-center gap-4 mb-4">
               <div className="w-12 h-px bg-gold" />
@@ -253,8 +253,8 @@ export default function HomePage() {
       </Section>
 
       {/* Listings */}
-      <Section variant="surface" size="lg">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+      <Section variant="surface" size="default">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8 md:mb-10">
           <div>
             <div className="flex items-center gap-4 mb-4">
               <div className="w-12 h-px bg-gold" />
@@ -277,8 +277,8 @@ export default function HomePage() {
       </Section>
 
       {/* Process - Vertical Timeline */}
-      <Section size="lg" className="bg-cream">
-        <div className="text-center mb-16">
+      <Section size="default" className="bg-cream">
+        <div className="text-center mb-10 md:mb-12">
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="w-12 h-px bg-gold" />
             <span className="text-gold text-sm uppercase tracking-[0.15em]">Prozess</span>
@@ -319,7 +319,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="mt-16 text-center">
+        <div className="mt-12 text-center">
           <Button size="lg" asChild className="rounded-none">
             <Link to="/kontakt">
               Erstberatung vereinbaren
@@ -330,7 +330,7 @@ export default function HomePage() {
       </Section>
 
       {/* FAQ */}
-      <Section variant="surface" size="lg">
+      <Section variant="surface" size="default">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
           <div className="lg:col-span-4">
             <div className="flex items-center gap-4 mb-4">
