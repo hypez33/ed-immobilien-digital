@@ -7,6 +7,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { ConsentProvider } from "@/context/ConsentContext";
 import { RequireAuth } from "@/components/admin/RequireAuth";
 import { AnalyticsTracker } from "@/components/AnalyticsTracker";
+import { ScrollToTop } from "@/components/routing/ScrollToTop";
 import HomePage from "./pages/HomePage";
 import ImmobilienPage from "./pages/ImmobilienPage";
 import LeistungenPage from "./pages/LeistungenPage";
@@ -38,6 +39,7 @@ const App = () => (
               v7_relativeSplatPath: true,
             }}
           >
+            <ScrollToTop />
             <AnalyticsTracker />
             <Routes>
               <Route path="/" element={<HomePage />} />

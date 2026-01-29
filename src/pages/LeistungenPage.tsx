@@ -31,7 +31,7 @@ export default function LeistungenPage() {
             <span className="text-gold text-sm uppercase tracking-[0.15em]">Leistungen</span>
           </div>
           <h1 className="font-serif mb-4">Alles aus einer Hand</h1>
-          <p className="text-lg text-muted-foreground leading-relaxed">
+          <p className="text-lg text-muted-foreground/90 leading-relaxed">
             Wählen Sie den passenden Service – wir kümmern uns um die nächsten Schritte und melden uns
             innerhalb von 24 Stunden.
           </p>

@@ -12,49 +12,31 @@ import { CTABanner } from '@/components/CTABanner';
 import { ServiceSection } from '@/components/services/ServiceSection';
 import { BlogCard } from '@/components/cards/BlogCard';
 import { listings } from '@/data/listings';
+import { services as servicesData } from '@/data/services';
 import { useBlogPosts } from '@/hooks/useBlogPosts';
 import { homeFAQ } from '@/data/faq';
 import { scrollToTarget } from '@/lib/smoothScroll';
 import heroImage from '@/assets/hero-home.jpg';
 
-const services = [
-  {
+const expertiseMeta = {
+  bewertung: {
     icon: FileSearch,
-    title: 'Immobilienbewertung',
-    description: 'Erfahren Sie den realistischen Marktwert Ihrer Immobilie – fundiert und kostenfrei.',
-    features: [
-      'Kostenfreie Erstberatung vor Ort',
-      'Aktuelle Vergleichswertanalyse',
-      'Schriftliche Wertermittlung binnen 48h',
-    ],
     ctaText: 'Bewertung anfragen',
     ctaHref: '/kontakt?anliegen=bewertung',
   },
-  {
+  verkauf: {
     icon: Home,
-    title: 'Immobilienverkauf',
-    description: 'Vom ersten Gespräch bis zum Notartermin – Ihr Verkauf in erfahrenen Händen.',
-    features: [
-      'Professionelles Foto-Exposé',
-      'Vorqualifizierte Kaufinteressenten',
-      'Begleitung bis zur Schlüsselübergabe',
-    ],
     ctaText: 'Verkauf besprechen',
     ctaHref: '/kontakt?anliegen=verkauf',
   },
-  {
+  vermietung: {
     icon: Key,
-    title: 'Vermietung',
-    description: 'Schnelle Mietersuche mit sorgfältiger Prüfung – für nachhaltige Mietverhältnisse.',
-    features: [
-      'Zielgruppengerechte Mietersuche',
-      'Bonitätsprüfung & Referenzen',
-      'Rechtssichere Vertragsgestaltung',
-    ],
     ctaText: 'Vermietung anfragen',
     ctaHref: '/kontakt?anliegen=vermietung',
   },
-];
+} as const;
+
+const expertiseOrder = ['bewertung', 'verkauf', 'vermietung'] as const;
 
 const processSteps = [
   {
@@ -142,7 +124,7 @@ export default function HomePage() {
               </h1>
 
               {/* Subline */}
-              <p className="text-cream/70 text-lg md:text-xl max-w-lg mb-10 leading-relaxed" data-stagger-item>
+              <p className="text-cream/80 text-lg md:text-xl max-w-lg mb-10 leading-relaxed" data-stagger-item>
                 Ihr vertrauensvoller Partner für Verkauf und Vermietung
                 erstklassiger Immobilien in der Metropolregion.
               </p>
@@ -200,7 +182,7 @@ export default function HomePage() {
       </section>
 
       {/* Services - Staggered layout */}
-      <Section size="default">
+      <Section size="default" id="expertise">
         <div className="text-center mb-10 md:mb-12">
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="w-12 h-px bg-gold" />
@@ -208,16 +190,28 @@ export default function HomePage() {
             <div className="w-12 h-px bg-gold" />
           </div>
           <h2 className="font-serif mb-4">Unsere Expertise</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg leading-relaxed">
             Von der ersten Beratung bis zum erfolgreichen Abschluss – professionell und persönlich.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8" data-stagger>
-          {services.map((service, index) => (
-            <div key={service.title} className={index === 1 ? 'md:translate-y-8' : ''}>
-              <ServiceCard {...service} />
-            </div>
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8" data-stagger data-stagger-speed="fast">
+          {expertiseOrder.map((serviceId, index) => {
+            const service = servicesData.find((item) => item.id === serviceId);
+            if (!service) return null;
+            const meta = expertiseMeta[serviceId];
+            return (
+              <div key={service.id} className={index === 1 ? 'md:translate-y-8' : ''}>
+                <ServiceCard
+                  icon={meta.icon}
+                  title={service.title}
+                  description={service.description}
+                  features={service.bullets}
+                  ctaText={meta.ctaText}
+                  ctaHref={meta.ctaHref}
+                />
+              </div>
+            );
+          })}
         </div>
       </Section>
 
@@ -233,7 +227,7 @@ export default function HomePage() {
               <span className="text-gold text-sm uppercase tracking-[0.15em]">Blog</span>
             </div>
             <h2 className="font-serif">Aktuelle Einblicke</h2>
-            <p className="text-muted-foreground mt-3 max-w-2xl">
+            <p className="text-muted-foreground mt-3 max-w-2xl text-lg leading-relaxed">
               Marktentwicklungen, Checklisten und Tipps – kompakt für Sie zusammengefasst.
             </p>
           </div>
@@ -305,7 +299,7 @@ export default function HomePage() {
                   <div className="bg-card p-8 border border-border/40 inline-block w-full max-w-sm">
                     <span className="font-serif text-5xl text-gold/20 block mb-3">0{step.step}</span>
                     <h3 className="font-serif text-xl mb-3">{step.title}</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">{step.description}</p>
+                    <p className="text-muted-foreground/90 text-sm leading-relaxed">{step.description}</p>
                   </div>
                 </div>
 
@@ -338,7 +332,7 @@ export default function HomePage() {
               <span className="text-gold text-sm uppercase tracking-[0.15em]">FAQ</span>
             </div>
             <h2 className="font-serif mb-4">Häufige Fragen</h2>
-            <p className="text-muted-foreground mb-8">
+            <p className="text-muted-foreground/90 mb-8 leading-relaxed">
               Antworten auf die wichtigsten Fragen rund um Verkauf, Vermietung und Bewertung.
             </p>
             <Button variant="ghost" asChild className="text-gold hover:text-gold hover:bg-gold/5">

@@ -41,7 +41,7 @@ export default function BlogPostPage() {
               <img src={post.cover} alt={post.title} className="w-full h-full object-cover" />
             </div>
           )}
-          <div className="space-y-6 text-muted-foreground leading-relaxed">
+          <div className="content-typography">
             {paragraphs.length ? (
               paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)
             ) : (

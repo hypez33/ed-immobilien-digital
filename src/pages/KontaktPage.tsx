@@ -63,7 +63,7 @@ export default function KontaktPage() {
               <span className="text-gold text-sm uppercase tracking-[0.15em]">Kontakt</span>
             </div>
             <h1 className="font-serif mb-4">Sprechen Sie mit uns</h1>
-            <p className="text-muted-foreground mb-10 max-w-lg leading-relaxed">
+            <p className="text-muted-foreground/90 mb-10 max-w-lg leading-relaxed">
               Wir freuen uns darauf, Sie kennenzulernen und Ihre Immobilienziele zu besprechen.
               Füllen Sie das Formular aus – wir melden uns innerhalb von 24 Stunden.
             </p>
@@ -92,7 +92,7 @@ export default function KontaktPage() {
               </div>
 
               <div className="mt-10 pt-8 border-t border-cream/10">
-                <p className="text-cream/60 text-sm leading-relaxed">
+                <p className="text-cream/70 text-sm leading-relaxed">
                   Besichtigungstermine auch außerhalb der Bürozeiten nach Absprache möglich.
                 </p>
               </div>
@@ -114,7 +114,7 @@ export default function KontaktPage() {
               <span className="text-gold text-sm uppercase tracking-[0.15em]">FAQ</span>
             </div>
             <h2 className="font-serif mb-4">Häufige Fragen</h2>
-            <p className="text-muted-foreground mb-8">
+            <p className="text-muted-foreground/90 mb-8 leading-relaxed">
               Antworten auf häufig gestellte Fragen rund um Kontaktaufnahme und Termine.
             </p>
             <Button variant="ghost" asChild className="text-gold hover:text-gold hover:bg-gold/5">

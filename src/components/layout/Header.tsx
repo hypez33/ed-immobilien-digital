@@ -20,6 +20,8 @@ export function Header() {
   const [hidden, setHidden] = useState(false);
   const [burgerBouncing, setBurgerBouncing] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
+  const burgerButtonRef = useRef<HTMLButtonElement | null>(null);
+  const firstLinkRef = useRef<HTMLAnchorElement | null>(null);
   const scrolledRef = useRef(false);
   const hiddenRef = useRef(false);
   const menuOpenRef = useRef(false);
@@ -165,6 +167,28 @@ export function Header() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (mobileMenuOpen) {
+      const raf = window.requestAnimationFrame(() => {
+        firstLinkRef.current?.focus();
+      });
+      return () => window.cancelAnimationFrame(raf);
+    }
+    burgerButtonRef.current?.focus();
+  }, [mobileMenuOpen]);
 
   const triggerBurgerBounce = useCallback(() => {
     if (reduceMotion) return;
@@ -384,9 +408,10 @@ export function Header() {
             onClick={handleBurgerClick}
             aria-label={mobileMenuOpen ? 'Menü schließen' : 'Menü öffnen'}
             aria-expanded={mobileMenuOpen}
-            aria-controls="mobile-menu"
+            aria-controls="mobile-menu-panel"
             data-state={mobileMenuOpen ? 'open' : 'closed'}
             data-bounce={burgerBouncing ? 'true' : 'false'}
+            ref={burgerButtonRef}
           >
             <span
               className={cn(
@@ -405,64 +430,96 @@ export function Header() {
         </nav>
 
         {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div id="mobile-menu" className="lg:hidden border-t border-border/50 bg-background animate-fade-in">
-            <div className="container py-6 space-y-1">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={cn(
-                    'flex items-center justify-between py-4 px-4 text-base font-medium transition-colors border-b border-border/30',
-                    (item.href === '/' ? location.pathname === '/' : location.pathname.startsWith(item.href))
-                      ? 'text-foreground'
-                      : 'text-muted-foreground'
-                  )}
-                >
-                  <span>{item.name}</span>
-                  <ArrowRight className={cn(
-                    'w-4 h-4 transition-colors',
-                    (item.href === '/' ? location.pathname === '/' : location.pathname.startsWith(item.href))
-                      ? 'text-gold'
-                      : 'opacity-30'
-                  )} />
-                </Link>
-              ))}
+        <div
+          className={cn(
+            'lg:hidden fixed inset-0 z-[60] pointer-events-none',
+            mobileMenuOpen && 'pointer-events-auto'
+          )}
+          aria-hidden={!mobileMenuOpen}
+        >
+          <div
+            className={cn(
+              'absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300 ease-out motion-reduce:transition-none',
+              mobileMenuOpen && 'opacity-100'
+            )}
+            onClick={() => setMobileMenuOpen(false)}
+            aria-hidden="true"
+          />
+          <div
+            id="mobile-menu-panel"
+            role="dialog"
+            aria-modal="true"
+            className={cn(
+              'absolute right-0 top-0 h-dvh w-[88%] max-w-sm bg-background border-l border-border/50 shadow-lg will-change-transform transform translate-x-full opacity-0',
+              'transition-[transform,opacity] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none',
+              mobileMenuOpen && 'translate-x-0 opacity-100'
+            )}
+            style={{
+              paddingTop: 'calc(1rem + env(safe-area-inset-top))',
+              paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))',
+            }}
+          >
+            <div className="h-full overflow-y-auto">
+              <div className="container py-6 space-y-1">
+                {navigation.map((item, index) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    ref={index === 0 ? firstLinkRef : undefined}
+                    className={cn(
+                      'flex items-center justify-between py-4 px-4 text-base font-medium transition-colors border-b border-border/30',
+                      (item.href === '/' ? location.pathname === '/' : location.pathname.startsWith(item.href))
+                        ? 'text-foreground'
+                        : 'text-muted-foreground'
+                    )}
+                  >
+                    <span>{item.name}</span>
+                    <ArrowRight
+                      className={cn(
+                        'w-4 h-4 transition-colors',
+                        (item.href === '/' ? location.pathname === '/' : location.pathname.startsWith(item.href))
+                          ? 'text-gold'
+                          : 'opacity-30'
+                      )}
+                    />
+                  </Link>
+                ))}
 
-              {/* Mobile CTAs */}
-              <div className="pt-6 space-y-3">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="w-full justify-between rounded-none border-border/60 hover:border-gold hover:text-gold"
-                  asChild
-                >
-                  <Link to="/kontakt?anliegen=bewertung" onClick={() => setMobileMenuOpen(false)}>
-                    <span className="flex items-center gap-3">
-                      <FileText className="w-4 h-4" />
-                      Kostenlose Bewertung
-                    </span>
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </Button>
-                <Button
-                  size="lg"
-                  className="w-full justify-between rounded-none"
-                  asChild
-                >
-                  <Link to="/kontakt" onClick={() => setMobileMenuOpen(false)}>
-                    <span className="flex items-center gap-3">
-                      <Phone className="w-4 h-4" />
-                      Termin vereinbaren
-                    </span>
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </Button>
+                {/* Mobile CTAs */}
+                <div className="pt-6 space-y-3">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="w-full justify-between rounded-none border-border/60 hover:border-gold hover:text-gold"
+                    asChild
+                  >
+                    <Link to="/kontakt?anliegen=bewertung" onClick={() => setMobileMenuOpen(false)}>
+                      <span className="flex items-center gap-3">
+                        <FileText className="w-4 h-4" />
+                        Kostenlose Bewertung
+                      </span>
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </Button>
+                  <Button
+                    size="lg"
+                    className="w-full justify-between rounded-none"
+                    asChild
+                  >
+                    <Link to="/kontakt" onClick={() => setMobileMenuOpen(false)}>
+                      <span className="flex items-center gap-3">
+                        <Phone className="w-4 h-4" />
+                        Termin vereinbaren
+                      </span>
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
-        )}
+        </div>
       </header>
     </>
   );

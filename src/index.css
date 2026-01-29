@@ -177,6 +177,41 @@
     @apply -translate-y-0.5;
   }
 
+  /* Readability helper for subdued text */
+  .text-readable-muted {
+    @apply text-muted-foreground/90;
+  }
+
+  /* Rich text/content typography */
+  .content-typography {
+    @apply text-foreground/90;
+  }
+
+  .content-typography p {
+    @apply mb-6 text-muted-foreground/90 leading-relaxed;
+  }
+
+  .content-typography h2 {
+    @apply text-2xl md:text-3xl font-serif text-foreground mt-10 mb-4;
+  }
+
+  .content-typography h3 {
+    @apply text-xl md:text-2xl font-serif text-foreground mt-8 mb-3;
+  }
+
+  .content-typography ul,
+  .content-typography ol {
+    @apply mb-6 pl-6 text-muted-foreground/90 leading-relaxed;
+  }
+
+  .content-typography li {
+    @apply mb-2;
+  }
+
+  .content-typography a {
+    @apply text-foreground underline underline-offset-4;
+  }
+
   /* Section spacing - refined rhythm */
   .section-padding {
     @apply py-16 md:py-20 lg:py-24;

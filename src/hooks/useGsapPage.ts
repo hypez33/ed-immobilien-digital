@@ -65,18 +65,20 @@ export function useGsapPage() {
       gsap.utils.toArray<HTMLElement>('[data-stagger]').forEach((group) => {
         const items = group.querySelectorAll<HTMLElement>('[data-stagger-item]');
         if (!items.length) return;
+        const speed = group.dataset.staggerSpeed;
+        const isFast = speed === 'fast';
         gsap.fromTo(
           items,
-          { opacity: 0, y: 24 },
+          { opacity: 0, y: isFast ? 16 : 24 },
           {
             opacity: 1,
             y: 0,
-            duration: 0.75,
+            duration: isFast ? 0.38 : 0.75,
             ease: 'power3.out',
-            stagger: 0.12,
+            stagger: isFast ? 0.08 : 0.12,
             scrollTrigger: {
               trigger: group,
-              start: 'top 85%',
+              start: isFast ? 'top 90%' : 'top 85%',
               toggleActions: 'play none none none',
             },
           }
