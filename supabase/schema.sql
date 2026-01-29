@@ -173,6 +173,55 @@ CREATE POLICY "Admins can delete listings"
   USING (public.has_role(auth.uid(), 'admin'));
 
 -- ======================================
+-- Blog Posts Tabelle
+-- ======================================
+CREATE TABLE public.blog_posts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ DEFAULT now() NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT now() NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  title TEXT NOT NULL,
+  excerpt TEXT,
+  date DATE DEFAULT CURRENT_DATE,
+  category TEXT,
+  cover TEXT,
+  content TEXT,
+  status TEXT DEFAULT 'draft' NOT NULL CHECK (status IN ('draft', 'published'))
+);
+
+ALTER TABLE public.blog_posts ENABLE ROW LEVEL SECURITY;
+
+-- Öffentlich lesbar wenn published
+CREATE POLICY "Public can view published posts"
+  ON public.blog_posts FOR SELECT
+  TO anon, authenticated
+  USING (status = 'published');
+
+-- Admins sehen alle Posts
+CREATE POLICY "Admins can view all posts"
+  ON public.blog_posts FOR SELECT
+  TO authenticated
+  USING (public.has_role(auth.uid(), 'admin'));
+
+-- Nur Admins können Posts erstellen
+CREATE POLICY "Admins can create posts"
+  ON public.blog_posts FOR INSERT
+  TO authenticated
+  WITH CHECK (public.has_role(auth.uid(), 'admin'));
+
+-- Nur Admins können Posts updaten
+CREATE POLICY "Admins can update posts"
+  ON public.blog_posts FOR UPDATE
+  TO authenticated
+  USING (public.has_role(auth.uid(), 'admin'));
+
+-- Nur Admins können Posts löschen
+CREATE POLICY "Admins can delete posts"
+  ON public.blog_posts FOR DELETE
+  TO authenticated
+  USING (public.has_role(auth.uid(), 'admin'));
+
+-- ======================================
 -- Auto-update updated_at trigger
 -- ======================================
 CREATE OR REPLACE FUNCTION public.handle_updated_at()
@@ -185,6 +234,11 @@ $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER on_listings_update
   BEFORE UPDATE ON public.listings
+  FOR EACH ROW
+  EXECUTE FUNCTION public.handle_updated_at();
+
+CREATE TRIGGER on_blog_posts_update
+  BEFORE UPDATE ON public.blog_posts
   FOR EACH ROW
   EXECUTE FUNCTION public.handle_updated_at();
 

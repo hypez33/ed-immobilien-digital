@@ -11,12 +11,23 @@ import { Badge } from '@/components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/components/ui/use-toast';
-import { BlogPost } from '@/data/blog';
-import { deleteBlogPost, upsertBlogPost } from '@/lib/blogStore';
 import { slugify } from '@/lib/slug';
-import { useBlogPosts } from '@/hooks/useBlogPosts';
+import { useBlogPosts, useBlogPostMutations, BlogPost } from '@/hooks/useBlogPosts';
+import { Loader2 } from 'lucide-react';
 
-const emptyPost: BlogPost = {
+interface FormState {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  category: string;
+  cover: string;
+  content: string;
+  status: 'draft' | 'published';
+}
+
+const emptyForm: FormState = {
   id: '',
   slug: '',
   title: '',
@@ -30,8 +41,9 @@ const emptyPost: BlogPost = {
 
 export default function AdminBlogPage() {
   const posts = useBlogPosts();
+  const { upsertPost, deletePost, isUpserting, isDeleting } = useBlogPostMutations();
   const [searchParams] = useSearchParams();
-  const [form, setForm] = useState<BlogPost>(emptyPost);
+  const [form, setForm] = useState<FormState>(emptyForm);
   const [slugTouched, setSlugTouched] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<{ title?: string; slug?: string; content?: string }>({});
@@ -72,7 +84,7 @@ export default function AdminBlogPage() {
 
   const startNew = useCallback(() => {
     setForm({
-      ...emptyPost,
+      ...emptyForm,
       id: crypto.randomUUID?.() ?? `${Date.now()}`,
       date: new Date().toISOString().slice(0, 10),
     });
@@ -89,14 +101,24 @@ export default function AdminBlogPage() {
   }, [searchParams, startNew]);
 
   const editPost = (post: BlogPost) => {
-    setForm({ ...post });
+    setForm({
+      id: post.id,
+      slug: post.slug,
+      title: post.title,
+      excerpt: post.excerpt || '',
+      date: post.date || '',
+      category: post.category || '',
+      cover: post.cover || '',
+      content: post.content || '',
+      status: post.status,
+    });
     setSlugTouched(true);
     setFieldErrors({});
     setError(null);
     setPreviewMode(false);
   };
 
-  const handleField = (key: keyof BlogPost, value: string) => {
+  const handleField = (key: keyof FormState, value: string) => {
     setForm((prev) => {
       const next = { ...prev, [key]: value };
       if (key === 'title' && !slugTouched) {
@@ -109,7 +131,7 @@ export default function AdminBlogPage() {
     }
   };
 
-  const handleSave = (nextStatus?: 'draft' | 'published') => {
+  const handleSave = async (nextStatus?: 'draft' | 'published') => {
     setError(null);
     const nextErrors: { title?: string; slug?: string; content?: string } = {};
     if (!form.title.trim()) nextErrors.title = 'Titel ist erforderlich.';
@@ -126,30 +148,50 @@ export default function AdminBlogPage() {
       return;
     }
 
-    upsertBlogPost({
-      ...form,
-      status: nextStatus ?? form.status ?? 'published',
-      date: form.date || new Date().toISOString().slice(0, 10),
-    });
-    toast({
-      title: 'Gespeichert',
-      description: 'Der Beitrag wurde erfolgreich aktualisiert.',
-    });
-    setForm((prev) => ({
-      ...prev,
-      status: nextStatus ?? prev.status ?? 'published',
-    }));
+    try {
+      await upsertPost({
+        id: form.id || undefined,
+        slug: form.slug,
+        title: form.title,
+        excerpt: form.excerpt || undefined,
+        date: form.date || new Date().toISOString().slice(0, 10),
+        category: form.category || undefined,
+        cover: form.cover || undefined,
+        content: form.content || undefined,
+        status: nextStatus ?? form.status ?? 'published',
+      });
+      toast({
+        title: 'Gespeichert',
+        description: 'Der Beitrag wurde erfolgreich aktualisiert.',
+      });
+      setForm((prev) => ({
+        ...prev,
+        status: nextStatus ?? prev.status ?? 'published',
+      }));
+    } catch (err) {
+      console.error('Error saving post:', err);
+      setError('Fehler beim Speichern. Bitte versuchen Sie es erneut.');
+    }
   };
 
-  const handleDelete = (post: BlogPost) => {
-    deleteBlogPost(post.id);
-    if (form.id === post.id) {
-      setForm(emptyPost);
+  const handleDelete = async (post: BlogPost) => {
+    try {
+      await deletePost(post.id);
+      if (form.id === post.id) {
+        setForm(emptyForm);
+      }
+      toast({
+        title: 'Gelöscht',
+        description: 'Der Beitrag wurde entfernt.',
+      });
+    } catch (err) {
+      console.error('Error deleting post:', err);
+      toast({
+        title: 'Fehler',
+        description: 'Beitrag konnte nicht gelöscht werden.',
+        variant: 'destructive',
+      });
     }
-    toast({
-      title: 'Gelöscht',
-      description: 'Der Beitrag wurde entfernt.',
-    });
   };
 
   return (
@@ -349,7 +391,7 @@ export default function AdminBlogPage() {
                     {form.excerpt && <p className="text-sm text-muted-foreground mb-4">{form.excerpt}</p>}
                     <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
                       {previewParagraphs.length ? (
-                        previewParagraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)
+                        previewParagraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)
                       ) : (
                         <p>Kein Content vorhanden.</p>
                       )}
@@ -358,13 +400,20 @@ export default function AdminBlogPage() {
                 )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <Button className="rounded-none" onClick={() => handleSave()}>
-                    Speichern
+                  <Button className="rounded-none" onClick={() => handleSave()} disabled={isUpserting}>
+                    {isUpserting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Speichern...
+                      </>
+                    ) : (
+                      'Speichern'
+                    )}
                   </Button>
-                  <Button variant="outline" className="rounded-none" onClick={() => handleSave('draft')}>
+                  <Button variant="outline" className="rounded-none" onClick={() => handleSave('draft')} disabled={isUpserting}>
                     Als Draft speichern
                   </Button>
-                  <Button variant="outline" className="rounded-none" onClick={() => handleSave('published')}>
+                  <Button variant="outline" className="rounded-none" onClick={() => handleSave('published')} disabled={isUpserting}>
                     Veröffentlichen
                   </Button>
                 </div>
@@ -385,6 +434,7 @@ export default function AdminBlogPage() {
             <AlertDialogCancel>Abbrechen</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              disabled={isDeleting}
               onClick={() => {
                 if (deleteTarget) {
                   handleDelete(deleteTarget);
@@ -392,7 +442,7 @@ export default function AdminBlogPage() {
                 setDeleteTarget(null);
               }}
             >
-              Löschen
+              {isDeleting ? 'Löschen...' : 'Löschen'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { BlogPost } from '@/data/blog';
+import { BlogPost } from '@/hooks/useBlogPosts';
 
 interface BlogCardProps {
   post: BlogPost;
