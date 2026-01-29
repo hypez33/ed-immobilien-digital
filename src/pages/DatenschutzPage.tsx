@@ -24,7 +24,7 @@ export default function DatenschutzPage() {
       </div>
 
       <Section size="sm" className="pt-8 pb-6">
-        <div className="max-w-3xl">
+        <div className="max-w-3xl" data-reveal>
           <div className="flex items-center gap-4 mb-6">
             <div className="w-12 h-px bg-gold" />
             <span className="text-gold text-sm uppercase tracking-[0.15em]">Datenschutz</span>
@@ -38,8 +38,8 @@ export default function DatenschutzPage() {
       </Section>
 
       <Section className="pt-0">
-        <div className="grid gap-6">
-          <div className="bg-card border border-border/40 p-6 md:p-8">
+        <div className="grid gap-6" data-stagger>
+          <div className="bg-card border border-border/40 p-6 md:p-8" data-stagger-item>
             <h2 className="font-serif text-xl md:text-2xl mb-3">Verantwortlicher</h2>
             <p className="text-muted-foreground leading-relaxed">
               ED Immobilien<br />
@@ -48,14 +48,14 @@ export default function DatenschutzPage() {
             </p>
           </div>
 
-          <div className="bg-card border border-border/40 p-6 md:p-8">
+          <div className="bg-card border border-border/40 p-6 md:p-8" data-stagger-item>
             <h2 className="font-serif text-xl md:text-2xl mb-3">Kontakt</h2>
             <p className="text-muted-foreground leading-relaxed">
               Für Fragen zum Datenschutz wenden Sie sich bitte an die oben genannten Kontaktmöglichkeiten.
             </p>
           </div>
 
-          <div className="bg-card border border-border/40 p-6 md:p-8">
+          <div className="bg-card border border-border/40 p-6 md:p-8" data-stagger-item>
             <h2 className="font-serif text-xl md:text-2xl mb-3">Hosting</h2>
             <p className="text-muted-foreground leading-relaxed">
               Diese Website wird bei Vercel (Vercel Inc., USA) gehostet. Vercel verarbeitet technische Daten wie
@@ -64,7 +64,7 @@ export default function DatenschutzPage() {
             </p>
           </div>
 
-          <div className="bg-card border border-border/40 p-6 md:p-8">
+          <div className="bg-card border border-border/40 p-6 md:p-8" data-stagger-item>
             <h2 className="font-serif text-xl md:text-2xl mb-3">Cookies &amp; Consent</h2>
             <p className="text-muted-foreground leading-relaxed">
               Notwendige Cookies sind für den Betrieb der Website erforderlich. Statistik- und Marketing-Cookies
@@ -73,7 +73,7 @@ export default function DatenschutzPage() {
             </p>
           </div>
 
-          <div className="bg-card border border-border/40 p-6 md:p-8">
+          <div className="bg-card border border-border/40 p-6 md:p-8" data-stagger-item>
             <h2 className="font-serif text-xl md:text-2xl mb-3">Analytics (lokal)</h2>
             <p className="text-muted-foreground leading-relaxed">
               Zur Verbesserung der Website nutzen wir eine lokale, datensparsame Statistik ohne Weitergabe
@@ -82,7 +82,7 @@ export default function DatenschutzPage() {
             </p>
           </div>
 
-          <div className="bg-card border border-border/40 p-6 md:p-8">
+          <div className="bg-card border border-border/40 p-6 md:p-8" data-stagger-item>
             <h2 className="font-serif text-xl md:text-2xl mb-3">Rechte der Betroffenen</h2>
             <p className="text-muted-foreground leading-relaxed">
               Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung sowie
@@ -91,7 +91,7 @@ export default function DatenschutzPage() {
             </p>
           </div>
 
-          <div className="bg-card border border-border/40 p-6 md:p-8">
+          <div className="bg-card border border-border/40 p-6 md:p-8" data-stagger-item>
             <h2 className="font-serif text-xl md:text-2xl mb-3">Speicherdauer</h2>
             <p className="text-muted-foreground leading-relaxed">
               Personenbezogene Daten speichern wir nur so lange, wie es zur Erfüllung der genannten Zwecke notwendig

@@ -107,8 +107,8 @@ export default function KontaktPage() {
 
       {/* FAQ */}
       <Section variant="surface" size="lg">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
-          <div className="lg:col-span-4">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16" data-split-reveal>
+          <div className="lg:col-span-4" data-split-left>
             <div className="flex items-center gap-4 mb-4">
               <div className="w-12 h-px bg-gold" />
               <span className="text-gold text-sm uppercase tracking-[0.15em]">FAQ</span>
@@ -124,7 +124,7 @@ export default function KontaktPage() {
               </Link>
             </Button>
           </div>
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-8" data-split-right>
             <FAQAccordion items={kontaktFAQ} />
           </div>
         </div>
