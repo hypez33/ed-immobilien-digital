@@ -62,6 +62,32 @@ export function useGsapPage() {
         );
       });
 
+      gsap.utils.toArray<HTMLElement>('[data-expertise]').forEach((group) => {
+        const items = group.querySelectorAll<HTMLElement>('[data-expertise-item]');
+        if (!items.length) return;
+        gsap.fromTo(
+          items,
+          {
+            opacity: 0,
+            x: (index, target) =>
+              (target as HTMLElement).dataset.direction === 'right' ? 40 : -40,
+          },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.38,
+            ease: 'power2.out',
+            stagger: 0.08,
+            scrollTrigger: {
+              trigger: group,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+              once: true,
+            },
+          }
+        );
+      });
+
       gsap.utils.toArray<HTMLElement>('[data-stagger]').forEach((group) => {
         const items = group.querySelectorAll<HTMLElement>('[data-stagger-item]');
         if (!items.length) return;

@@ -194,13 +194,18 @@ export default function HomePage() {
             Von der ersten Beratung bis zum erfolgreichen Abschluss – professionell und persönlich.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8" data-stagger data-stagger-speed="fast">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8" data-expertise>
           {expertiseOrder.map((serviceId, index) => {
             const service = servicesData.find((item) => item.id === serviceId);
             if (!service) return null;
             const meta = expertiseMeta[serviceId];
             return (
-              <div key={service.id} className={index === 1 ? 'md:translate-y-8' : ''}>
+              <div
+                key={service.id}
+                className={index === 1 ? 'md:translate-y-8' : ''}
+                data-expertise-item
+                data-direction={index % 2 === 0 ? 'left' : 'right'}
+              >
                 <ServiceCard
                   icon={meta.icon}
                   title={service.title}
