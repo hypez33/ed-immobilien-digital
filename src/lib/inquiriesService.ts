@@ -32,8 +32,8 @@ export interface CreateInquiryPayload {
 }
 
 // Create inquiry (public - no auth required)
-export async function createInquiry(payload: CreateInquiryPayload): Promise<Inquiry> {
-  const { data, error } = await supabase
+export async function createInquiry(payload: CreateInquiryPayload): Promise<void> {
+  const { error } = await supabase
     .from('inquiries')
     .insert({
       name: payload.name,
@@ -44,16 +44,12 @@ export async function createInquiry(payload: CreateInquiryPayload): Promise<Inqu
       source: payload.source || null,
       status: payload.status || 'new',
       notes: [],
-    })
-    .select()
-    .single();
+    });
 
   if (error) {
     console.error('Error creating inquiry:', error);
     throw error;
   }
-  
-  return data as Inquiry;
 }
 
 // List inquiries (admin only)
