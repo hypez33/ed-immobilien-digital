@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Clock, ArrowRight } from 'lucide-react';
+import { useConsent } from '@/context/ConsentContext';
 
 const services = [
   { name: 'Immobilie verkaufen', href: '/kontakt?anliegen=verkauf' },
@@ -16,6 +17,7 @@ const navigation = [
 ];
 
 export function Footer() {
+  const { openSettings } = useConsent();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -145,6 +147,13 @@ export function Footer() {
             <Link to="/datenschutz" className="text-cream/40 hover:text-gold-light transition-colors">
               Datenschutz
             </Link>
+            <button
+              type="button"
+              onClick={openSettings}
+              className="text-cream/40 hover:text-gold-light transition-colors"
+            >
+              Cookie Einstellungen
+            </button>
           </div>
         </div>
       </div>

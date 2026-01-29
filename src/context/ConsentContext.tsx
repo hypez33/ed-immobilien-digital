@@ -6,7 +6,7 @@ import { getConsent, setConsent as persistConsent, subscribeToConsent } from '@/
 type ConsentContextValue = {
   consent: Consent | null;
   hasDecision: boolean;
-  settingsOpen: boolean;
+  isSettingsOpen: boolean;
   openSettings: () => void;
   closeSettings: () => void;
   acceptAll: () => void;
@@ -24,10 +24,10 @@ export const openCookieSettings = () => {
 
 export function ConsentProvider({ children }: { children: ReactNode }) {
   const [consent, setConsentState] = useState<Consent | null>(() => getConsent());
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
-    externalOpenSettings = () => setSettingsOpen(true);
+    externalOpenSettings = () => setIsSettingsOpen(true);
     return () => {
       externalOpenSettings = null;
     };
@@ -35,39 +35,39 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => subscribeToConsent(() => setConsentState(getConsent())), []);
 
-  const openSettings = useCallback(() => setSettingsOpen(true), []);
-  const closeSettings = useCallback(() => setSettingsOpen(false), []);
+  const openSettings = useCallback(() => setIsSettingsOpen(true), []);
+  const closeSettings = useCallback(() => setIsSettingsOpen(false), []);
 
   const acceptAll = useCallback(() => {
     const next = persistConsent({ analytics: true, marketing: true });
     setConsentState(next);
-    setSettingsOpen(false);
+    setIsSettingsOpen(false);
   }, []);
 
   const rejectAll = useCallback(() => {
     const next = persistConsent({ analytics: false, marketing: false });
     setConsentState(next);
-    setSettingsOpen(false);
+    setIsSettingsOpen(false);
   }, []);
 
   const saveSettings = useCallback((input: ConsentInput) => {
     const next = persistConsent(input);
     setConsentState(next);
-    setSettingsOpen(false);
+    setIsSettingsOpen(false);
   }, []);
 
   const value = useMemo(
     () => ({
       consent,
       hasDecision: consent !== null,
-      settingsOpen,
+      isSettingsOpen,
       openSettings,
       closeSettings,
       acceptAll,
       rejectAll,
       saveSettings,
     }),
-    [consent, settingsOpen, openSettings, closeSettings, acceptAll, rejectAll, saveSettings],
+    [consent, isSettingsOpen, openSettings, closeSettings, acceptAll, rejectAll, saveSettings],
   );
 
   return <ConsentContext.Provider value={value}>{children}</ConsentContext.Provider>;

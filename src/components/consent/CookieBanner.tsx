@@ -5,13 +5,14 @@ import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { toast } from '@/components/ui/use-toast';
 import { useConsent } from '@/context/ConsentContext';
 
 export function CookieBanner() {
   const {
     consent,
     hasDecision,
-    settingsOpen,
+    isSettingsOpen,
     openSettings,
     closeSettings,
     acceptAll,
@@ -22,14 +23,21 @@ export function CookieBanner() {
   const [marketingEnabled, setMarketingEnabled] = useState(consent?.marketing ?? false);
 
   useEffect(() => {
-    if (!settingsOpen) return;
+    if (!isSettingsOpen) return;
     setAnalyticsEnabled(consent?.analytics ?? false);
     setMarketingEnabled(consent?.marketing ?? false);
-  }, [settingsOpen, consent]);
+  }, [isSettingsOpen, consent]);
+
+  const handleSave = () => {
+    saveSettings({ analytics: analyticsEnabled, marketing: marketingEnabled });
+    toast({ title: 'Einstellungen gespeichert', description: 'Ihre Cookie-Auswahl wurde aktualisiert.' });
+  };
+
+  const showBanner = !hasDecision && !isSettingsOpen;
 
   return (
     <>
-      {!hasDecision ? (
+      {showBanner ? (
         <div
           className="fixed inset-x-4 z-[70] md:right-6 md:left-auto md:max-w-xl motion-safe:animate-fade-in"
           style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))' }}
@@ -39,8 +47,8 @@ export function CookieBanner() {
               <div className="space-y-2">
                 <p className="text-sm font-semibold text-foreground">Wir verwenden Cookies</p>
                 <p className="text-sm text-muted-foreground">
-                  Wir nutzen Cookies, um die Nutzung der Website zu verbessern und Inhalte zu optimieren. Weitere
-                  Informationen in unserer{' '}
+                  Notwendige Cookies sind für den Betrieb erforderlich. Statistik und Marketing setzen wir nur mit
+                  Ihrer Zustimmung ein. Mehr Infos in unserer{' '}
                   <Link className="font-medium text-foreground underline underline-offset-4" to="/datenschutz">
                     Datenschutzerklärung
                   </Link>
@@ -52,7 +60,7 @@ export function CookieBanner() {
                   Alle akzeptieren
                 </Button>
                 <Button size="sm" variant="outline" onClick={rejectAll}>
-                  Ablehnen
+                  Nur notwendige
                 </Button>
                 <Button size="sm" variant="ghost" onClick={openSettings}>
                   Einstellungen
@@ -63,7 +71,7 @@ export function CookieBanner() {
         </div>
       ) : null}
 
-      <Dialog open={settingsOpen} onOpenChange={(open) => (open ? openSettings() : closeSettings())}>
+      <Dialog open={isSettingsOpen} onOpenChange={(open) => (open ? openSettings() : closeSettings())}>
         <DialogContent className="motion-reduce:animate-none motion-reduce:transition-none">
           <DialogHeader>
             <DialogTitle>Cookie-Einstellungen</DialogTitle>
@@ -82,7 +90,9 @@ export function CookieBanner() {
             <div className="flex items-center justify-between gap-4 rounded-md border border-border/70 px-4 py-3">
               <div className="space-y-1">
                 <Label htmlFor="consent-analytics">Statistik</Label>
-                <p className="text-xs text-muted-foreground">Hilft uns, die Website zu verbessern.</p>
+                <p className="text-xs text-muted-foreground">
+                  Hilft uns zu verstehen, wie die Seite genutzt wird.
+                </p>
               </div>
               <Switch
                 id="consent-analytics"
@@ -93,7 +103,9 @@ export function CookieBanner() {
             <div className="flex items-center justify-between gap-4 rounded-md border border-border/70 px-4 py-3">
               <div className="space-y-1">
                 <Label htmlFor="consent-marketing">Marketing</Label>
-                <p className="text-xs text-muted-foreground">Ermöglicht personalisierte Inhalte.</p>
+                <p className="text-xs text-muted-foreground">
+                  Ermöglicht personalisierte Inhalte und Marketing.
+                </p>
               </div>
               <Switch
                 id="consent-marketing"
@@ -106,9 +118,7 @@ export function CookieBanner() {
             <Button variant="outline" onClick={rejectAll}>
               Nur notwendige
             </Button>
-            <Button onClick={() => saveSettings({ analytics: analyticsEnabled, marketing: marketingEnabled })}>
-              Speichern
-            </Button>
+            <Button onClick={handleSave}>Speichern</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
