@@ -62,8 +62,8 @@ export function useGsapPage() {
         );
       });
 
-      gsap.utils.toArray<HTMLElement>('[data-expertise]').forEach((group) => {
-        const items = group.querySelectorAll<HTMLElement>('[data-expertise-item]');
+      gsap.utils.toArray<HTMLElement>('[data-process]').forEach((group) => {
+        const items = group.querySelectorAll<HTMLElement>('[data-process-item]');
         if (!items.length) return;
         gsap.fromTo(
           items,
@@ -74,10 +74,10 @@ export function useGsapPage() {
           },
           {
             opacity: 1,
-            x: 0,
-            duration: 0.38,
+            x: 10,
+            duration: 1.2,
             ease: 'power2.out',
-            stagger: 0.08,
+            stagger: 0.1,
             scrollTrigger: {
               trigger: group,
               start: 'top 85%',

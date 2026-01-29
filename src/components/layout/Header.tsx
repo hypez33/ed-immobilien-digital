@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Phone, FileText, ArrowRight, X } from 'lucide-react';
+import { Phone, FileText, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { getLenisInstance } from '@/lib/smoothScroll';
@@ -450,26 +450,13 @@ export function Header() {
             role="dialog"
             aria-modal="true"
             className={cn(
-              'absolute right-0 top-0 h-dvh w-[88%] max-w-sm bg-background border-l border-border/50 shadow-lg will-change-transform transform translate-x-full opacity-0 relative',
+              'absolute right-0 top-0 h-dvh w-[88%] max-w-sm bg-background border-l border-border/50 shadow-lg will-change-transform transform translate-x-full opacity-0',
               'transition-[transform,opacity] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none',
               mobileMenuOpen && 'translate-x-0 opacity-100'
             )}
-            style={{
-              paddingTop: 'calc(1rem + env(safe-area-inset-top))',
-              paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))',
-            }}
           >
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(false)}
-              aria-label="Menü schließen"
-              className="absolute right-4 z-20 flex h-11 w-11 items-center justify-center rounded-full text-foreground/80 hover:text-foreground hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              style={{ top: 'calc(0.75rem + env(safe-area-inset-top))' }}
-            >
-              <X className="h-5 w-5" />
-            </button>
             <div className="h-full overflow-y-auto">
-              <div className="container pt-12 pb-6 space-y-1">
+              <div className="container py-6 space-y-1">
                 {navigation.map((item, index) => (
                   <Link
                     key={item.name}

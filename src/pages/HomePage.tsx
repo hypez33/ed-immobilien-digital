@@ -194,18 +194,13 @@ export default function HomePage() {
             Von der ersten Beratung bis zum erfolgreichen Abschluss – professionell und persönlich.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8" data-expertise>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8" data-stagger data-stagger-speed="fast">
           {expertiseOrder.map((serviceId, index) => {
             const service = servicesData.find((item) => item.id === serviceId);
             if (!service) return null;
             const meta = expertiseMeta[serviceId];
             return (
-              <div
-                key={service.id}
-                className={index === 1 ? 'md:translate-y-8' : ''}
-                data-expertise-item
-                data-direction={index % 2 === 0 ? 'left' : 'right'}
-              >
+              <div key={service.id} className={index === 1 ? 'md:translate-y-8' : ''} data-stagger-item>
                 <ServiceCard
                   icon={meta.icon}
                   title={service.title}
@@ -286,18 +281,19 @@ export default function HomePage() {
           <h2 className="font-serif">Ihr Weg zum Erfolg</h2>
         </div>
 
-        <div className="relative max-w-4xl mx-auto">
+        <div className="relative max-w-4xl mx-auto" data-process>
           {/* Vertical gold line */}
           <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-gold via-gold to-transparent hidden md:block" />
 
-          <div className="space-y-12 md:space-y-0" data-stagger>
+          <div className="space-y-12 md:space-y-0">
             {processSteps.map((step, index) => (
               <div
                 key={step.step}
                 className={`relative flex flex-col md:flex-row items-center gap-6 md:gap-8 ${
                   index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
                 } ${index > 0 ? 'md:mt-16' : ''}`}
-                data-stagger-item
+                data-process-item
+                data-direction={index % 2 === 0 ? 'left' : 'right'}
               >
                 {/* Content */}
                 <div className={`flex-1 ${index % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
