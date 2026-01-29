@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { createInquiry } from '@/lib/inquiriesStore';
+import { createInquiry } from '@/lib/inquiriesService';
 import { toast } from '@/components/ui/use-toast';
 import {
   Select,
@@ -75,7 +75,6 @@ export function ContactForm() {
     await new Promise((resolve) => setTimeout(resolve, 1500));
     
     // For demo purposes, always succeed
-    console.log('Form submitted:', data);
     try {
       const details = [
         `Anliegen: ${data.anliegen}`,
@@ -84,7 +83,8 @@ export function ContactForm() {
         .filter(Boolean)
         .join('\n');
       const message = details ? `${details}\n\n${data.nachricht}` : data.nachricht;
-      createInquiry({
+      
+      await createInquiry({
         name: data.name,
         email: data.email,
         phone: data.telefon,
@@ -93,10 +93,17 @@ export function ContactForm() {
         source: 'kontakt-form',
         status: 'new',
       });
+      
+      setStatus('success');
+      form.reset();
+      toast({
+        title: 'Anfrage gesendet',
+        description: 'Wir melden uns innerhalb von 24 Stunden bei Ihnen.',
+      });
     } catch (inquiryError) {
-      console.warn('Inquiry store failed', inquiryError);
+      console.error('Inquiry failed', inquiryError);
+      setStatus('error');
     }
-    setStatus('success');
     form.reset();
     toast({
       title: 'Anfrage gesendet',
