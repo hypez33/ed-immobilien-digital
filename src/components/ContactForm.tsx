@@ -71,10 +71,6 @@ export function ContactForm() {
   const onSubmit = async (data: ContactFormData) => {
     setStatus('loading');
     
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    // For demo purposes, always succeed
     try {
       const details = [
         `Anliegen: ${data.anliegen}`,
@@ -103,12 +99,12 @@ export function ContactForm() {
     } catch (inquiryError) {
       console.error('Inquiry failed', inquiryError);
       setStatus('error');
+      toast({
+        title: 'Fehler',
+        description: 'Ihre Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es erneut.',
+        variant: 'destructive',
+      });
     }
-    form.reset();
-    toast({
-      title: 'Anfrage gesendet',
-      description: 'Wir melden uns innerhalb von 24 Stunden bei Ihnen.',
-    });
   };
 
   if (status === 'success') {

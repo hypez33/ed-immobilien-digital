@@ -14,7 +14,7 @@ export default function AdminDashboardPage() {
   const published = posts.filter((post) => post.status !== 'draft');
   const drafts = posts.filter((post) => post.status === 'draft');
   const latestDate = posts
-    .map((post) => post.updatedAt ?? post.date ?? post.createdAt)
+    .map((post) => post.updated_at ?? post.date ?? post.created_at)
     .filter(Boolean)
     .sort()
     .at(-1);
