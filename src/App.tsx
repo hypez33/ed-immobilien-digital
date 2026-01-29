@@ -4,7 +4,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
+import { ConsentProvider } from "@/context/ConsentContext";
 import { RequireAuth } from "@/components/admin/RequireAuth";
+import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 import HomePage from "./pages/HomePage";
 import ImmobilienPage from "./pages/ImmobilienPage";
 import LeistungenPage from "./pages/LeistungenPage";
@@ -16,7 +18,7 @@ import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import AdminBlogPage from "./pages/admin/AdminBlogPage";
 import AdminLeadsPage from "./pages/admin/AdminLeadsPage";
-import AdminSettingsPage from "./pages/admin/AdminSettingsPage";
+import AdminAnalyticsPage from "./pages/admin/AdminAnalyticsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,31 +29,34 @@ const App = () => (
       <Toaster />
       <Sonner />
       <AuthProvider>
-        <BrowserRouter
-          future={{
-            v7_startTransition: true,
-            v7_relativeSplatPath: true,
-          }}
-        >
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/immobilien" element={<ImmobilienPage />} />
-            <Route path="/leistungen" element={<LeistungenPage />} />
-            <Route path="/blog" element={<BlogPage />} />
-            <Route path="/blog/:slug" element={<BlogPostPage />} />
-            <Route path="/ueber-uns" element={<UeberUnsPage />} />
-            <Route path="/kontakt" element={<KontaktPage />} />
-            <Route path="/admin/login" element={<AdminLoginPage />} />
-            <Route element={<RequireAuth />}>
-              <Route path="/admin" element={<AdminDashboardPage />} />
-              <Route path="/admin/blog" element={<AdminBlogPage />} />
-              <Route path="/admin/leads" element={<AdminLeadsPage />} />
-              <Route path="/admin/settings" element={<AdminSettingsPage />} />
-            </Route>
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <ConsentProvider>
+          <BrowserRouter
+            future={{
+              v7_startTransition: true,
+              v7_relativeSplatPath: true,
+            }}
+          >
+            <AnalyticsTracker />
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/immobilien" element={<ImmobilienPage />} />
+              <Route path="/leistungen" element={<LeistungenPage />} />
+              <Route path="/blog" element={<BlogPage />} />
+              <Route path="/blog/:slug" element={<BlogPostPage />} />
+              <Route path="/ueber-uns" element={<UeberUnsPage />} />
+              <Route path="/kontakt" element={<KontaktPage />} />
+              <Route path="/admin/login" element={<AdminLoginPage />} />
+              <Route element={<RequireAuth />}>
+                <Route path="/admin" element={<AdminDashboardPage />} />
+                <Route path="/admin/blog" element={<AdminBlogPage />} />
+                <Route path="/admin/anfragen" element={<AdminLeadsPage />} />
+                <Route path="/admin/analytics" element={<AdminAnalyticsPage />} />
+              </Route>
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </ConsentProvider>
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
+import { createInquiry } from '@/lib/inquiriesStore';
 import {
   Select,
   SelectContent,
@@ -73,6 +74,19 @@ export function ContactForm() {
     
     // For demo purposes, always succeed
     console.log('Form submitted:', data);
+    try {
+      createInquiry({
+        name: data.name,
+        email: data.email,
+        phone: data.telefon,
+        serviceOrAnliegen: data.anliegen,
+        message: data.nachricht || 'Kontaktanfrage',
+        source: 'kontakt-form',
+        status: 'new',
+      });
+    } catch (inquiryError) {
+      console.warn('Inquiry store failed', inquiryError);
+    }
     setStatus('success');
     form.reset();
   };

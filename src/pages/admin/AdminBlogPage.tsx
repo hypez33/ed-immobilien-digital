@@ -154,7 +154,7 @@ export default function AdminBlogPage() {
 
   return (
     <AdminLayout title="Blog">
-      <Section size="lg">
+      <Section size="lg" className="pt-6 md:pt-8 lg:pt-10">
         <div className="flex flex-col gap-6">
           <div>
             <div className="flex items-center gap-4 mb-4">

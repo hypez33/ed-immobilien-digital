@@ -5,8 +5,8 @@ import { useAuth } from '@/context/AuthContext';
 const adminLinks = [
   { label: 'Dashboard', href: '/admin' },
   { label: 'Blog', href: '/admin/blog' },
-  { label: 'Anfragen', href: '/admin/leads' },
-  { label: 'Einstellungen', href: '/admin/settings' },
+  { label: 'Anfragen', href: '/admin/anfragen' },
+  { label: 'Analytics', href: '/admin/analytics' },
 ];
 
 export function AdminNav() {

@@ -37,6 +37,7 @@ import {
   ServiceQuestion,
   inquiryQuestions,
 } from '@/data/services';
+import { createInquiry } from '@/lib/inquiriesStore';
 
 interface ServiceInquiryFormProps {
   open: boolean;
@@ -127,6 +128,20 @@ export function ServiceInquiryForm({ open, onOpenChange, activeService }: Servic
           const entries = stored ? (JSON.parse(stored) as ServiceInquiryFormData[]) : [];
           localStorage.setItem('serviceInquiries', JSON.stringify([payload, ...entries]));
         }
+      }
+
+      try {
+        createInquiry({
+          name: values.name,
+          email: values.email,
+          phone: values.phone,
+          serviceOrAnliegen: activeService?.title ?? values.serviceId,
+          message: values.message || 'Service-Anfrage',
+          source: 'services-form',
+          status: 'new',
+        });
+      } catch (inquiryError) {
+        console.warn('Inquiry store failed', inquiryError);
       }
 
       setSubmittedPayload(values);

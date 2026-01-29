@@ -11,6 +11,8 @@ export interface BlogPost {
   cover?: string;
   content?: string;
   status?: 'draft' | 'published';
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export const blogPosts: BlogPost[] = [
@@ -24,6 +26,8 @@ export const blogPosts: BlogPost[] = [
     category: 'Markt',
     cover: coverHouse,
     status: 'published',
+    createdAt: '2026-01-12',
+    updatedAt: '2026-01-12',
     content:
       'Der Rhein-Neckar-Kreis bleibt ein gefragter Wohnstandort. In vielen Lagen zeigt sich eine stabile Nachfrage, während sich das Tempo der Preisentwicklung normalisiert.\n\n' +
       'Wer verkaufen möchte, profitiert von professioneller Aufbereitung und klarer Zielgruppenansprache. Käufer wiederum gewinnen mehr Zeit für die Entscheidung und sollten eine solide Finanzierungsvorbereitung mitbringen.',
@@ -38,6 +42,8 @@ export const blogPosts: BlogPost[] = [
     category: 'Praxis',
     cover: coverApartment,
     status: 'published',
+    createdAt: '2026-01-05',
+    updatedAt: '2026-01-05',
     content:
       'Eine strukturierte Vorbereitung spart Zeit und steigert die Qualität der Vermarktung. Dazu gehören vollständige Unterlagen, eine klare Preisstrategie und hochwertige Bilder.\n\n' +
       'Auch kleine Verbesserungen an der Immobilie können die Wahrnehmung deutlich erhöhen. Wir unterstützen Sie dabei, die richtigen Maßnahmen zu priorisieren.',

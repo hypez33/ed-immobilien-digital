@@ -3,6 +3,7 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { useGsapPage } from '@/hooks/useGsapPage';
 import { BackToTopButton } from '@/components/BackToTopButton';
+import { CookieBanner } from '@/components/consent/CookieBanner';
 
 interface LayoutProps {
   children: ReactNode;
@@ -18,6 +19,7 @@ export function Layout({ children }: LayoutProps) {
         aria-hidden="true"
       />
       <BackToTopButton />
+      <CookieBanner />
       <Header />
       <div id="smooth-content" className="flex min-h-screen flex-col pt-18 md:pt-20">
         <main className="flex-1">{children}</main>

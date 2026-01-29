@@ -34,7 +34,7 @@ export default function AdminLoginPage() {
 
   return (
     <AdminLayout title="Login">
-      <Section size="lg">
+      <Section size="lg" className="pt-6 md:pt-8 lg:pt-10">
         <div className="max-w-md mx-auto bg-card border border-border/40 p-8 md:p-10" data-reveal>
           <div className="flex items-center gap-4 mb-6">
             <div className="w-12 h-px bg-gold" />

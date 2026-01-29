@@ -1,12 +1,19 @@
 import { blogPosts, BlogPost } from '@/data/blog';
+import { addActivity } from '@/lib/activityStore';
 
 const STORAGE_KEY = 'ed_blog_posts';
 const UPDATE_EVENT = 'blog-storage';
 
-const normalizePost = (post: BlogPost): BlogPost => ({
-  ...post,
-  status: post.status ?? 'published',
-});
+const normalizePost = (post: BlogPost): BlogPost => {
+  const createdAt = post.createdAt ?? post.date ?? new Date().toISOString();
+  const updatedAt = post.updatedAt ?? post.date ?? createdAt;
+  return {
+    ...post,
+    status: post.status ?? 'published',
+    createdAt,
+    updatedAt,
+  };
+};
 
 export const getBlogPosts = (): BlogPost[] => {
   if (typeof window === 'undefined') {
@@ -37,18 +44,37 @@ export const saveBlogPosts = (posts: BlogPost[]) => {
 export const upsertBlogPost = (post: BlogPost) => {
   const posts = getBlogPosts();
   const index = posts.findIndex((entry) => entry.id === post.id);
+  const now = new Date().toISOString();
   if (index >= 0) {
-    posts[index] = normalizePost(post);
+    const current = posts[index];
+    posts[index] = normalizePost({
+      ...current,
+      ...post,
+      updatedAt: now,
+    });
+    addActivity('blog:update', `Beitrag aktualisiert: ${posts[index].title}`);
   } else {
-    posts.unshift(normalizePost(post));
+    posts.unshift(
+      normalizePost({
+        ...post,
+        createdAt: post.createdAt ?? now,
+        updatedAt: now,
+      })
+    );
+    addActivity('blog:create', `Beitrag erstellt: ${posts[0].title}`);
   }
   saveBlogPosts(posts);
   return posts;
 };
 
 export const deleteBlogPost = (id: string) => {
-  const posts = getBlogPosts().filter((post) => post.id !== id);
+  const current = getBlogPosts();
+  const removed = current.find((post) => post.id === id);
+  const posts = current.filter((post) => post.id !== id);
   saveBlogPosts(posts);
+  if (removed) {
+    addActivity('blog:delete', `Beitrag gelöscht: ${removed.title}`);
+  }
   return posts;
 };
 
