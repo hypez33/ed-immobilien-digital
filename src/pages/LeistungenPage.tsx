@@ -25,7 +25,7 @@ export default function LeistungenPage() {
       </div>
 
       <Section size="sm" className="pt-8 pb-6">
-        <div className="max-w-3xl">
+        <div className="max-w-3xl" data-reveal>
           <div className="flex items-center gap-4 mb-6">
             <div className="w-12 h-px bg-gold" />
             <span className="text-gold text-sm uppercase tracking-[0.15em]">Leistungen</span>

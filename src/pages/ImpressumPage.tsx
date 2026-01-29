@@ -24,7 +24,7 @@ export default function ImpressumPage() {
       </div>
 
       <Section size="sm" className="pt-8 pb-6">
-        <div className="max-w-3xl">
+        <div className="max-w-3xl" data-reveal>
           <div className="flex items-center gap-4 mb-6">
             <div className="w-12 h-px bg-gold" />
             <span className="text-gold text-sm uppercase tracking-[0.15em]">Rechtliches</span>
@@ -37,8 +37,8 @@ export default function ImpressumPage() {
       </Section>
 
       <Section className="pt-0">
-        <div className="grid gap-6">
-          <div className="bg-card border border-border/40 p-6 md:p-8">
+        <div className="grid gap-6" data-stagger>
+          <div className="bg-card border border-border/40 p-6 md:p-8" data-stagger-item>
             <h2 className="font-serif text-xl md:text-2xl mb-3">Anbieter</h2>
             <p className="text-muted-foreground leading-relaxed">
               ED Immobilien<br />
@@ -48,7 +48,7 @@ export default function ImpressumPage() {
             </p>
           </div>
 
-          <div className="bg-card border border-border/40 p-6 md:p-8">
+          <div className="bg-card border border-border/40 p-6 md:p-8" data-stagger-item>
             <h2 className="font-serif text-xl md:text-2xl mb-3">Kontakt</h2>
             <p className="text-muted-foreground leading-relaxed">
               Telefon: +49 (0) 123 456789<br />
@@ -56,14 +56,14 @@ export default function ImpressumPage() {
             </p>
           </div>
 
-          <div className="bg-card border border-border/40 p-6 md:p-8">
+          <div className="bg-card border border-border/40 p-6 md:p-8" data-stagger-item>
             <h2 className="font-serif text-xl md:text-2xl mb-3">Vertretungsberechtigter</h2>
             <p className="text-muted-foreground leading-relaxed">
               Max Mustermann (Geschäftsführer)
             </p>
           </div>
 
-          <div className="bg-card border border-border/40 p-6 md:p-8">
+          <div className="bg-card border border-border/40 p-6 md:p-8" data-stagger-item>
             <h2 className="font-serif text-xl md:text-2xl mb-3">Register &amp; Steuern</h2>
             <p className="text-muted-foreground leading-relaxed">
               Handelsregister: Amtsgericht Mannheim, HRB 000000 (Platzhalter)<br />
@@ -71,7 +71,7 @@ export default function ImpressumPage() {
             </p>
           </div>
 
-          <div className="bg-card border border-border/40 p-6 md:p-8">
+          <div className="bg-card border border-border/40 p-6 md:p-8" data-stagger-item>
             <h2 className="font-serif text-xl md:text-2xl mb-3">Haftung &amp; Urheberrecht</h2>
             <p className="text-muted-foreground leading-relaxed">
               Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links.

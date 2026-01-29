@@ -110,9 +110,9 @@ export default function UeberUnsPage() {
 
       {/* Regional - Split Layout */}
       <Section className="py-0 overflow-hidden">
-        <div className="grid lg:grid-cols-2 lg:min-h-[500px]">
+        <div className="grid lg:grid-cols-2 lg:min-h-[500px]" data-split-reveal>
           {/* Left - Content */}
-          <div className="flex items-center p-6 sm:p-8 md:p-12 lg:p-16 xl:p-20 order-2 lg:order-1">
+          <div className="flex items-center p-6 sm:p-8 md:p-12 lg:p-16 xl:p-20 order-2 lg:order-1" data-split-left>
             <div>
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-px bg-gold" />
@@ -145,7 +145,7 @@ export default function UeberUnsPage() {
           </div>
 
           {/* Right - Decorative */}
-          <div className="relative bg-primary order-1 lg:order-2 min-h-[220px] sm:min-h-[260px] md:min-h-[300px] lg:min-h-0">
+          <div className="relative bg-primary order-1 lg:order-2 min-h-[220px] sm:min-h-[260px] md:min-h-[300px] lg:min-h-0" data-split-right>
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center text-cream">
                 <span className="font-serif text-7xl md:text-8xl block">15+</span>
@@ -159,7 +159,7 @@ export default function UeberUnsPage() {
 
       {/* Approach */}
       <Section size="lg">
-        <div className="text-center mb-16">
+        <div className="text-center mb-16" data-reveal>
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="w-12 h-px bg-gold" />
             <span className="text-gold text-sm uppercase tracking-[0.15em]">Unser Ansatz</span>
@@ -214,7 +214,7 @@ export default function UeberUnsPage() {
 
       {/* Process - Timeline */}
       <Section variant="surface" size="lg">
-        <div className="text-center mb-16">
+        <div className="text-center mb-16" data-reveal>
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="w-12 h-px bg-gold" />
             <span className="text-gold text-sm uppercase tracking-[0.15em]">Prozess</span>

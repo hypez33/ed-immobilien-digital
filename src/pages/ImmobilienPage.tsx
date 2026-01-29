@@ -120,7 +120,7 @@ export default function ImmobilienPage() {
       {/* Featured */}
       {featuredListings.length > 0 && (
         <Section variant="surface" size="lg">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12" data-reveal>
             <div>
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-px bg-gold" />
@@ -139,7 +139,7 @@ export default function ImmobilienPage() {
 
       {/* All Listings */}
       <Section size="lg">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12" data-reveal>
           <div>
             <h2 className="font-serif">Alle Objekte</h2>
             <p className="text-muted-foreground mt-2">
@@ -267,8 +267,8 @@ export default function ImmobilienPage() {
 
       {/* FAQ */}
       <Section size="lg">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
-          <div className="lg:col-span-4">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16" data-split-reveal>
+          <div className="lg:col-span-4" data-split-left>
             <div className="flex items-center gap-4 mb-4">
               <div className="w-12 h-px bg-gold" />
               <span className="text-gold text-sm uppercase tracking-[0.15em]">FAQ</span>
@@ -284,7 +284,7 @@ export default function ImmobilienPage() {
               </Link>
             </Button>
           </div>
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-8" data-split-right>
             <FAQAccordion items={immobilienFAQ} />
           </div>
         </div>
