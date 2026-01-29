@@ -174,7 +174,7 @@ export function ServiceInquiryForm({ open, onOpenChange, activeService }: Servic
           render={({ field }) => (
             <FormItem className="flex flex-row items-start space-x-3 space-y-0">
               <FormControl>
-                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                <Checkbox checked={field.value === true} onCheckedChange={field.onChange} />
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel className="font-normal text-sm text-muted-foreground">
@@ -211,9 +211,9 @@ export function ServiceInquiryForm({ open, onOpenChange, activeService }: Servic
             </FormLabel>
             <FormControl>
               {question.type === 'textarea' ? (
-                <Textarea placeholder={question.placeholder} {...field} />
+                <Textarea placeholder={question.placeholder} {...field} value={String(field.value ?? '')} />
               ) : question.type === 'select' ? (
-                <Select onValueChange={field.onChange} value={field.value || ''}>
+                <Select onValueChange={field.onChange} value={String(field.value ?? '')}>
                   <SelectTrigger>
                     <SelectValue placeholder={question.placeholder || 'Bitte wählen'} />
                   </SelectTrigger>
@@ -230,6 +230,7 @@ export function ServiceInquiryForm({ open, onOpenChange, activeService }: Servic
                   type={question.type === 'number' ? 'number' : 'text'}
                   placeholder={question.placeholder}
                   {...field}
+                  value={String(field.value ?? '')}
                 />
               )}
             </FormControl>

@@ -44,8 +44,6 @@ const defaultOptions: LenisOptions = {
   lerp: 0.1,
   smoothWheel: true,
   wheelMultiplier: 0.9,
-  // Preserve native momentum on touch (iOS Safari feels natural)
-  smoothTouch: false,
   touchMultiplier: 1,
   // Avoid diagonal gesture interference
   gestureOrientation: 'vertical',
