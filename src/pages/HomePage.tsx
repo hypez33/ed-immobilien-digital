@@ -126,14 +126,14 @@ export default function HomePage() {
               {/* Main headline - serif */}
               <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-cream leading-[1.05] mb-8">
                 <span
-                  className={`block will-change-transform transition-[transform,opacity] duration-[820ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-x-0 ${
+                  className={`block will-change-transform transition-[transform,opacity] transition-duration-[820ms] transition-ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-x-0 ${
                     heroMounted ? 'translate-x-0 opacity-100' : '-translate-x-16 opacity-0'
                   }`}
                 >
                   Exklusive Immobilien.
                 </span>
                 <span
-                  className={`block text-gold-light will-change-transform transition-[transform,opacity] duration-[820ms] ease-[cubic-bezier(0.16,1,0.3,1)] delay-[160ms] motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-x-0 ${
+                  className={`block text-gold-light will-change-transform transition-[transform,opacity] transition-duration-[820ms] transition-ease-[cubic-bezier(0.16,1,0.3,1)] transition-delay-[160ms] motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-x-0 ${
                     heroMounted ? 'translate-x-0 opacity-100' : 'translate-x-16 opacity-0'
                   }`}
                 >

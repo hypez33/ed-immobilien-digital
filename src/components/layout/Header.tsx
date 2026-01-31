@@ -438,7 +438,7 @@ export function Header() {
             aria-modal="true"
             className={cn(
               'absolute right-0 top-0 h-dvh w-[88%] max-w-sm bg-background border-l border-border/50 shadow-lg will-change-transform transform translate-x-full opacity-0 pointer-events-auto',
-              'transition-[transform,opacity] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none',
+              'transition-[transform,opacity] duration-300 transition-ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none',
               mobileMenuOpen && 'translate-x-0 opacity-100'
             )}
             style={{

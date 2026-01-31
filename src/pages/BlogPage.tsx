@@ -14,7 +14,7 @@ export default function BlogPage() {
         description="Ratgeber, Markt-Updates und Tipps rund um Verkauf, Vermietung und Bewertung im Rhein-Neckar-Kreis."
       />
 
-      <Section size="lg">
+      <Section size="lg" className="pt-10 md:pt-12 lg:pt-14">
         <div className="max-w-3xl" data-reveal>
           <div className="flex items-center gap-4 mb-6">
             <div className="w-12 h-px bg-gold" />
