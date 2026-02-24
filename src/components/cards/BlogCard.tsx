@@ -15,16 +15,16 @@ export function BlogCard({ post }: BlogCardProps) {
     : null;
 
   return (
-    <article className="ui-interactive-card group bg-card border border-border/40 p-6 md:p-8 flex flex-col h-full" data-stagger-item>
+    <article className="ui-interactive-card group bg-card border border-border/40 p-6 md:p-8 flex flex-col h-full overflow-hidden hover:border-gold/30" data-stagger-item>
       {post.cover && (
-        <div className="mb-6 relative aspect-[16/9] ui-visual-frame ui-depth-hover bg-surface">
+        <div className="mb-6 relative aspect-[16/9] ui-visual-frame ui-depth-hover bg-surface overflow-hidden">
           <ProgressiveImage
             src={post.cover}
             alt={post.title}
             containerClassName="h-full w-full"
-            className="transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transform-none"
+            className="transition-transform duration-700 ease-out group-hover:scale-[1.06] motion-reduce:transform-none"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-primary/25 via-transparent to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-primary/30 via-transparent to-transparent pointer-events-none" />
         </div>
       )}
 
@@ -41,7 +41,7 @@ export function BlogCard({ post }: BlogCardProps) {
         )}
       </div>
 
-      <h3 className="font-serif text-xl md:text-2xl text-foreground mb-3">{post.title}</h3>
+      <h3 className="font-serif text-xl md:text-2xl text-foreground mb-3 group-hover:text-gold transition-colors duration-300">{post.title}</h3>
       <p className="text-muted-foreground leading-relaxed line-clamp-3 mb-6">
         {post.excerpt}
       </p>

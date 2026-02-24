@@ -233,6 +233,11 @@ export default function HomePage() {
         </button>
       </section>
 
+      {/* Decorative divider */}
+      <div className="container">
+        <div className="h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+      </div>
+
       {/* Services - Staggered layout */}
       <Section size="default" id="expertise">
         <div className="text-center mb-10 md:mb-12">
@@ -272,6 +277,11 @@ export default function HomePage() {
         backgroundImage={sectionVisuals.servicesHome}
         backgroundAlt={visualAltTextByKey['services-home-bg']}
       />
+
+      {/* Decorative divider */}
+      <div className="container">
+        <div className="h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+      </div>
 
       {/* Blog */}
       <Section size="default">
@@ -326,19 +336,26 @@ export default function HomePage() {
       </Section>
 
       {/* Process - Vertical Timeline */}
-      <Section size="default" className="bg-cream">
-        <div className="text-center mb-10 md:mb-12">
+      <Section size="default" className="bg-cream relative overflow-hidden">
+        {/* Decorative background elements */}
+        <div className="absolute top-12 left-8 w-32 h-32 border border-gold/10 rounded-full pointer-events-none hidden lg:block" />
+        <div className="absolute bottom-12 right-8 w-48 h-48 border border-gold/8 rounded-full pointer-events-none hidden lg:block" />
+
+        <div className="text-center mb-12 md:mb-16">
           <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="w-12 h-px bg-gold" />
-            <span className="text-gold text-sm uppercase tracking-[0.15em]">Prozess</span>
-            <div className="w-12 h-px bg-gold" />
+            <div className="w-16 h-px bg-gradient-to-r from-transparent to-gold" />
+            <span className="text-gold text-sm uppercase tracking-[0.2em] font-medium">Prozess</span>
+            <div className="w-16 h-px bg-gradient-to-l from-transparent to-gold" />
           </div>
-          <h2 className="font-serif">Ihr Weg zum Erfolg</h2>
+          <h2 className="font-serif mb-4">Ihr Weg zum Erfolg</h2>
+          <p className="text-muted-foreground max-w-lg mx-auto">
+            In vier klaren Schritten zu Ihrem Immobilienerfolg.
+          </p>
         </div>
 
         <div className="relative max-w-4xl mx-auto" data-process data-process-once="true">
-          {/* Vertical gold line */}
-          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-gold via-gold to-transparent hidden md:block" />
+          {/* Vertical gold line with gradient */}
+          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-gold/60 via-gold/40 to-gold/10 hidden md:block" />
 
           <div className="space-y-12 md:space-y-0">
             {processSteps.map((step, index) => (
@@ -352,15 +369,19 @@ export default function HomePage() {
               >
                 {/* Content */}
                 <div className={`flex-1 ${index % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
-                  <div className="bg-card p-8 border border-border/40 inline-block w-full max-w-sm">
-                    <span className="font-serif text-5xl text-gold/20 block mb-3">0{step.step}</span>
+                  <div className="group relative bg-card p-8 border border-border/40 inline-block w-full max-w-sm hover:border-gold/30 transition-all duration-300 hover:shadow-elegant">
+                    {/* Gold top accent */}
+                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-gold/0 via-gold/50 to-gold/0" />
+                    <span className="font-serif text-5xl text-gold/15 block mb-3 group-hover:text-gold/25 transition-colors duration-300">0{step.step}</span>
                     <h3 className="font-serif text-xl mb-3">{step.title}</h3>
                     <p className="text-muted-foreground/90 text-sm leading-relaxed">{step.description}</p>
                   </div>
                 </div>
 
-                {/* Center dot */}
-                <div className="w-4 h-4 rounded-full bg-gold z-10 hidden md:block" />
+                {/* Center dot with ring */}
+                <div className="relative z-10 hidden md:flex items-center justify-center">
+                  <div className="w-4 h-4 rounded-full bg-gold shadow-[0_0_0_4px_hsl(var(--cream)),0_0_0_6px_hsl(var(--gold)/0.3)]" />
+                </div>
 
                 {/* Empty space for alternating */}
                 <div className="flex-1 hidden md:block" />
@@ -369,7 +390,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="mt-12 text-center">
+        <div className="mt-14 text-center">
           <Button size="lg" asChild className="group rounded-none">
             <Link to="/kontakt">
               Erstberatung vereinbaren
@@ -378,6 +399,11 @@ export default function HomePage() {
           </Button>
         </div>
       </Section>
+
+      {/* Decorative divider */}
+      <div className="container">
+        <div className="h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+      </div>
 
       {/* FAQ */}
       <Section variant="surface" size="default">
