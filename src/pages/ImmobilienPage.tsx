@@ -31,35 +31,19 @@ export default function ImmobilienPage() {
 
   const filteredListings = useMemo(() => {
     return availableListings.filter((listing) => {
-      if (filters.location !== 'Alle Orte' && listing.location !== filters.location) {
-        return false;
-      }
-      if (filters.priceType !== 'alle' && listing.priceType !== filters.priceType) {
-        return false;
-      }
-      if (filters.minPrice && listing.price < parseInt(filters.minPrice)) {
-        return false;
-      }
-      if (filters.maxPrice && listing.price > parseInt(filters.maxPrice)) {
-        return false;
-      }
-      if (filters.minRooms && parseInt(filters.minRooms) > 0 && listing.rooms < parseInt(filters.minRooms)) {
-        return false;
-      }
-      if (filters.minArea && listing.area < parseInt(filters.minArea)) {
-        return false;
-      }
+      if (filters.location !== 'Alle Orte' && listing.location !== filters.location) return false;
+      if (filters.priceType !== 'alle' && listing.priceType !== filters.priceType) return false;
+      if (filters.minPrice && listing.price < parseInt(filters.minPrice)) return false;
+      if (filters.maxPrice && listing.price > parseInt(filters.maxPrice)) return false;
+      if (filters.minRooms && parseInt(filters.minRooms) > 0 && listing.rooms < parseInt(filters.minRooms)) return false;
+      if (filters.minArea && listing.area < parseInt(filters.minArea)) return false;
       return true;
     }).sort((a, b) => {
       switch (filters.sortBy) {
-        case 'price-asc':
-          return a.price - b.price;
-        case 'price-desc':
-          return b.price - a.price;
-        case 'area-desc':
-          return b.area - a.area;
-        default:
-          return 0;
+        case 'price-asc': return a.price - b.price;
+        case 'price-desc': return b.price - a.price;
+        case 'area-desc': return b.area - a.area;
+        default: return 0;
       }
     });
   }, [filters, availableListings]);
@@ -69,6 +53,7 @@ export default function ImmobilienPage() {
     [availableListings]
   );
   const featuredListings = availableListings.filter((l) => l.featured);
+  const nonFeaturedListings = filteredListings.filter((l) => !l.featured);
   const isLoading = remoteLoading && availableListings.length === 0;
   const hasNoResults = filteredListings.length === 0 && !isLoading;
 
@@ -98,53 +83,50 @@ export default function ImmobilienPage() {
         <Breadcrumb items={[{ label: 'Immobilien' }]} />
       </div>
 
-      {/* Hero - Premium */}
-      <Section size="sm" className="relative overflow-hidden pt-6 pb-8">
+      {/* Hero + Filter combined */}
+      <Section size="sm" className="relative overflow-hidden pt-6 pb-4">
         <div className="pointer-events-none absolute inset-0">
           <div className="ui-noise-soft absolute inset-0" />
           <div className="absolute -right-12 top-10 h-44 w-44 rounded-full bg-gold/10 blur-3xl" />
-          <div
-            className="absolute left-[-3.5rem] top-24 h-36 w-36 rounded-full bg-primary/10 blur-3xl ui-parallax-soft"
-            data-parallax-soft
-            data-parallax-speed="0.03"
-          />
         </div>
-        <div className="relative max-w-3xl" data-reveal>
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-12 h-px bg-gold" />
-            <span className="text-gold text-sm uppercase tracking-[0.15em]">Portfolio</span>
-          </div>
-          <h1 className="font-serif mb-4">Unsere Immobilien</h1>
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            Entdecken Sie exklusive Objekte in besten Lagen des Rhein-Neckar-Kreises.
-            Filtern Sie nach Ihren Wünschen oder senden Sie uns einen Suchauftrag.
-          </p>
-        </div>
-      </Section>
 
-      {/* Filter - Refined */}
-      <Section size="sm" className="pt-0 pb-2 md:pb-3">
-        <div className="bg-card p-6 border border-border/40" data-reveal>
-          <FilterBar
-            filters={filters}
-            onFilterChange={setFilters}
-            onReset={() => setFilters(defaultFilters)}
-            locations={locationOptions}
-          />
+        <div className="relative" data-reveal>
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+            <div>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-16 h-px bg-gradient-to-r from-gold to-transparent" />
+                <span className="text-gold text-sm uppercase tracking-[0.2em] font-medium">Portfolio</span>
+              </div>
+              <h1 className="font-serif mb-2">Unsere Immobilien</h1>
+              <p className="text-muted-foreground">
+                Exklusive Objekte in besten Lagen des Rhein-Neckar-Kreises.
+              </p>
+            </div>
+            <div className="text-sm text-muted-foreground">
+              <span className="font-serif text-2xl text-foreground mr-1">{availableListings.length}</span>
+              Objekte verfügbar
+            </div>
+          </div>
+
+          {/* Filter bar integrated */}
+          <div className="bg-card border border-border/40 p-5 md:p-6 hover:border-gold/20 transition-colors">
+            <FilterBar
+              filters={filters}
+              onFilterChange={setFilters}
+              onReset={() => setFilters(defaultFilters)}
+              locations={locationOptions}
+            />
+          </div>
         </div>
       </Section>
 
       {/* Featured */}
       {featuredListings.length > 0 && (
-        <Section variant="surface" size="default" className="pt-4 md:pt-6 lg:pt-8">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8 md:mb-10" data-reveal>
-            <div>
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-px bg-gold" />
-                <span className="text-gold text-sm uppercase tracking-[0.15em]">Empfohlen</span>
-              </div>
-              <h2 className="font-serif">Unsere Top-Objekte</h2>
-            </div>
+        <Section size="sm" className="bg-surface pt-6 pb-8">
+          <div className="flex items-center gap-4 mb-6" data-reveal>
+            <div className="w-12 h-px bg-gold" />
+            <span className="text-gold text-sm uppercase tracking-[0.15em] font-medium">Empfohlen</span>
+            <div className="flex-1 h-px bg-border/40" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" data-stagger>
             {featuredListings.map((listing) => (
@@ -154,14 +136,19 @@ export default function ImmobilienPage() {
         </Section>
       )}
 
+      {/* Divider */}
+      <div className="container">
+        <div className="h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+      </div>
+
       {/* All Listings */}
-      <Section size="default">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8 md:mb-10" data-reveal>
-          <div>
-            <h2 className="font-serif">Alle Objekte</h2>
-            <p className="text-muted-foreground mt-2">
-              {filteredListings.length} {filteredListings.length === 1 ? 'Immobilie gefunden' : 'Immobilien gefunden'}
-            </p>
+      <Section size="sm" className="pt-6 pb-8">
+        <div className="flex items-center justify-between mb-6" data-reveal>
+          <div className="flex items-center gap-4">
+            <h2 className="font-serif text-2xl">Alle Objekte</h2>
+            <span className="text-sm text-muted-foreground bg-surface px-3 py-1 border border-border/40">
+              {filteredListings.length} {filteredListings.length === 1 ? 'Ergebnis' : 'Ergebnisse'}
+            </span>
           </div>
         </div>
 
@@ -172,24 +159,24 @@ export default function ImmobilienPage() {
             ))}
           </div>
         ) : hasNoResults ? (
-          <div className="bg-card border border-border/40 p-12 md:p-16 text-center max-w-xl mx-auto">
-            <div className="w-16 h-16 rounded-full border-2 border-gold/30 flex items-center justify-center mx-auto mb-6">
-              <Search className="w-7 h-7 text-gold" />
+          <div className="bg-card border border-border/40 p-10 md:p-14 text-center max-w-xl mx-auto">
+            <div className="w-14 h-14 rounded-full border-2 border-gold/30 bg-gold/5 flex items-center justify-center mx-auto mb-5">
+              <Search className="w-6 h-6 text-gold" />
             </div>
-            <h3 className="font-serif text-2xl mb-3 text-foreground">Keine passenden Objekte</h3>
-            <p className="text-muted-foreground mb-8 leading-relaxed">
-              Passen Sie Ihre Filter an oder senden Sie uns einen Suchauftrag –
-              wir informieren Sie, sobald passende Immobilien verfügbar sind.
+            <h3 className="font-serif text-xl mb-3 text-foreground">Keine passenden Objekte</h3>
+            <p className="text-muted-foreground mb-6 leading-relaxed text-sm">
+              Passen Sie Ihre Filter an oder senden Sie uns einen Suchauftrag.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button
                 variant="outline"
+                size="sm"
                 onClick={() => setFilters(defaultFilters)}
                 className="rounded-none border-border/60"
               >
                 Filter zurücksetzen
               </Button>
-              <Button asChild className="rounded-none bg-gold text-cream hover:bg-gold-dark">
+              <Button size="sm" asChild className="rounded-none">
                 <a href="#suchauftrag">
                   Suchauftrag senden
                   <ArrowRight className="w-4 h-4 ml-2" />
@@ -199,105 +186,137 @@ export default function ImmobilienPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" data-stagger>
-            {filteredListings.map((listing) => (
+            {(featuredListings.length > 0 ? nonFeaturedListings : filteredListings).map((listing) => (
               <ListingCard key={listing.id} listing={listing} />
             ))}
           </div>
         )}
       </Section>
 
-      {/* Search Request - Premium */}
-      <Section variant="surface" size="default" id="suchauftrag">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-8 md:mb-10">
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="w-12 h-px bg-gold" />
-              <span className="text-gold text-sm uppercase tracking-[0.15em]">Suchauftrag</span>
-              <div className="w-12 h-px bg-gold" />
+      {/* Divider */}
+      <div className="container">
+        <div className="h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+      </div>
+
+      {/* Search Request */}
+      <Section size="default" id="suchauftrag" className="bg-surface">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-start">
+          {/* Left - Text */}
+          <div data-reveal>
+            <div className="flex items-center gap-4 mb-5">
+              <div className="w-16 h-px bg-gradient-to-r from-gold to-transparent" />
+              <span className="text-gold text-sm uppercase tracking-[0.2em] font-medium">Suchauftrag</span>
             </div>
             <h2 className="font-serif mb-4">Noch nicht das Passende gefunden?</h2>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground leading-relaxed mb-6">
               Teilen Sie uns Ihre Wünsche mit – wir melden uns, sobald neue Objekte verfügbar sind.
             </p>
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full border border-gold/30 bg-gold/5 flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="text-xs font-medium text-gold">1</span>
+                </div>
+                <p className="text-sm text-muted-foreground">Suchkriterien angeben und absenden</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full border border-gold/30 bg-gold/5 flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="text-xs font-medium text-gold">2</span>
+                </div>
+                <p className="text-sm text-muted-foreground">Wir suchen passende Objekte für Sie</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full border border-gold/30 bg-gold/5 flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="text-xs font-medium text-gold">3</span>
+                </div>
+                <p className="text-sm text-muted-foreground">Sie erhalten Vorschläge per E-Mail</p>
+              </div>
+            </div>
           </div>
-          <form onSubmit={handleSearchSubmit} className="bg-card p-8 md:p-10 border border-border/40" data-reveal>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-              <div className="space-y-2">
-                <Label htmlFor="wunschort" className="text-sm font-medium">Wunschort *</Label>
+
+          {/* Right - Form */}
+          <form onSubmit={handleSearchSubmit} className="bg-card p-7 md:p-8 border border-border/40 hover:border-gold/20 transition-colors" data-reveal>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+              <div className="space-y-1.5">
+                <Label htmlFor="wunschort" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Wunschort *</Label>
                 <Input
                   id="wunschort"
-                  placeholder="z.B. Edingen-Neckarhausen"
-                  className="h-12 rounded-none border-border/60 focus:border-gold focus:ring-gold/30"
+                  placeholder="z.B. Heidelberg"
+                  className="h-11 rounded-none border-border/60 focus:border-gold focus:ring-gold/30"
                   value={searchForm.wunschort}
                   onChange={(e) => setSearchForm({ ...searchForm, wunschort: e.target.value })}
                   required
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="budget" className="text-sm font-medium">Maximales Budget (€) *</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="budget" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Budget (€) *</Label>
                 <Input
                   id="budget"
                   type="number"
                   placeholder="z.B. 350.000"
-                  className="h-12 rounded-none border-border/60 focus:border-gold focus:ring-gold/30"
+                  className="h-11 rounded-none border-border/60 focus:border-gold focus:ring-gold/30"
                   value={searchForm.budget}
                   onChange={(e) => setSearchForm({ ...searchForm, budget: e.target.value })}
                   required
                 />
               </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-              <div className="space-y-2">
-                <Label htmlFor="zimmer" className="text-sm font-medium">Mindest-Zimmer</Label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
+              <div className="space-y-1.5">
+                <Label htmlFor="zimmer" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Zimmer (min.)</Label>
                 <Input
                   id="zimmer"
                   type="number"
                   placeholder="z.B. 3"
-                  className="h-12 rounded-none border-border/60 focus:border-gold focus:ring-gold/30"
+                  className="h-11 rounded-none border-border/60 focus:border-gold focus:ring-gold/30"
                   value={searchForm.zimmer}
                   onChange={(e) => setSearchForm({ ...searchForm, zimmer: e.target.value })}
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium">Ihre E-Mail-Adresse *</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">E-Mail *</Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="ihre@email.de"
-                  className="h-12 rounded-none border-border/60 focus:border-gold focus:ring-gold/30"
+                  className="h-11 rounded-none border-border/60 focus:border-gold focus:ring-gold/30"
                   value={searchForm.email}
                   onChange={(e) => setSearchForm({ ...searchForm, email: e.target.value })}
                   required
                 />
               </div>
             </div>
-            <Button type="submit" size="lg" className="w-full rounded-none bg-gold text-cream hover:bg-gold-dark">
+            <Button type="submit" size="lg" className="w-full rounded-none">
               <FileSearch className="w-4 h-4 mr-2" />
               Suchauftrag absenden
             </Button>
-            <p className="text-xs text-muted-foreground text-center mt-4">
-              Wir behandeln Ihre Daten vertraulich und melden uns zeitnah bei Ihnen.
+            <p className="text-xs text-muted-foreground text-center mt-3">
+              Wir behandeln Ihre Daten vertraulich.
             </p>
           </form>
         </div>
       </Section>
 
+      {/* Divider */}
+      <div className="container">
+        <div className="h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+      </div>
+
       {/* FAQ */}
-      <Section size="sm" className="pb-6 md:pb-8">
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-10" data-split-reveal>
+      <Section size="sm">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12" data-split-reveal>
           <div className="lg:col-span-4" data-split-left>
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-px bg-gold" />
-              <span className="text-gold text-sm uppercase tracking-[0.15em]">FAQ</span>
+              <div className="w-16 h-px bg-gradient-to-r from-gold to-transparent" />
+              <span className="text-gold text-sm uppercase tracking-[0.2em] font-medium">FAQ</span>
             </div>
-            <h2 className="font-serif mb-4">Häufige Fragen</h2>
-            <p className="text-muted-foreground mb-8">
+            <h2 className="font-serif mb-3">Häufige Fragen</h2>
+            <p className="text-muted-foreground mb-6 text-sm leading-relaxed">
               Antworten rund um Besichtigungen, Anmietung und Kaufprozess.
             </p>
-            <Button variant="ghost" asChild className="text-gold hover:text-gold hover:bg-gold/5">
+            <Button variant="ghost" asChild className="group text-gold hover:text-gold hover:bg-gold/5">
               <Link to="/kontakt">
                 Weitere Fragen?
-                <ArrowRight className="w-4 h-4 ml-2" />
+                <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-200 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none" />
               </Link>
             </Button>
           </div>
