@@ -19,7 +19,7 @@ import { usePublishedListings } from '@/hooks/usePublishedListings';
 import { homeFAQ } from '@/data/faq';
 import { scrollToTarget } from '@/lib/smoothScroll';
 import { getSiteUrl } from '@/lib/siteConfig';
-import { heroVisuals, visualAltTextByKey } from '@/data/visuals';
+import { heroVisuals, sectionVisuals, visualAltTextByKey } from '@/data/visuals';
 import heroImage from '@/assets/hero-home.jpg';
 
 const expertiseMeta = {
@@ -187,21 +187,21 @@ export default function HomePage() {
             {/* Hero visual with experience badge */}
             <div className="hidden lg:flex justify-end">
               <div
-                className="group/hero-visual relative w-full max-w-[19rem] xl:max-w-[21rem] ui-depth-hover motion-reduce:transform-none"
+                className="group/hero-visual relative w-full max-w-[30rem] xl:max-w-[34rem] ui-depth-hover motion-reduce:transform-none"
                 data-reveal
                 data-reveal-variant="right"
                 data-reveal-once="true"
               >
                 <div className="absolute -inset-2 border border-cream/15 bg-background/10 backdrop-blur-md pointer-events-none" />
-                <div className="relative aspect-[4/5] ui-visual-frame border border-border/30 bg-card/30 shadow-luxe motion-safe:transition-shadow motion-safe:duration-300 motion-safe:ease-out group-hover/hero-visual:shadow-[0_26px_58px_-26px_hsl(var(--primary)/0.45)]">
+                <div className="relative aspect-[16/10] ui-visual-frame border border-border/30 bg-card/30 shadow-luxe motion-safe:transition-shadow motion-safe:duration-300 motion-safe:ease-out group-hover/hero-visual:shadow-[0_26px_58px_-26px_hsl(var(--primary)/0.45)]">
                   <ProgressiveImage
-                    src={heroVisuals.homeSide}
-                    alt={visualAltTextByKey['hero-home-side']}
-                    containerClassName="absolute inset-x-0 -top-[12%] h-[124%] w-full ui-parallax-soft"
+                    src={heroVisuals.homeWide}
+                    alt={visualAltTextByKey['hero-home-wide']}
+                    containerClassName="absolute inset-x-0 -top-[8%] h-[116%] w-full ui-parallax-soft"
                     className="will-change-transform"
                     imgProps={{
                       'data-parallax': true,
-                      'data-parallax-speed': '0.08',
+                      'data-parallax-speed': '0.06',
                     }}
                   />
                   <div className="ui-visual-overlay absolute inset-0" />
@@ -268,7 +268,10 @@ export default function HomePage() {
       </Section>
 
       {/* Services */}
-      <ServiceSection />
+      <ServiceSection
+        backgroundImage={sectionVisuals.servicesHome}
+        backgroundAlt={visualAltTextByKey['services-home-bg']}
+      />
 
       {/* Blog */}
       <Section size="default">

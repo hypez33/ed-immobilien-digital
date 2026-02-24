@@ -9,10 +9,15 @@ import blogChecklist from '@/assets/visuals/blog-checklist.jpg';
 
 export const heroVisuals = {
   homeSide: heroSideArchitectural,
+  homeWide: listing02,
 } as const;
 
 export const footerVisuals = {
   homeRight: footerHomeRight,
+} as const;
+
+export const sectionVisuals = {
+  servicesHome: listing01,
 } as const;
 
 export const listingVisualById: Record<string, string> = {
@@ -29,7 +34,9 @@ export const blogVisualBySlug: Record<string, string> = {
 
 export const visualAltTextByKey: Record<string, string> = {
   'hero-home-side': 'Moderne Premium-Immobilie mit klarer Architektur im Abendlicht',
+  'hero-home-wide': 'Hochwertiges Wohnobjekt mit moderner Fassadengestaltung',
   'footer-home-right': 'Hochwertige Wohnarchitektur als atmosphaerischer Footer-Akzent',
+  'services-home-bg': 'Architektonische Außenansicht als Hintergrund für den Leistungsbereich',
   'listing-01': 'Helles Einfamilienhaus mit grossen Fensterfronten',
   'listing-02': 'Eleganter Wohnbereich mit hochwertiger Ausstattung',
   'listing-03': 'Stilvolle Stadtvilla mit gepflegter Fassade',
