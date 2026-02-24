@@ -9,6 +9,7 @@ import {
   MapPinned,
   Phone,
   Loader2,
+  ArrowLeft,
 } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { Breadcrumb } from '@/components/layout/Breadcrumb';
@@ -31,7 +32,6 @@ const formatPrice = (price: number, type: Listing['priceType']) => {
     currency: 'EUR',
     maximumFractionDigits: 0,
   }).format(price);
-
   return type === 'miete' ? `${formatted}/Monat` : formatted;
 };
 
@@ -52,7 +52,6 @@ const getListingDescription = (listing: Listing) => {
       : listing.type === 'Haus'
         ? 'Haus'
         : 'Grundstueck';
-
   return `${listing.title} in ${listing.location} bietet auf ${listing.area} m² eine durchdachte Raumstruktur und ein hochwertiges Umfeld. Als ${typeText.toLowerCase()} eignet sich das Objekt ideal fuer Interessenten, die Wert auf Lage, Substanz und ein klares Preis-Leistungs-Verhaeltnis legen.`;
 };
 
@@ -63,7 +62,6 @@ const getListingHighlights = (listing: Listing) => {
     `Standort ${listing.location}`,
     listing.priceType === 'kauf' ? 'Sofortige Kaufoption' : 'Attraktive Mietkonditionen',
   ];
-
   if (listing.type === 'Haus') {
     base.push('Geeignet fuer Familien und Homeoffice');
   } else if (listing.type === 'Wohnung') {
@@ -71,7 +69,6 @@ const getListingHighlights = (listing: Listing) => {
   } else {
     base.push('Potenzial fuer individuelle Projektentwicklung');
   }
-
   return base;
 };
 
@@ -80,8 +77,7 @@ const buildGallery = (listing: PublicListing, allListings: PublicListing[]) => {
     .filter((entry) => entry.id !== listing.id && entry.type === listing.type)
     .flatMap((entry) => entry.images?.length ? entry.images : [entry.image])
     .slice(0, 3);
-
-  return [ ...(listing.images?.length ? listing.images : [listing.image]), ...similar]
+  return [...(listing.images?.length ? listing.images : [listing.image]), ...similar]
     .filter((value, index, arr) => !!value && arr.indexOf(value) === index);
 };
 
@@ -95,8 +91,8 @@ export default function ImmobilieDetailPage() {
     if (listingsLoading) {
       return (
         <Layout>
-          <Section size="lg">
-            <div className="max-w-xl mx-auto text-center">
+          <Section size="sm">
+            <div className="max-w-xl mx-auto text-center py-20">
               <Loader2 className="w-6 h-6 animate-spin mx-auto mb-4 text-muted-foreground" />
               <p className="text-muted-foreground">Objekt wird geladen...</p>
             </div>
@@ -113,6 +109,13 @@ export default function ImmobilieDetailPage() {
   const detailUrl = `${siteUrl}/immobilien/${listing.id}`;
   const besichtigungHref = buildInquiryHref(listing, 'besichtigung');
   const rueckrufHref = buildInquiryHref(listing, 'verkauf');
+
+  const metaItems = [
+    { icon: MapPin, label: listing.location },
+    ...(listing.rooms > 0 ? [{ icon: BedDouble, label: `${listing.rooms} Zimmer` }] : []),
+    { icon: Maximize, label: `${listing.area} m²` },
+    { icon: Home, label: listing.type },
+  ];
 
   return (
     <Layout>
@@ -139,164 +142,199 @@ export default function ImmobilieDetailPage() {
         />
       </div>
 
-      <Section size="sm" className="pt-6 pb-4 md:pt-8 md:pb-6">
-        <div className="max-w-5xl" data-reveal>
-          <div className="flex items-center gap-4 mb-5">
-            <div className="w-12 h-px bg-gold" />
-            <span className="text-gold text-sm uppercase tracking-[0.15em]">Objektdetails</span>
-          </div>
-
-          {listing.featured && (
-            <Badge className="mb-4 bg-gold/10 text-gold border-gold/20">Empfohlen</Badge>
-          )}
-
-          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl leading-[1.08] text-balance break-words mb-5">
-            {listing.title}
-          </h1>
-
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-3 text-muted-foreground mb-7">
-            <span className="inline-flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-gold" />
-              {listing.location}
-            </span>
-            {listing.rooms > 0 && (
-              <span className="inline-flex items-center gap-2">
-                <BedDouble className="w-4 h-4 text-gold" />
-                {listing.rooms} Zimmer
-              </span>
+      {/* Gallery - full width feel */}
+      <Section size="sm" className="pt-2 pb-0">
+        <div data-reveal>
+          <Carousel
+            opts={{ loop: galleryImages.length > 1, align: 'start' }}
+            className="group"
+          >
+            <CarouselContent>
+              {galleryImages.map((image, index) => (
+                <CarouselItem key={`${listing.id}-gallery-${index}`}>
+                  <ProgressiveImage
+                    src={image}
+                    alt={`${listing.title} - Ansicht ${index + 1}`}
+                    containerClassName="ui-visual-frame border-border/35"
+                    className="aspect-[16/10] md:aspect-[2/1] lg:aspect-[2.2/1]"
+                    aspectRatio="2 / 1"
+                    priority={index === 0}
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            {galleryImages.length > 1 && (
+              <>
+                <CarouselPrevious className="!left-3 !right-auto top-1/2 -translate-y-1/2 rounded-none border-cream/40 bg-primary/70 text-cream hover:bg-primary" />
+                <CarouselNext className="!right-3 !left-auto top-1/2 -translate-y-1/2 rounded-none border-cream/40 bg-primary/70 text-cream hover:bg-primary" />
+              </>
             )}
-            <span className="inline-flex items-center gap-2">
-              <Maximize className="w-4 h-4 text-gold" />
-              {listing.area} m²
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <Home className="w-4 h-4 text-gold" />
-              {listing.type}
-            </span>
-          </div>
+          </Carousel>
 
+          {/* Image count indicator */}
+          {galleryImages.length > 1 && (
+            <div className="flex justify-center gap-1.5 mt-3">
+              {galleryImages.map((_, i) => (
+                <div key={i} className="w-8 h-0.5 bg-border/60" />
+              ))}
+            </div>
+          )}
         </div>
       </Section>
 
-      <Section size="default" className="pt-2 md:pt-4">
-        <div className="grid gap-8 lg:grid-cols-12 lg:gap-10 items-start">
-          <div className="lg:col-span-8 space-y-8">
-            <div data-reveal>
-              <Carousel
-                opts={{ loop: galleryImages.length > 1, align: 'start' }}
-                className="group"
-              >
-                <CarouselContent>
-                  {galleryImages.map((image, index) => (
-                    <CarouselItem key={`${listing.id}-gallery-${index}`}>
-                      <ProgressiveImage
-                        src={image}
-                        alt={`${listing.title} - Ansicht ${index + 1}`}
-                        containerClassName="ui-visual-frame border-border/35"
-                        className="aspect-[16/10] md:aspect-[16/9]"
-                        aspectRatio="16 / 9"
-                        priority={index === 0}
-                      />
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                {galleryImages.length > 1 && (
-                  <>
-                    <CarouselPrevious className="!left-3 !right-auto top-1/2 -translate-y-1/2 rounded-none border-cream/40 bg-primary/70 text-cream hover:bg-primary" />
-                    <CarouselNext className="!right-3 !left-auto top-1/2 -translate-y-1/2 rounded-none border-cream/40 bg-primary/70 text-cream hover:bg-primary" />
-                  </>
-                )}
-              </Carousel>
+      {/* Title + Meta + Price bar */}
+      <Section size="sm" className="pt-6 pb-2">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4" data-reveal>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-3 mb-3">
+              {listing.featured && (
+                <Badge className="bg-gold/10 text-gold border-gold/20">Empfohlen</Badge>
+              )}
+              <span className="text-xs uppercase tracking-[0.15em] text-muted-foreground">
+                {listing.priceType === 'kauf' ? 'Zum Kauf' : 'Zur Miete'}
+              </span>
             </div>
-
-            <div className="flex justify-end" data-reveal data-reveal-once="true">
-              <div className="inline-flex flex-col gap-2 bg-card border border-border/40 px-5 py-4 shadow-card">
-                <span className="text-xs uppercase tracking-[0.15em] text-muted-foreground">
-                  {listing.priceType === 'kauf' ? 'Kaufpreis' : 'Miete'}
+            <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl leading-[1.1] text-balance break-words mb-4">
+              {listing.title}
+            </h1>
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
+              {metaItems.map((item, i) => (
+                <span key={i} className="inline-flex items-center gap-1.5">
+                  <item.icon className="w-4 h-4 text-gold" />
+                  {item.label}
                 </span>
-                <span className="font-serif text-3xl sm:text-4xl text-foreground leading-none">
-                  {formatPrice(listing.price, listing.priceType)}
-                </span>
-              </div>
-            </div>
-
-            <div className="space-y-8" data-stagger>
-              <article className="bg-card border border-border/40 p-6 md:p-7" data-stagger-item>
-                <h2 className="font-serif text-2xl mb-4">Beschreibung</h2>
-                <p className="text-readable-muted leading-relaxed">{description}</p>
-              </article>
-
-              <article className="bg-card border border-border/40 p-6 md:p-7" data-stagger-item>
-                <h2 className="font-serif text-2xl mb-4">Highlights</h2>
-                <ul className="grid sm:grid-cols-2 gap-3">
-                  {highlights.map((item) => (
-                    <li key={item} className="flex items-start gap-2 text-foreground/90">
-                      <CheckCircle2 className="w-4 h-4 mt-1 text-gold flex-shrink-0" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </article>
-
-              <article className="bg-card border border-border/40 p-6 md:p-7" data-stagger-item>
-                <h2 className="font-serif text-2xl mb-4">Lage</h2>
-                <div className="flex items-center gap-2 text-muted-foreground mb-4">
-                  <MapPinned className="w-4 h-4 text-gold" />
-                  <span>{listing.location}</span>
-                </div>
-                <div className="relative overflow-hidden border border-border/40 min-h-[220px] bg-surface">
-                  <div className="absolute inset-0 ui-noise-soft" />
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent to-gold/10" />
-                  <div className="relative h-full min-h-[220px] flex items-center justify-center text-center p-6">
-                    <div>
-                      <MapPin className="w-8 h-8 mx-auto mb-3 text-gold" />
-                      <p className="font-medium text-foreground">Lage-Placeholder</p>
-                      <p className="text-sm text-muted-foreground">
-                        Kartenansicht fuer {listing.location} kann spaeter angebunden werden.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </article>
+              ))}
             </div>
           </div>
 
-          <aside className="lg:col-span-4" data-reveal data-reveal-variant="left">
-            <div className="bg-card border border-border/40 p-6 md:p-7 lg:sticky lg:top-28 space-y-6">
-              <div>
-                <h2 className="font-serif text-2xl mb-3">Interesse am Objekt?</h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  Vereinbaren Sie direkt einen Termin oder fordern Sie einen Rueckruf an.
-                </p>
-              </div>
-              <div className="space-y-3">
-                <Button size="lg" className="w-full rounded-none" asChild>
-                  <Link to={besichtigungHref}>
-                    <CalendarClock className="w-4 h-4 mr-2" />
-                    Besichtigung anfragen
-                  </Link>
-                </Button>
-                <Button size="lg" variant="outline" className="w-full rounded-none" asChild>
-                  <Link to={rueckrufHref}>
-                    <Phone className="w-4 h-4 mr-2" />
-                    Rueckruf anfordern
-                  </Link>
-                </Button>
-              </div>
-              <div className="border-t border-border/40 pt-4 space-y-2 text-sm text-muted-foreground">
-                <div className="flex items-center justify-between gap-2">
-                  <span>Preis</span>
-                  <span className="font-medium text-foreground">{formatPrice(listing.price, listing.priceType)}</span>
+          {/* Price block */}
+          <div className="shrink-0 bg-card border border-border/40 px-6 py-4">
+            <span className="block text-xs uppercase tracking-[0.15em] text-muted-foreground mb-1">
+              {listing.priceType === 'kauf' ? 'Kaufpreis' : 'Miete'}
+            </span>
+            <span className="font-serif text-3xl sm:text-4xl text-foreground leading-none">
+              {formatPrice(listing.price, listing.priceType)}
+            </span>
+          </div>
+        </div>
+      </Section>
+
+      {/* Divider */}
+      <div className="container">
+        <div className="h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+      </div>
+
+      {/* Content + Sidebar */}
+      <Section size="sm" className="pt-6 pb-8">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+          {/* Main content */}
+          <div className="lg:col-span-8 space-y-6" data-stagger>
+            {/* Description */}
+            <article className="bg-card border border-border/40 p-6 hover:border-gold/20 transition-colors" data-stagger-item>
+              <h2 className="font-serif text-xl mb-3">Beschreibung</h2>
+              <p className="text-muted-foreground leading-relaxed text-[0.95rem]">{description}</p>
+            </article>
+
+            {/* Highlights */}
+            <article className="bg-card border border-border/40 p-6 hover:border-gold/20 transition-colors" data-stagger-item>
+              <h2 className="font-serif text-xl mb-3">Highlights</h2>
+              <ul className="grid sm:grid-cols-2 gap-2.5">
+                {highlights.map((item) => (
+                  <li key={item} className="flex items-start gap-2.5 text-sm text-foreground/90">
+                    <CheckCircle2 className="w-4 h-4 mt-0.5 text-gold flex-shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+
+            {/* Quick facts grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" data-stagger-item>
+              {[
+                { label: 'Fläche', value: `${listing.area} m²` },
+                { label: 'Zimmer', value: listing.rooms > 0 ? `${listing.rooms}` : '–' },
+                { label: 'Typ', value: listing.type },
+                { label: 'Ort', value: listing.location },
+              ].map((fact) => (
+                <div key={fact.label} className="bg-surface border border-border/30 p-4 text-center">
+                  <span className="block text-xs uppercase tracking-wider text-muted-foreground mb-1">{fact.label}</span>
+                  <span className="font-serif text-lg text-foreground">{fact.value}</span>
                 </div>
-                <div className="flex items-center justify-between gap-2">
-                  <span>Objektart</span>
-                  <span className="font-medium text-foreground">{listing.type}</span>
-                </div>
-                <div className="flex items-center justify-between gap-2">
-                  <span>Ort</span>
-                  <span className="font-medium text-foreground">{listing.location}</span>
+              ))}
+            </div>
+
+            {/* Location */}
+            <article className="bg-card border border-border/40 p-6 hover:border-gold/20 transition-colors" data-stagger-item>
+              <div className="flex items-center gap-2 mb-3">
+                <MapPinned className="w-4 h-4 text-gold" />
+                <h2 className="font-serif text-xl">Lage</h2>
+              </div>
+              <div className="relative overflow-hidden border border-border/30 min-h-[180px] bg-surface">
+                <div className="absolute inset-0 ui-noise-soft" />
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-gold/8" />
+                <div className="relative h-full min-h-[180px] flex items-center justify-center text-center p-6">
+                  <div>
+                    <MapPin className="w-6 h-6 mx-auto mb-2 text-gold" />
+                    <p className="text-sm font-medium text-foreground">{listing.location}</p>
+                    <p className="text-xs text-muted-foreground mt-1">Kartenansicht in Kürze verfügbar</p>
+                  </div>
                 </div>
               </div>
+            </article>
+          </div>
+
+          {/* Sidebar */}
+          <aside className="lg:col-span-4" data-reveal>
+            <div className="lg:sticky lg:top-24 space-y-4">
+              {/* CTA card */}
+              <div className="bg-primary text-cream p-6 relative overflow-hidden">
+                <div className="absolute -top-16 -right-16 w-32 h-32 bg-gold/8 rounded-full blur-3xl pointer-events-none" />
+                <div className="relative">
+                  <h2 className="font-serif text-xl mb-2">Interesse?</h2>
+                  <p className="text-cream/70 text-sm mb-5 leading-relaxed">
+                    Vereinbaren Sie einen Termin oder fordern Sie einen Rückruf an.
+                  </p>
+                  <div className="space-y-2.5">
+                    <Button size="lg" className="w-full rounded-none bg-cream text-primary hover:bg-gold-light" asChild>
+                      <Link to={besichtigungHref}>
+                        <CalendarClock className="w-4 h-4 mr-2" />
+                        Besichtigung anfragen
+                      </Link>
+                    </Button>
+                    <Button size="lg" variant="outline" className="w-full rounded-none border-cream/30 text-cream hover:bg-cream/10" asChild>
+                      <Link to={rueckrufHref}>
+                        <Phone className="w-4 h-4 mr-2" />
+                        Rückruf anfordern
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick info */}
+              <div className="bg-card border border-border/40 p-5 space-y-3">
+                <h3 className="text-xs uppercase tracking-wider text-muted-foreground font-medium">Auf einen Blick</h3>
+                {[
+                  { label: 'Preis', value: formatPrice(listing.price, listing.priceType) },
+                  { label: 'Objektart', value: listing.type },
+                  { label: 'Fläche', value: `${listing.area} m²` },
+                  ...(listing.rooms > 0 ? [{ label: 'Zimmer', value: `${listing.rooms}` }] : []),
+                  { label: 'Ort', value: listing.location },
+                ].map((row) => (
+                  <div key={row.label} className="flex items-center justify-between text-sm border-b border-border/20 pb-2 last:border-0 last:pb-0">
+                    <span className="text-muted-foreground">{row.label}</span>
+                    <span className="font-medium text-foreground">{row.value}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Back link */}
+              <Button variant="ghost" asChild className="w-full justify-start text-muted-foreground hover:text-gold">
+                <Link to="/immobilien">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Alle Immobilien
+                </Link>
+              </Button>
             </div>
           </aside>
         </div>
