@@ -5,7 +5,11 @@ export type ActivityType =
   | 'inquiry:create'
   | 'inquiry:status'
   | 'inquiry:note'
-  | 'inquiry:delete';
+  | 'inquiry:delete'
+  | 'inquiry:pin'
+  | 'listing:create'
+  | 'listing:update'
+  | 'listing:delete';
 
 export interface Activity {
   id: string;

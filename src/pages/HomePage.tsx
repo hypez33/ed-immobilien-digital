@@ -202,7 +202,7 @@ export default function HomePage() {
                     imgProps={{
                       'data-parallax': true,
                       'data-parallax-speed': '0.06',
-                    }}
+                    } as Record<string, unknown>}
                   />
                   <div className="ui-visual-overlay absolute inset-0" />
                   <div className="ui-visual-blur-rim absolute inset-0 pointer-events-none" />
