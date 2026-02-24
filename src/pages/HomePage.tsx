@@ -187,12 +187,12 @@ export default function HomePage() {
             {/* Hero visual with experience badge */}
             <div className="hidden lg:flex justify-end">
               <div
-                className="group/hero-visual relative w-full max-w-md ui-depth-hover motion-reduce:transform-none"
+                className="group/hero-visual relative w-full max-w-[19rem] xl:max-w-[21rem] ui-depth-hover motion-reduce:transform-none"
                 data-reveal
                 data-reveal-variant="right"
                 data-reveal-once="true"
               >
-                <div className="absolute -inset-3 border border-cream/15 bg-background/10 backdrop-blur-md pointer-events-none" />
+                <div className="absolute -inset-2 border border-cream/15 bg-background/10 backdrop-blur-md pointer-events-none" />
                 <div className="relative aspect-[4/5] ui-visual-frame border border-border/30 bg-card/30 shadow-luxe motion-safe:transition-shadow motion-safe:duration-300 motion-safe:ease-out group-hover/hero-visual:shadow-[0_26px_58px_-26px_hsl(var(--primary)/0.45)]">
                   <ProgressiveImage
                     src={heroVisuals.homeSide}
@@ -208,13 +208,13 @@ export default function HomePage() {
                   <div className="ui-visual-blur-rim absolute inset-0 pointer-events-none" />
                   <div className="absolute inset-3 border border-cream/25 pointer-events-none" />
                 </div>
-                <div className="absolute left-6 bottom-6 bg-card/90 backdrop-blur-md p-6 shadow-luxe border border-cream/25 max-w-xs">
-                  <div className="flex items-center gap-3 mb-2">
-                    <Star className="w-5 h-5 text-gold" />
+                <div className="absolute left-4 bottom-4 bg-card/90 backdrop-blur-md p-4 shadow-luxe border border-cream/25 max-w-[11rem]">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Star className="w-4 h-4 text-gold" />
                     <span className="text-2xs uppercase tracking-[0.15em] text-muted-foreground">Erfahrung</span>
                   </div>
-                  <span className="font-serif text-4xl text-foreground block leading-none">15+</span>
-                  <span className="text-muted-foreground mt-2 block">Jahre am Markt</span>
+                  <span className="font-serif text-3xl text-foreground block leading-none">15+</span>
+                  <span className="text-sm text-muted-foreground mt-1.5 block">Jahre am Markt</span>
                 </div>
               </div>
             </div>

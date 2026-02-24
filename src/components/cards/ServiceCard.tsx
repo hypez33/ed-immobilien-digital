@@ -41,8 +41,8 @@ export function ServiceCard({ icon: Icon, title, description, features, ctaText,
 
       {/* Elegant CTA */}
       <Button
-        variant="ghost"
-        className="w-full justify-between text-gold hover:text-gold hover:bg-gold/5 border border-transparent hover:border-gold/20"
+        variant="outline"
+        className="w-full justify-between rounded-none border-gold/35 bg-gold/5 text-foreground hover:bg-gold hover:text-cream hover:border-gold shadow-card"
         asChild
       >
         <Link to={ctaHref}>
