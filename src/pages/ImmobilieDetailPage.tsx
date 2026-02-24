@@ -207,15 +207,6 @@ export default function ImmobilieDetailPage() {
             </div>
           </div>
 
-          {/* Price block */}
-          <div className="shrink-0 bg-card border border-border/40 px-6 py-4">
-            <span className="block text-xs uppercase tracking-[0.15em] text-muted-foreground mb-1">
-              {listing.priceType === 'kauf' ? 'Kaufpreis' : 'Miete'}
-            </span>
-            <span className="font-serif text-3xl sm:text-4xl text-foreground leading-none">
-              {formatPrice(listing.price, listing.priceType)}
-            </span>
-          </div>
         </div>
       </Section>
 
