@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 type NativeImgProps = Omit<
   ImgHTMLAttributes<HTMLImageElement>,
   'src' | 'alt' | 'className' | 'loading' | 'decoding' | 'onLoad' | 'ref'
->;
+> & Record<string, unknown>;
 
 interface ProgressiveImageProps {
   src: string;
