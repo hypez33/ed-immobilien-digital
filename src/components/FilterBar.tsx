@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, RotateCcw, SlidersHorizontal } from 'lucide-react';
+import { RotateCcw, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,8 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { locations as defaultLocations } from '@/data/listings';
+import { cn } from '@/lib/utils';
 
 export interface FilterState {
   location: string;
@@ -45,18 +45,24 @@ export function FilterBar({ filters, onFilterChange, onReset, locations = defaul
     filters.minRooms !== '0' ||
     filters.minArea !== '';
 
+  const priceTypes = [
+    { value: 'alle', label: 'Alle' },
+    { value: 'kauf', label: 'Kauf' },
+    { value: 'miete', label: 'Miete' },
+  ] as const;
+
   return (
-    <div className="card-premium p-5 md:p-6">
-      {/* Main filters - always visible */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+    <div>
+      {/* Main filters row */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         {/* Location */}
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">Ort wählen</Label>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Ort</Label>
           <Select
             value={filters.location}
             onValueChange={(value) => updateFilter('location', value)}
           >
-            <SelectTrigger className="h-11">
+            <SelectTrigger className="h-11 rounded-none border-border/60 focus:border-gold focus:ring-gold/30">
               <SelectValue placeholder="Alle Orte" />
             </SelectTrigger>
             <SelectContent className="bg-background border-border shadow-lg">
@@ -69,53 +75,43 @@ export function FilterBar({ filters, onFilterChange, onReset, locations = defaul
           </Select>
         </div>
 
-        {/* Price Type */}
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">Kaufen oder Mieten?</Label>
-          <ToggleGroup
-            type="single"
-            value={filters.priceType}
-            onValueChange={(value) => {
-              if (value) updateFilter('priceType', value as FilterState['priceType']);
-            }}
-            className="justify-start h-11 p-1 bg-muted rounded-lg"
-          >
-            <ToggleGroupItem 
-              value="alle" 
-              className="flex-1 h-9 data-[state=on]:bg-background data-[state=on]:shadow-sm rounded-md"
-            >
-              Alle
-            </ToggleGroupItem>
-            <ToggleGroupItem 
-              value="kauf" 
-              className="flex-1 h-9 data-[state=on]:bg-background data-[state=on]:shadow-sm rounded-md"
-            >
-              Kauf
-            </ToggleGroupItem>
-            <ToggleGroupItem 
-              value="miete" 
-              className="flex-1 h-9 data-[state=on]:bg-background data-[state=on]:shadow-sm rounded-md"
-            >
-              Miete
-            </ToggleGroupItem>
-          </ToggleGroup>
+        {/* Price Type - custom buttons */}
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Art</Label>
+          <div className="flex h-11 border border-border/60">
+            {priceTypes.map((type) => (
+              <button
+                key={type.value}
+                type="button"
+                onClick={() => updateFilter('priceType', type.value)}
+                className={cn(
+                  'flex-1 text-sm font-medium transition-all duration-200',
+                  filters.priceType === type.value
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-background text-muted-foreground hover:text-foreground hover:bg-surface'
+                )}
+              >
+                {type.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Price Range */}
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">Preisrahmen (€)</Label>
-          <div className="flex gap-2">
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Preis (€)</Label>
+          <div className="flex gap-1.5">
             <Input
               type="number"
               placeholder="Min"
-              className="h-11"
+              className="h-11 rounded-none border-border/60 focus:border-gold focus:ring-gold/30"
               value={filters.minPrice}
               onChange={(e) => updateFilter('minPrice', e.target.value)}
             />
             <Input
               type="number"
               placeholder="Max"
-              className="h-11"
+              className="h-11 rounded-none border-border/60 focus:border-gold focus:ring-gold/30"
               value={filters.maxPrice}
               onChange={(e) => updateFilter('maxPrice', e.target.value)}
             />
@@ -123,86 +119,84 @@ export function FilterBar({ filters, onFilterChange, onReset, locations = defaul
         </div>
 
         {/* Rooms */}
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">Mindest-Zimmer</Label>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Zimmer</Label>
           <Select
             value={filters.minRooms}
             onValueChange={(value) => updateFilter('minRooms', value)}
           >
-            <SelectTrigger className="h-11">
+            <SelectTrigger className="h-11 rounded-none border-border/60 focus:border-gold focus:ring-gold/30">
               <SelectValue placeholder="Beliebig" />
             </SelectTrigger>
             <SelectContent className="bg-background border-border shadow-lg">
               <SelectItem value="0">Beliebig</SelectItem>
-              <SelectItem value="1">1+ Zimmer</SelectItem>
-              <SelectItem value="2">2+ Zimmer</SelectItem>
-              <SelectItem value="3">3+ Zimmer</SelectItem>
-              <SelectItem value="4">4+ Zimmer</SelectItem>
-              <SelectItem value="5">5+ Zimmer</SelectItem>
+              <SelectItem value="1">1+</SelectItem>
+              <SelectItem value="2">2+</SelectItem>
+              <SelectItem value="3">3+</SelectItem>
+              <SelectItem value="4">4+</SelectItem>
+              <SelectItem value="5">5+</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
 
-      {/* Expandable additional filters */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end justify-between">
-        <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 transition-all duration-300 ${expanded ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden sm:opacity-100 sm:h-auto sm:overflow-visible'}`}>
-          {/* Area */}
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Mindestfläche (m²)</Label>
-            <Input
-              type="number"
-              placeholder="z.B. 80"
-              className="h-11"
-              value={filters.minArea}
-              onChange={(e) => updateFilter('minArea', e.target.value)}
-            />
-          </div>
-
-          {/* Sort */}
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Sortierung</Label>
-            <Select
-              value={filters.sortBy}
-              onValueChange={(value) => updateFilter('sortBy', value)}
-            >
-              <SelectTrigger className="h-11">
-                <SelectValue placeholder="Neueste zuerst" />
-              </SelectTrigger>
-              <SelectContent className="bg-background border-border shadow-lg">
-                <SelectItem value="newest">Neueste zuerst</SelectItem>
-                <SelectItem value="price-asc">Preis: niedrig → hoch</SelectItem>
-                <SelectItem value="price-desc">Preis: hoch → niedrig</SelectItem>
-                <SelectItem value="area-desc">Fläche: groß → klein</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+      {/* Expandable row */}
+      <div className={cn(
+        'grid grid-cols-2 lg:grid-cols-4 gap-4 overflow-hidden transition-all duration-300',
+        expanded ? 'max-h-24 opacity-100 mb-4' : 'max-h-0 opacity-0 sm:max-h-24 sm:opacity-100 sm:mb-4'
+      )}>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Fläche (m²)</Label>
+          <Input
+            type="number"
+            placeholder="Mindestfläche"
+            className="h-11 rounded-none border-border/60 focus:border-gold focus:ring-gold/30"
+            value={filters.minArea}
+            onChange={(e) => updateFilter('minArea', e.target.value)}
+          />
         </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Sortierung</Label>
+          <Select
+            value={filters.sortBy}
+            onValueChange={(value) => updateFilter('sortBy', value)}
+          >
+            <SelectTrigger className="h-11 rounded-none border-border/60 focus:border-gold focus:ring-gold/30">
+              <SelectValue placeholder="Neueste zuerst" />
+            </SelectTrigger>
+            <SelectContent className="bg-background border-border shadow-lg">
+              <SelectItem value="newest">Neueste zuerst</SelectItem>
+              <SelectItem value="price-asc">Preis ↑</SelectItem>
+              <SelectItem value="price-desc">Preis ↓</SelectItem>
+              <SelectItem value="area-desc">Fläche ↓</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
-        {/* Actions */}
-        <div className="flex gap-3 w-full sm:w-auto">
+      {/* Actions row */}
+      <div className="flex items-center justify-between pt-3 border-t border-border/30">
+        <Button 
+          variant="ghost" 
+          size="sm"
+          onClick={() => setExpanded(!expanded)}
+          className="sm:hidden text-muted-foreground hover:text-foreground"
+        >
+          <SlidersHorizontal className="w-4 h-4 mr-2" />
+          {expanded ? 'Weniger' : 'Mehr Filter'}
+        </Button>
+        
+        {hasActiveFilters && (
           <Button 
             variant="ghost" 
             size="sm"
-            onClick={() => setExpanded(!expanded)}
-            className="sm:hidden text-muted-foreground"
+            onClick={onReset} 
+            className="text-muted-foreground hover:text-gold ml-auto"
           >
-            <SlidersHorizontal className="w-4 h-4 mr-2" />
-            {expanded ? 'Weniger' : 'Mehr Filter'}
+            <RotateCcw className="w-4 h-4 mr-2" />
+            Zurücksetzen
           </Button>
-          
-          {hasActiveFilters && (
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={onReset} 
-              className="text-muted-foreground hover:text-foreground ml-auto sm:ml-0"
-            >
-              <RotateCcw className="w-4 h-4 mr-2" />
-              Zurücksetzen
-            </Button>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );
