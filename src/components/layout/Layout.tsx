@@ -9,9 +9,14 @@ import { CookieBanner } from '@/components/consent/CookieBanner';
 interface LayoutProps {
   children: ReactNode;
   showMobileCTA?: boolean;
+  footerVariant?: 'default' | 'home-visual';
 }
 
-export function Layout({ children, showMobileCTA = true }: LayoutProps) {
+export function Layout({
+  children,
+  showMobileCTA = true,
+  footerVariant = 'default',
+}: LayoutProps) {
   useGsapPage();
   return (
     <div id="smooth-wrapper" className="overflow-x-hidden">
@@ -26,7 +31,7 @@ export function Layout({ children, showMobileCTA = true }: LayoutProps) {
       <Header />
       <div id="smooth-content" className="flex min-h-screen flex-col pt-18 md:pt-20">
         <main className="flex-1">{children}</main>
-        <Footer />
+        <Footer variant={footerVariant} />
       </div>
     </div>
   );

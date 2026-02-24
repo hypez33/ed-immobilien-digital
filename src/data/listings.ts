@@ -1,5 +1,6 @@
 import listingApartment from '@/assets/listing-apartment.jpg';
 import listingHouse from '@/assets/listing-house.jpg';
+import { listingVisualById } from '@/data/visuals';
 
 export interface Listing {
   id: string;
@@ -11,7 +12,7 @@ export interface Listing {
   area: number;
   image: string;
   featured: boolean;
-  type: 'Wohnung' | 'Haus' | 'Grundstück';
+  type: 'Wohnung' | 'Haus' | 'Grundstück' | 'Gewerbe';
 }
 
 export const listings: Listing[] = [
@@ -23,7 +24,7 @@ export const listings: Listing[] = [
     priceType: 'kauf',
     rooms: 3,
     area: 85,
-    image: listingApartment,
+    image: listingVisualById['1'] ?? listingApartment,
     featured: true,
     type: 'Wohnung',
   },
@@ -35,7 +36,7 @@ export const listings: Listing[] = [
     priceType: 'kauf',
     rooms: 5,
     area: 145,
-    image: listingHouse,
+    image: listingVisualById['2'] ?? listingHouse,
     featured: true,
     type: 'Haus',
   },
@@ -47,7 +48,7 @@ export const listings: Listing[] = [
     priceType: 'miete',
     rooms: 2,
     area: 58,
-    image: listingApartment,
+    image: listingVisualById['3'] ?? listingApartment,
     featured: true,
     type: 'Wohnung',
   },
@@ -59,7 +60,7 @@ export const listings: Listing[] = [
     priceType: 'kauf',
     rooms: 4,
     area: 120,
-    image: listingHouse,
+    image: listingVisualById['4'] ?? listingHouse,
     featured: false,
     type: 'Haus',
   },
@@ -71,7 +72,7 @@ export const listings: Listing[] = [
     priceType: 'miete',
     rooms: 4,
     area: 110,
-    image: listingApartment,
+    image: listingVisualById['5'] ?? listingApartment,
     featured: false,
     type: 'Wohnung',
   },
@@ -83,7 +84,7 @@ export const listings: Listing[] = [
     priceType: 'kauf',
     rooms: 0,
     area: 450,
-    image: listingHouse,
+    image: listingVisualById['6'] ?? listingHouse,
     featured: false,
     type: 'Grundstück',
   },
@@ -95,7 +96,7 @@ export const listings: Listing[] = [
     priceType: 'kauf',
     rooms: 3,
     area: 92,
-    image: listingApartment,
+    image: listingVisualById['7'] ?? listingApartment,
     featured: false,
     type: 'Wohnung',
   },
@@ -107,7 +108,7 @@ export const listings: Listing[] = [
     priceType: 'kauf',
     rooms: 4,
     area: 135,
-    image: listingHouse,
+    image: listingVisualById['8'] ?? listingHouse,
     featured: false,
     type: 'Haus',
   },

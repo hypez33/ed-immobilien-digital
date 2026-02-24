@@ -1,5 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, type ImgHTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
+
+type NativeImgProps = Omit<
+  ImgHTMLAttributes<HTMLImageElement>,
+  'src' | 'alt' | 'className' | 'loading' | 'decoding' | 'onLoad' | 'ref'
+>;
 
 interface ProgressiveImageProps {
   src: string;
@@ -9,6 +14,10 @@ interface ProgressiveImageProps {
   placeholderColor?: string;
   aspectRatio?: string;
   priority?: boolean;
+  loading?: 'eager' | 'lazy';
+  decoding?: 'sync' | 'async' | 'auto';
+  fetchPriority?: 'high' | 'low' | 'auto';
+  imgProps?: NativeImgProps;
 }
 
 export function ProgressiveImage({
@@ -19,14 +28,28 @@ export function ProgressiveImage({
   placeholderColor = 'hsl(229 19% 22% / 0.1)',
   aspectRatio,
   priority = false,
+  loading,
+  decoding,
+  fetchPriority,
+  imgProps,
 }: ProgressiveImageProps) {
+  const shouldLoadImmediately = priority || loading === 'eager' || fetchPriority === 'high';
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isInView, setIsInView] = useState(priority);
+  const [isInView, setIsInView] = useState(shouldLoadImmediately);
   const imgRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const resolvedLoading = loading ?? (priority ? 'eager' : 'lazy');
+  const resolvedDecoding = decoding ?? (priority ? 'sync' : 'async');
 
   useEffect(() => {
-    if (priority) return;
+    setIsLoaded(false);
+    if (shouldLoadImmediately) {
+      setIsInView(true);
+    }
+  }, [src, shouldLoadImmediately]);
+
+  useEffect(() => {
+    if (shouldLoadImmediately) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -43,7 +66,7 @@ export function ProgressiveImage({
     }
 
     return () => observer.disconnect();
-  }, [priority]);
+  }, [shouldLoadImmediately]);
 
   useEffect(() => {
     if (!isInView || !imgRef.current) return;
@@ -79,9 +102,11 @@ export function ProgressiveImage({
           ref={imgRef}
           src={src}
           alt={alt}
-          loading={priority ? 'eager' : 'lazy'}
-          decoding={priority ? 'sync' : 'async'}
+          loading={resolvedLoading}
+          decoding={resolvedDecoding}
+          fetchPriority={fetchPriority}
           onLoad={() => setIsLoaded(true)}
+          {...imgProps}
           className={cn(
             'w-full h-full object-cover transition-opacity duration-700',
             isLoaded ? 'opacity-100' : 'opacity-0',

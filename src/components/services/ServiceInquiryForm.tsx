@@ -70,6 +70,8 @@ const defaultValues: ServiceInquiryFormData = {
 export function ServiceInquiryForm({ open, onOpenChange, activeService }: ServiceInquiryFormProps) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [submittedPayload, setSubmittedPayload] = useState<ServiceInquiryFormData | null>(null);
+  const controlClassName =
+    'h-12 focus-visible:border-gold/40 focus-visible:ring-gold/50';
 
   const form = useForm<ServiceInquiryFormData>({
     defaultValues,
@@ -211,10 +213,15 @@ export function ServiceInquiryForm({ open, onOpenChange, activeService }: Servic
             </FormLabel>
             <FormControl>
               {question.type === 'textarea' ? (
-                <Textarea placeholder={question.placeholder} {...field} value={String(field.value ?? '')} />
+                <Textarea
+                  className="focus-visible:border-gold/40 focus-visible:ring-gold/50"
+                  placeholder={question.placeholder}
+                  {...field}
+                  value={String(field.value ?? '')}
+                />
               ) : question.type === 'select' ? (
                 <Select onValueChange={field.onChange} value={String(field.value ?? '')}>
-                  <SelectTrigger>
+                  <SelectTrigger className={controlClassName}>
                     <SelectValue placeholder={question.placeholder || 'Bitte wählen'} />
                   </SelectTrigger>
                   <SelectContent className="bg-background border-border shadow-lg">
@@ -227,6 +234,7 @@ export function ServiceInquiryForm({ open, onOpenChange, activeService }: Servic
                 </Select>
               ) : (
                 <Input
+                  className={controlClassName}
                   type={question.type === 'number' ? 'number' : 'text'}
                   placeholder={question.placeholder}
                   {...field}
@@ -281,11 +289,11 @@ export function ServiceInquiryForm({ open, onOpenChange, activeService }: Servic
               Falls Sie ergänzende Informationen haben, erreichen Sie uns jederzeit über die Kontaktseite.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button asChild>
+              <Button asChild className="rounded-none">
                 <Link to="/kontakt">Kontaktseite öffnen</Link>
               </Button>
               {mailtoHref && (
-                <Button variant="outline" asChild>
+                <Button variant="outline" asChild className="rounded-none">
                   <a href={mailtoHref}>E-Mail vorbereiten</a>
                 </Button>
               )}
@@ -300,16 +308,16 @@ export function ServiceInquiryForm({ open, onOpenChange, activeService }: Servic
 
               <DialogFooter className="gap-3">
                 {step > 1 && (
-                  <Button type="button" variant="outline" onClick={goBack}>
+                  <Button type="button" variant="outline" className="rounded-none" onClick={goBack}>
                     Zurück
                   </Button>
                 )}
                 {step < 3 ? (
-                  <Button type="button" onClick={goNext}>
+                  <Button type="button" className="rounded-none" onClick={goNext}>
                     Weiter
                   </Button>
                 ) : (
-                  <Button type="submit">
+                  <Button type="submit" className="rounded-none">
                     Anfrage absenden
                   </Button>
                 )}

@@ -53,6 +53,8 @@ type FormStatus = 'idle' | 'loading' | 'success' | 'error';
 export function ContactForm() {
   const [searchParams] = useSearchParams();
   const [status, setStatus] = useState<FormStatus>('idle');
+  const controlClassName =
+    'h-12 focus-visible:border-gold/40 focus-visible:ring-gold/50';
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
@@ -115,7 +117,7 @@ export function ContactForm() {
         <p className="text-muted-foreground mb-6">
           Wir haben Ihre Nachricht erhalten und melden uns innerhalb von 24 Stunden bei Ihnen.
         </p>
-        <Button onClick={() => setStatus('idle')}>Neue Anfrage senden</Button>
+        <Button className="rounded-none" onClick={() => setStatus('idle')}>Neue Anfrage senden</Button>
       </div>
     );
   }
@@ -140,7 +142,7 @@ export function ContactForm() {
               <FormLabel>Anliegen *</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className={controlClassName}>
                     <SelectValue placeholder="Wählen Sie Ihr Anliegen" />
                   </SelectTrigger>
                 </FormControl>
@@ -165,7 +167,7 @@ export function ContactForm() {
               <FormItem>
                 <FormLabel>Name *</FormLabel>
                 <FormControl>
-                  <Input placeholder="Max Mustermann" {...field} />
+                  <Input className={controlClassName} placeholder="Max Mustermann" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -179,7 +181,7 @@ export function ContactForm() {
               <FormItem>
                 <FormLabel>E-Mail *</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="max@beispiel.de" {...field} />
+                  <Input className={controlClassName} type="email" placeholder="max@beispiel.de" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -195,7 +197,7 @@ export function ContactForm() {
               <FormItem>
                 <FormLabel>Telefon (optional)</FormLabel>
                 <FormControl>
-                  <Input type="tel" placeholder="+49 123 456789" {...field} />
+                  <Input className={controlClassName} type="tel" placeholder="+49 123 456789" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -209,7 +211,7 @@ export function ContactForm() {
               <FormItem>
                 <FormLabel>Objektadresse (optional)</FormLabel>
                 <FormControl>
-                  <Input placeholder="Straße, PLZ Ort" {...field} />
+                  <Input className={controlClassName} placeholder="Straße, PLZ Ort" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -225,6 +227,7 @@ export function ContactForm() {
               <FormLabel>Nachricht *</FormLabel>
               <FormControl>
                 <Textarea
+                  className="focus-visible:border-gold/40 focus-visible:ring-gold/50"
                   placeholder="Beschreiben Sie Ihr Anliegen..."
                   rows={5}
                   {...field}
@@ -260,7 +263,7 @@ export function ContactForm() {
           )}
         />
 
-        <Button type="submit" size="lg" className="w-full" disabled={status === 'loading' || !hasConsent}>
+        <Button type="submit" size="lg" className="w-full rounded-none" disabled={status === 'loading' || !hasConsent}>
           {status === 'loading' ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />

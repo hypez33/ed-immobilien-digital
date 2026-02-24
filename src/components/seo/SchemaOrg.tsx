@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { FAQItem } from '@/data/faq';
+import { getSiteUrl, siteConfig } from '@/lib/siteConfig';
 
 interface BreadcrumbItem {
   name: string;
@@ -14,6 +15,7 @@ interface SchemaOrgProps {
 
 export function SchemaOrg({ type, breadcrumbs, faqItems }: SchemaOrgProps) {
   useEffect(() => {
+    const siteUrl = getSiteUrl();
     const scriptId = `schema-${type}`;
     let existingScript = document.getElementById(scriptId);
     
@@ -32,20 +34,20 @@ export function SchemaOrg({ type, breadcrumbs, faqItems }: SchemaOrgProps) {
         schema = {
           '@context': 'https://schema.org',
           '@type': 'RealEstateAgent',
-          name: 'ED Immobilien',
+          name: siteConfig.brandName,
           description: 'Immobilienmakler für Verkauf und Vermietung im Rhein-Neckar-Kreis',
-          url: 'https://ed-immobilien.de',
-          telephone: '+49-123-456789',
-          email: 'info@ed-immobilien.de',
+          url: siteUrl || undefined,
+          telephone: siteConfig.phone,
+          email: siteConfig.email,
           address: {
             '@type': 'PostalAddress',
-            addressLocality: 'Edingen-Neckarhausen',
+            addressLocality: siteConfig.addressText,
             addressRegion: 'Baden-Württemberg',
             addressCountry: 'DE',
           },
           areaServed: {
             '@type': 'AdministrativeArea',
-            name: 'Rhein-Neckar-Kreis',
+            name: siteConfig.region,
           },
           openingHoursSpecification: {
             '@type': 'OpeningHoursSpecification',

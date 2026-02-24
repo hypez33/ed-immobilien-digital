@@ -3,8 +3,10 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb';
 import { SEO } from '@/components/seo/SEO';
 import { SchemaOrg } from '@/components/seo/SchemaOrg';
 import { Section } from '@/components/ui/Section';
+import { getSiteUrl } from '@/lib/siteConfig';
 
 export default function ImpressumPage() {
+  const siteUrl = getSiteUrl();
   return (
     <Layout>
       <SEO
@@ -14,8 +16,8 @@ export default function ImpressumPage() {
       <SchemaOrg
         type="BreadcrumbList"
         breadcrumbs={[
-          { name: 'Startseite', url: 'https://ed-immobilien.de/' },
-          { name: 'Impressum', url: 'https://ed-immobilien.de/impressum' },
+          { name: 'Startseite', url: `${siteUrl}/` },
+          { name: 'Impressum', url: `${siteUrl}/impressum` },
         ]}
       />
 

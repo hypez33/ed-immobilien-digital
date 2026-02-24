@@ -9,27 +9,28 @@ import { FAQAccordion } from '@/components/FAQAccordion';
 import { kontaktFAQ } from '@/data/faq';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { getSiteUrl, siteConfig } from '@/lib/siteConfig';
 
 const contactInfo = [
   {
     icon: Phone,
     title: 'Telefon',
-    value: '+49 (0) 123 456789',
+    value: siteConfig.phone,
   },
   {
     icon: Mail,
     title: 'E-Mail',
-    value: 'info@ed-immobilien.de',
+    value: siteConfig.email,
   },
   {
     icon: MapPin,
     title: 'Standort',
-    value: 'Edingen-Neckarhausen',
+    value: siteConfig.addressText,
   },
   {
     icon: Clock,
     title: 'Öffnungszeiten',
-    value: 'Mo–Fr: 9:00–18:00 Uhr',
+    value: siteConfig.openingHoursText,
   },
 ];
 
@@ -43,8 +44,8 @@ export default function KontaktPage() {
       <SchemaOrg
         type="BreadcrumbList"
         breadcrumbs={[
-          { name: 'Startseite', url: 'https://ed-immobilien.de/' },
-          { name: 'Kontakt', url: 'https://ed-immobilien.de/kontakt' },
+          { name: 'Startseite', url: `${getSiteUrl()}/` },
+          { name: 'Kontakt', url: `${getSiteUrl()}/kontakt` },
         ]}
       />
       <SchemaOrg type="FAQPage" faqItems={kontaktFAQ} />
@@ -54,8 +55,17 @@ export default function KontaktPage() {
       </div>
 
       {/* Contact Section - Split Layout */}
-      <Section size="lg" className="pt-8">
-        <div className="grid lg:grid-cols-5 gap-12 lg:gap-0">
+      <Section size="lg" className="relative overflow-hidden pt-8">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="ui-noise-soft absolute inset-0" />
+          <div className="absolute -left-12 top-12 h-44 w-44 rounded-full bg-gold/10 blur-3xl" />
+          <div
+            className="absolute right-[-4rem] top-24 h-48 w-48 rounded-full bg-primary/10 blur-3xl ui-parallax-soft"
+            data-parallax-soft
+            data-parallax-speed="0.03"
+          />
+        </div>
+        <div className="relative grid lg:grid-cols-5 gap-12 lg:gap-0">
           {/* Form - 3 cols */}
           <div className="lg:col-span-3 lg:pr-16" data-reveal>
             <div className="flex items-center gap-4 mb-6">

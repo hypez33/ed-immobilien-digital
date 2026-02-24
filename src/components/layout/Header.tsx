@@ -354,7 +354,7 @@ export function Header() {
               <Link
                 key={item.name}
                 to={item.href}
-                className="relative px-5 py-2 text-sm font-medium transition-colors group"
+                className="relative px-5 py-2 text-sm font-medium group motion-safe:transition-[color,transform] motion-safe:duration-200 motion-safe:ease-out motion-safe:hover:-translate-y-px"
               >
                 <span className={cn(
                   'relative z-10 transition-colors',
@@ -383,7 +383,7 @@ export function Header() {
               variant="ghost"
               size="sm"
               asChild
-              className="text-muted-foreground hover:text-gold hover:bg-gold/5"
+              className="rounded-none text-muted-foreground hover:text-gold hover:bg-gold/5"
             >
               <Link to="/kontakt?anliegen=bewertung">
                 <FileText className="w-4 h-4 mr-2" />
@@ -455,7 +455,7 @@ export function Header() {
                     onClick={() => setMobileMenuOpen(false)}
                     ref={index === 0 ? firstLinkRef : undefined}
                     className={cn(
-                      'flex items-center justify-between py-4 px-4 text-base font-medium transition-colors border-b border-border/30',
+                      'group flex items-center justify-between py-4 px-4 text-base font-medium transition-colors border-b border-border/30',
                       (item.href === '/' ? location.pathname === '/' : location.pathname.startsWith(item.href))
                         ? 'text-foreground'
                         : 'text-muted-foreground'
@@ -464,7 +464,7 @@ export function Header() {
                     <span>{item.name}</span>
                     <ArrowRight
                       className={cn(
-                        'w-4 h-4 transition-colors',
+                        'w-4 h-4 transition-[transform,color] duration-200 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none',
                         (item.href === '/' ? location.pathname === '/' : location.pathname.startsWith(item.href))
                           ? 'text-gold'
                           : 'opacity-30'

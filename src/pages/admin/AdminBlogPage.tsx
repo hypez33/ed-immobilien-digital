@@ -100,6 +100,15 @@ export default function AdminBlogPage() {
     }
   }, [searchParams, startNew]);
 
+  useEffect(() => {
+    const editId = searchParams.get('edit');
+    if (!editId) return;
+    const match = posts.find((post) => post.id === editId);
+    if (match) {
+      editPost(match);
+    }
+  }, [searchParams, posts]);
+
   const editPost = (post: BlogPost) => {
     setForm({
       id: post.id,

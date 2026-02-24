@@ -14,8 +14,17 @@ export default function BlogPage() {
         description="Ratgeber, Markt-Updates und Tipps rund um Verkauf, Vermietung und Bewertung im Rhein-Neckar-Kreis."
       />
 
-      <Section size="lg" className="pt-10 md:pt-12 lg:pt-14">
-        <div className="max-w-3xl" data-reveal>
+      <Section size="lg" className="relative overflow-hidden pt-10 md:pt-12 lg:pt-14">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="ui-noise-soft absolute inset-0" />
+          <div className="absolute left-[-4.5rem] top-8 h-40 w-40 rounded-full bg-gold/10 blur-3xl" />
+          <div
+            className="absolute right-[-3rem] top-1/3 h-36 w-36 rounded-full bg-primary/10 blur-3xl ui-parallax-soft"
+            data-parallax-soft
+            data-parallax-speed="0.03"
+          />
+        </div>
+        <div className="relative max-w-3xl" data-reveal>
           <div className="flex items-center gap-4 mb-6">
             <div className="w-12 h-px bg-gold" />
             <span className="text-gold text-sm uppercase tracking-[0.15em]">Blog</span>

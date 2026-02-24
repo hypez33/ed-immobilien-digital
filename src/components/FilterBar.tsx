@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { locations } from '@/data/listings';
+import { locations as defaultLocations } from '@/data/listings';
 
 export interface FilterState {
   location: string;
@@ -27,9 +27,10 @@ interface FilterBarProps {
   filters: FilterState;
   onFilterChange: (filters: FilterState) => void;
   onReset: () => void;
+  locations?: string[];
 }
 
-export function FilterBar({ filters, onFilterChange, onReset }: FilterBarProps) {
+export function FilterBar({ filters, onFilterChange, onReset, locations = defaultLocations }: FilterBarProps) {
   const [expanded, setExpanded] = useState(false);
   
   const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {

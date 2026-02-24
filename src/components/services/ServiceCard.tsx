@@ -10,7 +10,7 @@ interface ServiceCardProps {
 
 export function ServiceCard({ service, onStart }: ServiceCardProps) {
   return (
-    <article className="relative bg-card border border-border/40 p-8 md:p-10 flex flex-col h-full" data-stagger-item>
+    <article className="ui-interactive-card group relative bg-card border border-border/40 p-8 md:p-10 flex flex-col h-full" data-stagger-item>
       {service.popular && (
         <Badge className="absolute top-4 right-4 bg-gold/10 text-gold border-gold/20">
           Beliebt
@@ -36,7 +36,7 @@ export function ServiceCard({ service, onStart }: ServiceCardProps) {
         onClick={() => onStart(service)}
       >
         Anfrage starten
-        <ArrowRight className="h-4 w-4" />
+        <ArrowRight className="h-4 w-4 transition-transform duration-200 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none" />
       </Button>
     </article>
   );

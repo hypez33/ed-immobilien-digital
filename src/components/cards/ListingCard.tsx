@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { MapPin, BedDouble, Maximize, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ProgressiveImage } from '@/components/ui/ProgressiveImage';
 import { Listing } from '@/data/listings';
 
 interface ListingCardProps {
@@ -16,20 +17,22 @@ export function ListingCard({ listing }: ListingCardProps) {
     }).format(price);
     return type === 'miete' ? `${formatted}/Monat` : formatted;
   };
+  const detailHref = `/immobilien/${listing.id}`;
+  const inquiryHref = `/kontakt?anliegen=besichtigung&objekt=${listing.id}&titel=${encodeURIComponent(listing.title)}&ort=${encodeURIComponent(listing.location)}`;
 
   return (
-    <article className="group relative" data-stagger-item>
+    <article className="group relative ui-interactive-card" data-stagger-item>
       {/* Image with parallax effect */}
-      <div className="relative z-10 aspect-[4/3] bg-surface">
+      <div className="relative z-10 aspect-[4/3] ui-visual-frame ui-depth-hover bg-surface border-border/35">
         <div className="absolute inset-0 overflow-hidden">
-          <img
+          <ProgressiveImage
             src={listing.image}
             alt={`${listing.title} in ${listing.location}`}
-            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-            loading="lazy"
+            containerClassName="absolute inset-0"
+            className="transition-transform duration-700 ease-out group-hover:scale-110 motion-reduce:transform-none"
           />
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-primary/10 to-transparent" />
+          <div className="ui-visual-overlay absolute inset-0" />
+          <div className="ui-visual-blur-rim absolute inset-0 pointer-events-none" />
 
           {/* Featured badge */}
           {listing.featured && (
@@ -80,16 +83,19 @@ export function ListingCard({ listing }: ListingCardProps) {
           </span>
         </div>
 
-        {/* Single elegant CTA */}
-        <Button
-          className="w-full mt-5 rounded-none"
-          asChild
-        >
-          <Link to={`/kontakt?anliegen=besichtigung&objekt=${listing.id}`}>
-            Mehr erfahren
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Link>
-        </Button>
+        <div className="mt-5 grid grid-cols-1 gap-3">
+          <Button className="w-full rounded-none" asChild>
+            <Link to={detailHref}>
+              Mehr erfahren
+              <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-200 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none" />
+            </Link>
+          </Button>
+          <Button className="w-full rounded-none" variant="outline" asChild>
+            <Link to={inquiryHref}>
+              Besichtigung anfragen
+            </Link>
+          </Button>
+        </div>
       </div>
     </article>
   );

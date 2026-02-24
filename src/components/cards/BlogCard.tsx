@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { ProgressiveImage } from '@/components/ui/ProgressiveImage';
 import { BlogPost } from '@/hooks/useBlogPosts';
 
 interface BlogCardProps {
@@ -14,15 +15,16 @@ export function BlogCard({ post }: BlogCardProps) {
     : null;
 
   return (
-    <article className="bg-card border border-border/40 p-6 md:p-8 flex flex-col h-full" data-stagger-item>
+    <article className="ui-interactive-card group bg-card border border-border/40 p-6 md:p-8 flex flex-col h-full" data-stagger-item>
       {post.cover && (
-        <div className="mb-6 aspect-[16/9] overflow-hidden bg-surface">
-          <img
+        <div className="mb-6 relative aspect-[16/9] ui-visual-frame ui-depth-hover bg-surface">
+          <ProgressiveImage
             src={post.cover}
             alt={post.title}
-            className="w-full h-full object-cover"
-            loading="lazy"
+            containerClassName="h-full w-full"
+            className="transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transform-none"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-primary/25 via-transparent to-transparent pointer-events-none" />
         </div>
       )}
 
@@ -47,7 +49,7 @@ export function BlogCard({ post }: BlogCardProps) {
       <Button asChild className="mt-auto rounded-none">
         <Link to={`/blog/${post.slug}`}>
           Weiterlesen
-          <ArrowRight className="w-4 h-4 ml-2" />
+          <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-200 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none" />
         </Link>
       </Button>
     </article>

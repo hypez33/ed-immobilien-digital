@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, FileSearch, Home, Key, Star, ChevronDown } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
@@ -6,17 +6,20 @@ import { SEO } from '@/components/seo/SEO';
 import { SchemaOrg } from '@/components/seo/SchemaOrg';
 import { Section } from '@/components/ui/Section';
 import { Button } from '@/components/ui/button';
+import { ProgressiveImage } from '@/components/ui/ProgressiveImage';
 import { ServiceCard } from '@/components/cards/ServiceCard';
 import { ListingCard } from '@/components/cards/ListingCard';
 import { FAQAccordion } from '@/components/FAQAccordion';
 import { CTABanner } from '@/components/CTABanner';
 import { ServiceSection } from '@/components/services/ServiceSection';
 import { BlogCard } from '@/components/cards/BlogCard';
-import { listings } from '@/data/listings';
 import { services as servicesData } from '@/data/services';
 import { useBlogPosts } from '@/hooks/useBlogPosts';
+import { usePublishedListings } from '@/hooks/usePublishedListings';
 import { homeFAQ } from '@/data/faq';
 import { scrollToTarget } from '@/lib/smoothScroll';
+import { getSiteUrl } from '@/lib/siteConfig';
+import { heroVisuals, visualAltTextByKey } from '@/data/visuals';
 import heroImage from '@/assets/hero-home.jpg';
 
 const expertiseMeta = {
@@ -64,9 +67,14 @@ const processSteps = [
 
 
 export default function HomePage() {
-  const featuredListings = listings.slice(0, 3);
+  const { listings: publishedListings } = usePublishedListings();
+  const featuredListings = useMemo(() => {
+    const featured = publishedListings.filter((listing) => listing.featured);
+    return (featured.length ? featured : publishedListings).slice(0, 3);
+  }, [publishedListings]);
   const featuredPosts = useBlogPosts({ publicOnly: true }).slice(0, 2);
   const [heroMounted, setHeroMounted] = useState(false);
+  const siteUrl = getSiteUrl();
 
   useEffect(() => {
     const raf = window.requestAnimationFrame(() => setHeroMounted(true));
@@ -92,7 +100,7 @@ export default function HomePage() {
       <SchemaOrg type="LocalBusiness" />
       <SchemaOrg
         type="BreadcrumbList"
-        breadcrumbs={[{ name: 'Startseite', url: 'https://ed-immobilien.de/' }]}
+        breadcrumbs={[{ name: 'Startseite', url: `${siteUrl}/` }]}
       />
       <SchemaOrg type="FAQPage" faqItems={homeFAQ} />
 
@@ -104,6 +112,9 @@ export default function HomePage() {
             src={heroImage}
             alt="Modernes Einfamilienhaus im Rhein-Neckar-Kreis"
             className="w-full h-full object-cover"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/90 to-primary/40" />
         </div>
@@ -114,7 +125,7 @@ export default function HomePage() {
 
         <div className="container relative py-16 sm:py-20 lg:py-0">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div data-stagger>
+            <div data-stagger data-stagger-once="true">
               {/* Pre-title */}
               <div className="flex items-center gap-4 mb-8" data-stagger-item>
                 <div className="w-12 h-px bg-gold-light" />
@@ -152,36 +163,59 @@ export default function HomePage() {
                 <Button
                   size="lg"
                   asChild
-                  className="bg-cream text-primary hover:bg-gold-light hover:text-primary rounded-none"
+                  className="group bg-cream text-primary hover:bg-gold-light hover:text-primary rounded-none"
                 >
                   <Link to="/kontakt">
                     Kostenlose Beratung
-                    <ArrowRight className="w-5 h-5 ml-2" />
+                    <ArrowRight className="w-5 h-5 ml-2 transition-transform duration-200 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none" />
                   </Link>
                 </Button>
                 <Button
                   size="lg"
                   variant="outline"
                   asChild
-                  className="border-cream/30 bg-transparent text-cream hover:bg-cream/10 rounded-none"
+                  className="group border-cream/30 bg-transparent text-cream hover:bg-cream/10 rounded-none"
                 >
                   <Link to="/immobilien">
                     Objekte entdecken
+                    <ArrowRight className="w-5 h-5 ml-2 transition-transform duration-200 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none" />
                   </Link>
                 </Button>
               </div>
             </div>
 
-            {/* Stats overlay card */}
+            {/* Hero visual with experience badge */}
             <div className="hidden lg:flex justify-end">
-              <div className="bg-card/95 backdrop-blur-sm p-8 shadow-luxe max-w-xs border border-border/20">
-                <div className="flex items-center gap-3 mb-3">
-                  <Star className="w-5 h-5 text-gold" />
-                  <span className="text-2xs uppercase tracking-[0.15em] text-muted-foreground">Erfahrung</span>
+              <div
+                className="group/hero-visual relative w-full max-w-md ui-depth-hover motion-reduce:transform-none"
+                data-reveal
+                data-reveal-variant="right"
+                data-reveal-once="true"
+              >
+                <div className="absolute -inset-3 border border-cream/15 bg-background/10 backdrop-blur-md pointer-events-none" />
+                <div className="relative aspect-[4/5] ui-visual-frame border border-border/30 bg-card/30 shadow-luxe motion-safe:transition-shadow motion-safe:duration-300 motion-safe:ease-out group-hover/hero-visual:shadow-[0_26px_58px_-26px_hsl(var(--primary)/0.45)]">
+                  <ProgressiveImage
+                    src={heroVisuals.homeSide}
+                    alt={visualAltTextByKey['hero-home-side']}
+                    containerClassName="absolute inset-x-0 -top-[12%] h-[124%] w-full ui-parallax-soft"
+                    className="will-change-transform"
+                    imgProps={{
+                      'data-parallax': true,
+                      'data-parallax-speed': '0.08',
+                    }}
+                  />
+                  <div className="ui-visual-overlay absolute inset-0" />
+                  <div className="ui-visual-blur-rim absolute inset-0 pointer-events-none" />
+                  <div className="absolute inset-3 border border-cream/25 pointer-events-none" />
                 </div>
-                <span className="font-serif text-5xl text-foreground block">15+</span>
-                <span className="text-muted-foreground mt-1 block">Jahre am Markt</span>
-                <div className="w-12 h-px bg-gold mt-6" />
+                <div className="absolute left-6 bottom-6 bg-card/90 backdrop-blur-md p-6 shadow-luxe border border-cream/25 max-w-xs">
+                  <div className="flex items-center gap-3 mb-2">
+                    <Star className="w-5 h-5 text-gold" />
+                    <span className="text-2xs uppercase tracking-[0.15em] text-muted-foreground">Erfahrung</span>
+                  </div>
+                  <span className="font-serif text-4xl text-foreground block leading-none">15+</span>
+                  <span className="text-muted-foreground mt-2 block">Jahre am Markt</span>
+                </div>
               </div>
             </div>
           </div>
@@ -249,10 +283,10 @@ export default function HomePage() {
               Marktentwicklungen, Checklisten und Tipps – kompakt für Sie zusammengefasst.
             </p>
           </div>
-          <Button variant="ghost" asChild className="text-gold hover:text-gold hover:bg-gold/5">
+          <Button variant="ghost" asChild className="group text-gold hover:text-gold hover:bg-gold/5">
             <Link to="/blog">
               Alle Beiträge ansehen
-              <ArrowRight className="w-4 h-4 ml-2" />
+              <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-200 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none" />
             </Link>
           </Button>
         </div>
@@ -274,10 +308,10 @@ export default function HomePage() {
             </div>
             <h2 className="font-serif">Aktuelle Immobilien</h2>
           </div>
-          <Button variant="ghost" asChild className="text-gold hover:text-gold hover:bg-gold/5">
+          <Button variant="ghost" asChild className="group text-gold hover:text-gold hover:bg-gold/5">
             <Link to="/immobilien">
               Alle ansehen
-              <ArrowRight className="w-4 h-4 ml-2" />
+              <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-200 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none" />
             </Link>
           </Button>
         </div>
@@ -299,7 +333,7 @@ export default function HomePage() {
           <h2 className="font-serif">Ihr Weg zum Erfolg</h2>
         </div>
 
-        <div className="relative max-w-4xl mx-auto" data-process>
+        <div className="relative max-w-4xl mx-auto" data-process data-process-once="true">
           {/* Vertical gold line */}
           <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-gold via-gold to-transparent hidden md:block" />
 
@@ -333,10 +367,10 @@ export default function HomePage() {
         </div>
 
         <div className="mt-12 text-center">
-          <Button size="lg" asChild className="rounded-none">
+          <Button size="lg" asChild className="group rounded-none">
             <Link to="/kontakt">
               Erstberatung vereinbaren
-              <ArrowRight className="w-4 h-4 ml-2" />
+              <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-200 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none" />
             </Link>
           </Button>
         </div>
@@ -354,10 +388,10 @@ export default function HomePage() {
             <p className="text-muted-foreground/90 mb-8 leading-relaxed">
               Antworten auf die wichtigsten Fragen rund um Verkauf, Vermietung und Bewertung.
             </p>
-            <Button variant="ghost" asChild className="text-gold hover:text-gold hover:bg-gold/5">
+            <Button variant="ghost" asChild className="group text-gold hover:text-gold hover:bg-gold/5">
               <Link to="/kontakt">
                 Weitere Fragen?
-                <ArrowRight className="w-4 h-4 ml-2" />
+                <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-200 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none" />
               </Link>
             </Button>
           </div>
@@ -371,6 +405,7 @@ export default function HomePage() {
       <CTABanner
         headline="Bereit für den nächsten Schritt?"
         subline="Vereinbaren Sie jetzt Ihre kostenfreie Erstberatung – unverbindlich und persönlich."
+        showRightVisual
       />
     </Layout>
   );

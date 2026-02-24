@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { getSiteUrl, siteConfig } from '@/lib/siteConfig';
 
 interface SEOProps {
   title: string;
@@ -18,6 +19,11 @@ export function SEO({
   noIndex = false,
 }: SEOProps) {
   useEffect(() => {
+    const siteUrl = getSiteUrl();
+    const canonicalUrl =
+      canonical ||
+      (siteUrl ? `${siteUrl}${window.location.pathname}${window.location.search}` : window.location.href);
+
     // Update document title
     document.title = title;
 
@@ -43,8 +49,9 @@ export function SEO({
     updateMeta('og:type', 'website', true);
     updateMeta('og:image', ogImage, true);
     updateMeta('og:image:alt', ogImageAlt, true);
-    updateMeta('og:site_name', 'ED Immobilien', true);
+    updateMeta('og:site_name', siteConfig.brandName, true);
     updateMeta('og:locale', 'de_DE', true);
+    updateMeta('og:url', canonicalUrl, true);
 
     // Twitter
     updateMeta('twitter:card', 'summary_large_image');
@@ -60,7 +67,7 @@ export function SEO({
       canonicalLink.rel = 'canonical';
       document.head.appendChild(canonicalLink);
     }
-    canonicalLink.href = canonical || window.location.href;
+    canonicalLink.href = canonicalUrl;
 
     return () => {
       // Cleanup if needed

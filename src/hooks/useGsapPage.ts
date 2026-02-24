@@ -30,6 +30,17 @@ export function useGsapPage() {
     media.addEventListener('change', syncMotionPreference);
 
     const ctx = gsap.context(() => {
+      const revealDuration = 0.66;
+      const revealEase = 'power2.out';
+      const staggerDuration = {
+        fast: 0.52,
+        base: 0.64,
+      };
+      const staggerAmount = {
+        fast: 0.07,
+        base: 0.08,
+      };
+
       const indicator = document.querySelector<HTMLElement>('[data-scroll-indicator]');
       if (indicator) {
         gsap.set(indicator, { scaleX: 0, transformOrigin: 'left center' });
@@ -44,9 +55,10 @@ export function useGsapPage() {
 
       if (media.matches) return;
 
-      // Enhanced reveal animations with subtle parallax
+      // Section reveal animations
       gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((el) => {
         const variant = el.dataset.revealVariant || 'up';
+        const once = el.dataset.revealOnce === 'true';
         const fromProps: gsap.TweenVars = { opacity: 0 };
         
         switch (variant) {
@@ -68,49 +80,74 @@ export function useGsapPage() {
           x: 0,
           y: 0,
           scale: 1,
-          duration: 0.8,
-          ease: 'power3.out',
+          duration: variant === 'scale' ? 0.58 : revealDuration,
+          ease: revealEase,
           scrollTrigger: {
             trigger: el,
-            start: 'top 88%',
+            start: 'top 90%',
             toggleActions: 'play none none none',
+            once,
           },
         });
       });
 
-      // Section parallax effect for images
-      gsap.utils.toArray<HTMLElement>('[data-parallax]').forEach((el) => {
-        const speed = parseFloat(el.dataset.parallaxSpeed || '0.15');
-        gsap.to(el, {
-          yPercent: speed * 100,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: el.parentElement || el,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 0.5,
-          },
+      // Conservative parallax only for explicitly marked assets
+      const applyParallax = (
+        selector: string,
+        config: { min: number; max: number; multiplier: number; scrub: number; defaultSpeed: number }
+      ) => {
+        gsap.utils.toArray<HTMLElement>(selector).forEach((el) => {
+          const speedRaw = parseFloat(el.dataset.parallaxSpeed || String(config.defaultSpeed));
+          const speed = Math.max(config.min, Math.min(speedRaw, config.max));
+          gsap.to(el, {
+            yPercent: speed * config.multiplier,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: el.parentElement || el,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: config.scrub,
+            },
+          });
         });
+      };
+
+      applyParallax('[data-parallax]', {
+        min: 0.04,
+        max: 0.12,
+        multiplier: 42,
+        scrub: 0.5,
+        defaultSpeed: 0.08,
+      });
+
+      applyParallax('[data-parallax-soft]', {
+        min: 0.02,
+        max: 0.06,
+        multiplier: 26,
+        scrub: 0.45,
+        defaultSpeed: 0.03,
       });
 
       // Fade-in from sides for split layouts
       gsap.utils.toArray<HTMLElement>('[data-split-reveal]').forEach((group) => {
         const left = group.querySelector('[data-split-left]');
         const right = group.querySelector('[data-split-right]');
+        const once = group.dataset.splitOnce === 'true';
         
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: group,
-            start: 'top 85%',
+            start: 'top 88%',
             toggleActions: 'play none none none',
+            once,
           },
         });
 
         if (left) {
-          tl.fromTo(left, { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, 0);
+          tl.fromTo(left, { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: revealDuration, ease: revealEase }, 0);
         }
         if (right) {
-          tl.fromTo(right, { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, 0.1);
+          tl.fromTo(right, { opacity: 0, x: 24 }, { opacity: 1, x: 0, duration: revealDuration, ease: revealEase }, 0.08);
         }
       });
 
@@ -118,25 +155,29 @@ export function useGsapPage() {
       gsap.utils.toArray<HTMLElement>('[data-process]').forEach((group) => {
         const items = group.querySelectorAll<HTMLElement>('[data-process-item]');
         if (!items.length) return;
-        
-        items.forEach((item, index) => {
-          const direction = item.dataset.direction === 'right' ? 1 : -1;
-          gsap.fromTo(
-            item,
-            { opacity: 0, x: direction * 50 },
-            {
-              opacity: 1,
-              x: 0,
-              duration: 0.9,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: item,
-                start: 'top 88%',
-                toggleActions: 'play none none none',
-              },
-            }
-          );
-        });
+        const once = group.dataset.processOnce !== 'false';
+
+        gsap.fromTo(
+          items,
+          {
+            opacity: 0,
+            x: (index, target) =>
+              (target as HTMLElement).dataset.direction === 'right' ? 42 : -42,
+          },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.72,
+            ease: revealEase,
+            stagger: 0.08,
+            scrollTrigger: {
+              trigger: group,
+              start: 'top 86%',
+              toggleActions: 'play none none none',
+              once,
+            },
+          }
+        );
       });
 
       // Staggered children animations
@@ -145,19 +186,21 @@ export function useGsapPage() {
         if (!items.length) return;
         const speed = group.dataset.staggerSpeed;
         const isFast = speed === 'fast';
+        const once = group.dataset.staggerOnce === 'true';
         gsap.fromTo(
           items,
           { opacity: 0, y: isFast ? 16 : 28 },
           {
             opacity: 1,
             y: 0,
-            duration: isFast ? 0.45 : 0.8,
-            ease: 'power3.out',
-            stagger: isFast ? 0.08 : 0.12,
+            duration: isFast ? staggerDuration.fast : staggerDuration.base,
+            ease: revealEase,
+            stagger: isFast ? staggerAmount.fast : staggerAmount.base,
             scrollTrigger: {
               trigger: group,
               start: isFast ? 'top 92%' : 'top 88%',
               toggleActions: 'play none none none',
+              once,
             },
           }
         );

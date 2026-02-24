@@ -7,6 +7,7 @@ import { SchemaOrg } from '@/components/seo/SchemaOrg';
 import { Section } from '@/components/ui/Section';
 import { Button } from '@/components/ui/button';
 import { CTABanner } from '@/components/CTABanner';
+import { getSiteUrl } from '@/lib/siteConfig';
 
 const regions = [
   'Edingen-Neckarhausen',
@@ -78,6 +79,7 @@ const processSteps = [
 ];
 
 export default function UeberUnsPage() {
+  const siteUrl = getSiteUrl();
   return (
     <Layout>
       <SEO
@@ -87,8 +89,8 @@ export default function UeberUnsPage() {
       <SchemaOrg
         type="BreadcrumbList"
         breadcrumbs={[
-          { name: 'Startseite', url: 'https://ed-immobilien.de/' },
-          { name: 'Über uns', url: 'https://ed-immobilien.de/ueber-uns' },
+          { name: 'Startseite', url: `${siteUrl}/` },
+          { name: 'Über uns', url: `${siteUrl}/ueber-uns` },
         ]}
       />
 
@@ -97,8 +99,16 @@ export default function UeberUnsPage() {
       </div>
 
       {/* Hero Quote */}
-      <Section size="lg" className="pt-8">
-        <div className="max-w-4xl mx-auto text-center" data-reveal>
+      <Section size="lg" className="relative overflow-hidden pt-8">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="ui-noise-soft absolute inset-0" />
+          <div
+            className="absolute left-1/2 top-8 h-52 w-52 -translate-x-1/2 rounded-full bg-gold/10 blur-3xl ui-parallax-soft"
+            data-parallax-soft
+            data-parallax-speed="0.03"
+          />
+        </div>
+        <div className="relative max-w-4xl mx-auto text-center" data-reveal>
           <div className="w-16 h-px bg-gold mx-auto mb-8" />
           <blockquote className="font-serif text-3xl md:text-4xl lg:text-5xl leading-tight text-foreground">
             "Immobilien sind mehr als Quadratmeter.

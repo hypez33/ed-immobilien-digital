@@ -11,6 +11,7 @@ import { ScrollToTop } from "@/components/routing/ScrollToTop";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import HomePage from "./pages/HomePage";
 import ImmobilienPage from "./pages/ImmobilienPage";
+import ImmobilieDetailPage from "./pages/ImmobilieDetailPage";
 import LeistungenPage from "./pages/LeistungenPage";
 import BlogPage from "./pages/BlogPage";
 import BlogPostPage from "./pages/BlogPostPage";
@@ -21,6 +22,7 @@ import DatenschutzPage from "./pages/DatenschutzPage";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import AdminBlogPage from "./pages/admin/AdminBlogPage";
+import AdminListingsPage from "./pages/admin/AdminListingsPage";
 import AdminLeadsPage from "./pages/admin/AdminLeadsPage";
 import AdminAnalyticsPage from "./pages/admin/AdminAnalyticsPage";
 import NotFound from "./pages/NotFound";
@@ -46,6 +48,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/immobilien" element={<ImmobilienPage />} />
+                <Route path="/immobilien/:id" element={<ImmobilieDetailPage />} />
                 <Route path="/leistungen" element={<LeistungenPage />} />
                 <Route path="/blog" element={<BlogPage />} />
                 <Route path="/blog/:slug" element={<BlogPostPage />} />
@@ -57,6 +60,7 @@ const App = () => (
                 <Route element={<RequireAuth />}>
                   <Route path="/admin" element={<AdminDashboardPage />} />
                   <Route path="/admin/blog" element={<AdminBlogPage />} />
+                  <Route path="/admin/immobilien" element={<AdminListingsPage />} />
                   <Route path="/admin/anfragen" element={<AdminLeadsPage />} />
                   <Route path="/admin/analytics" element={<AdminAnalyticsPage />} />
                 </Route>

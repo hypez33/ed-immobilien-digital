@@ -13,7 +13,7 @@ interface ServiceCardProps {
 
 export function ServiceCard({ icon: Icon, title, description, features, ctaText, ctaHref }: ServiceCardProps) {
   return (
-    <article className="relative bg-card border border-border/40 p-8 md:p-10 flex flex-col h-full group hover:border-gold/40 transition-all duration-500" data-stagger-item>
+    <article className="ui-interactive-card relative bg-card border border-border/40 p-8 md:p-10 flex flex-col h-full group hover:border-gold/40" data-stagger-item>
       {/* Gold corner accent */}
       <div className="absolute top-0 right-0 w-20 h-20 overflow-hidden pointer-events-none">
         <div className="absolute top-0 right-0 w-px h-10 bg-gold/30 group-hover:bg-gold/50 transition-colors" />
@@ -47,7 +47,7 @@ export function ServiceCard({ icon: Icon, title, description, features, ctaText,
       >
         <Link to={ctaHref}>
           <span className="font-medium">{ctaText}</span>
-          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          <ArrowRight className="w-4 h-4 transition-transform duration-200 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none" />
         </Link>
       </Button>
     </article>

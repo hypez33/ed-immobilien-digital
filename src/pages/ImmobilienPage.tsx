@@ -13,12 +13,14 @@ import { ListingCard, ListingCardSkeleton } from '@/components/cards/ListingCard
 import { FilterBar, FilterState, defaultFilters } from '@/components/FilterBar';
 import { FAQAccordion } from '@/components/FAQAccordion';
 import { CTABanner } from '@/components/CTABanner';
-import { listings } from '@/data/listings';
+import { usePublishedListings } from '@/hooks/usePublishedListings';
 import { immobilienFAQ } from '@/data/faq';
+import { getSiteUrl } from '@/lib/siteConfig';
 
 export default function ImmobilienPage() {
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
-  const [isLoading] = useState(false);
+  const { listings: availableListings, isLoading: remoteLoading } = usePublishedListings();
+  const siteUrl = getSiteUrl();
 
   const [searchForm, setSearchForm] = useState({
     wunschort: '',
@@ -28,7 +30,7 @@ export default function ImmobilienPage() {
   });
 
   const filteredListings = useMemo(() => {
-    return listings.filter((listing) => {
+    return availableListings.filter((listing) => {
       if (filters.location !== 'Alle Orte' && listing.location !== filters.location) {
         return false;
       }
@@ -60,9 +62,14 @@ export default function ImmobilienPage() {
           return 0;
       }
     });
-  }, [filters]);
+  }, [filters, availableListings]);
 
-  const featuredListings = listings.filter((l) => l.featured);
+  const locationOptions = useMemo(
+    () => ['Alle Orte', ...Array.from(new Set(availableListings.map((listing) => listing.location))).sort((a, b) => a.localeCompare(b))],
+    [availableListings]
+  );
+  const featuredListings = availableListings.filter((l) => l.featured);
+  const isLoading = remoteLoading && availableListings.length === 0;
   const hasNoResults = filteredListings.length === 0 && !isLoading;
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -81,8 +88,8 @@ export default function ImmobilienPage() {
       <SchemaOrg
         type="BreadcrumbList"
         breadcrumbs={[
-          { name: 'Startseite', url: 'https://ed-immobilien.de/' },
-          { name: 'Immobilien', url: 'https://ed-immobilien.de/immobilien' },
+          { name: 'Startseite', url: `${siteUrl}/` },
+          { name: 'Immobilien', url: `${siteUrl}/immobilien` },
         ]}
       />
       <SchemaOrg type="FAQPage" faqItems={immobilienFAQ} />
@@ -92,8 +99,17 @@ export default function ImmobilienPage() {
       </div>
 
       {/* Hero - Premium */}
-      <Section size="sm" className="pt-8 pb-12">
-        <div className="max-w-3xl" data-reveal>
+      <Section size="sm" className="relative overflow-hidden pt-8 pb-12">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="ui-noise-soft absolute inset-0" />
+          <div className="absolute -right-12 top-10 h-44 w-44 rounded-full bg-gold/10 blur-3xl" />
+          <div
+            className="absolute left-[-3.5rem] top-24 h-36 w-36 rounded-full bg-primary/10 blur-3xl ui-parallax-soft"
+            data-parallax-soft
+            data-parallax-speed="0.03"
+          />
+        </div>
+        <div className="relative max-w-3xl" data-reveal>
           <div className="flex items-center gap-4 mb-6">
             <div className="w-12 h-px bg-gold" />
             <span className="text-gold text-sm uppercase tracking-[0.15em]">Portfolio</span>
@@ -113,6 +129,7 @@ export default function ImmobilienPage() {
             filters={filters}
             onFilterChange={setFilters}
             onReset={() => setFilters(defaultFilters)}
+            locations={locationOptions}
           />
         </div>
       </Section>

@@ -6,7 +6,11 @@ import { ServiceCard } from './ServiceCard';
 import { ServiceInquiryForm } from './ServiceInquiryForm';
 import { cn } from '@/lib/utils';
 
-export function ServiceSection() {
+interface ServiceSectionProps {
+  showHeader?: boolean;
+}
+
+export function ServiceSection({ showHeader = true }: ServiceSectionProps) {
   const [open, setOpen] = useState(false);
   const [activeService, setActiveService] = useState<Service | null>(null);
   const [expanded, setExpanded] = useState(false);
@@ -22,20 +26,22 @@ export function ServiceSection() {
 
   return (
     <Section size="lg" variant="surface" id="angebotene-leistungen">
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12" data-reveal>
-        <div>
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-12 h-px bg-gold" />
-            <span className="text-gold text-sm uppercase tracking-[0.15em]">Services</span>
+      {showHeader && (
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12" data-reveal data-reveal-once="true">
+          <div>
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-12 h-px bg-gold" />
+              <span className="text-gold text-sm uppercase tracking-[0.15em]">Services</span>
+            </div>
+            <h2 className="font-serif">Angebotene Leistungen</h2>
+            <p className="text-muted-foreground mt-3 max-w-2xl">
+              Wählen Sie den passenden Service und senden Sie Ihre Anfrage in weniger als 2 Minuten.
+            </p>
           </div>
-          <h2 className="font-serif">Angebotene Leistungen</h2>
-          <p className="text-muted-foreground mt-3 max-w-2xl">
-            Wählen Sie den passenden Service und senden Sie Ihre Anfrage in weniger als 2 Minuten.
-          </p>
         </div>
-      </div>
+      )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" data-stagger>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" data-stagger data-stagger-once="true">
         {primaryServices.map((service) => (
           <ServiceCard key={service.id} service={service} onStart={handleStart} />
         ))}
@@ -46,11 +52,11 @@ export function ServiceSection() {
           id="services-more"
           aria-hidden={!expanded}
           className={cn(
-            'overflow-hidden transition-all duration-300 ease-out motion-reduce:transition-none',
+            'overflow-hidden transition-[max-height,opacity,transform] transition-duration-[420ms] transition-ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
             expanded ? 'max-h-[2000px] opacity-100 translate-y-0 mt-6' : 'max-h-0 opacity-0 -translate-y-2'
           )}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" data-stagger>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" data-stagger data-stagger-once="true">
             {extraServices.map((service) => (
               <ServiceCard key={service.id} service={service} onStart={handleStart} />
             ))}

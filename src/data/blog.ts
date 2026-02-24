@@ -1,5 +1,6 @@
 import coverHouse from '@/assets/listing-house.jpg';
 import coverApartment from '@/assets/listing-apartment.jpg';
+import { blogVisualBySlug } from '@/data/visuals';
 
 export interface BlogPost {
   id: string;
@@ -24,7 +25,7 @@ export const blogPosts: BlogPost[] = [
       'Welche Entwicklungen prägen den regionalen Markt, wie verändern sich Nachfrage und Preisniveaus und wo liegen Chancen für Käufer und Verkäufer?',
     date: '2026-01-12',
     category: 'Markt',
-    cover: coverHouse,
+    cover: blogVisualBySlug['immobilienmarkt-2026-rhein-neckar'] ?? coverHouse,
     status: 'published',
     createdAt: '2026-01-12',
     updatedAt: '2026-01-12',
@@ -40,7 +41,7 @@ export const blogPosts: BlogPost[] = [
       'Von Unterlagen bis Exposé – mit dieser Checkliste bringen Sie Ihre Immobilie strukturiert auf den Markt und vermeiden typische Verzögerungen.',
     date: '2026-01-05',
     category: 'Praxis',
-    cover: coverApartment,
+    cover: blogVisualBySlug['verkauf-checkliste-immobilie'] ?? coverApartment,
     status: 'published',
     createdAt: '2026-01-05',
     updatedAt: '2026-01-05',

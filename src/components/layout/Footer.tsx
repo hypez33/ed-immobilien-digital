@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
-import { MapPin, Phone, Mail, Clock, ArrowRight } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { useConsent } from '@/context/ConsentContext';
+import { siteConfig } from '@/lib/siteConfig';
+import { footerVisuals, visualAltTextByKey } from '@/data/visuals';
+import { cn } from '@/lib/utils';
 
 const services = [
   { name: 'Immobilie verkaufen', href: '/kontakt?anliegen=verkauf' },
@@ -16,9 +19,14 @@ const navigation = [
   { name: 'Kontakt', href: '/kontakt' },
 ];
 
-export function Footer() {
+interface FooterProps {
+  variant?: 'default' | 'home-visual';
+}
+
+export function Footer({ variant = 'default' }: FooterProps) {
   const { openSettings } = useConsent();
   const currentYear = new Date().getFullYear();
+  const showHomeVisual = variant === 'home-visual';
 
   return (
     <footer className="bg-primary text-primary-foreground relative">
@@ -32,7 +40,28 @@ export function Footer() {
         }}
       />
 
-      <div className="container relative py-16 md:py-20">
+      {showHomeVisual && (
+        <div className="absolute inset-y-0 right-0 w-1/4 hidden lg:block">
+          <div className="group relative h-full w-full overflow-hidden border-l border-cream/20 bg-gold-light/10">
+            <img
+              src={footerVisuals.homeRight}
+              alt={visualAltTextByKey['footer-home-right']}
+              className="absolute inset-0 h-full w-full object-cover"
+              loading="lazy"
+              data-parallax-soft
+              data-parallax-speed="0.03"
+            />
+            <div className="ui-visual-overlay absolute inset-0" />
+            <div className="ui-visual-blur-rim absolute inset-0 pointer-events-none" />
+            <div className="absolute left-4 right-4 bottom-6 border border-cream/25 bg-primary/70 px-4 py-3 backdrop-blur-md">
+              <span className="block text-2xs uppercase tracking-[0.16em] text-cream/70">Rhein-Neckar-Kreis</span>
+              <span className="font-serif text-lg text-cream leading-tight">Seit 15+ Jahren lokal verankert</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className={cn('container relative py-16 md:py-20', showHomeVisual && 'lg:pr-[28%]')}>
         <div className="grid grid-cols-12 gap-8 lg:gap-12">
           {/* Brand - Takes more space */}
           <div className="col-span-12 lg:col-span-5 space-y-6">
@@ -44,8 +73,8 @@ export function Footer() {
                 <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-gold" />
               </div>
               <div>
-                <span className="font-serif text-2xl block text-cream">ED Immobilien</span>
-                <span className="text-cream/50 text-xs uppercase tracking-[0.2em]">Rhein-Neckar-Kreis</span>
+                <span className="font-serif text-2xl block text-cream">{siteConfig.brandName}</span>
+                <span className="text-cream/50 text-xs uppercase tracking-[0.2em]">{siteConfig.region}</span>
               </div>
             </div>
             <p className="font-serif text-xl text-cream/70 leading-relaxed max-w-sm">
@@ -100,7 +129,7 @@ export function Footer() {
                 </div>
                 <div>
                   <span className="text-cream/50 text-xs uppercase tracking-wider block mb-1">Standort</span>
-                  <span className="text-cream/80">Edingen-Neckarhausen</span>
+                  <span className="text-cream/80">{siteConfig.addressText}</span>
                 </div>
               </li>
               <li className="flex items-start gap-4">
@@ -109,7 +138,7 @@ export function Footer() {
                 </div>
                 <div>
                   <span className="text-cream/50 text-xs uppercase tracking-wider block mb-1">Telefon</span>
-                  <span className="text-cream/80">+49 (0) 123 456789</span>
+                  <span className="text-cream/80">{siteConfig.phone}</span>
                 </div>
               </li>
               <li className="flex items-start gap-4">
@@ -118,7 +147,7 @@ export function Footer() {
                 </div>
                 <div>
                   <span className="text-cream/50 text-xs uppercase tracking-wider block mb-1">E-Mail</span>
-                  <span className="text-cream/80">info@ed-immobilien.de</span>
+                  <span className="text-cream/80">{siteConfig.email}</span>
                 </div>
               </li>
               <li className="flex items-start gap-4">
@@ -127,7 +156,7 @@ export function Footer() {
                 </div>
                 <div>
                   <span className="text-cream/50 text-xs uppercase tracking-wider block mb-1">Öffnungszeiten</span>
-                  <span className="text-cream/80">Mo–Fr: 9:00–18:00 Uhr</span>
+                  <span className="text-cream/80">{siteConfig.openingHoursText}</span>
                 </div>
               </li>
             </ul>

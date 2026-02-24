@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 const adminLinks = [
   { label: 'Dashboard', href: '/admin' },
   { label: 'Blog', href: '/admin/blog' },
+  { label: 'Immobilien', href: '/admin/immobilien' },
   { label: 'Anfragen', href: '/admin/anfragen' },
   { label: 'Analytics', href: '/admin/analytics' },
 ];
