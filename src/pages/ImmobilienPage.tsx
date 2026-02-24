@@ -99,7 +99,7 @@ export default function ImmobilienPage() {
       </div>
 
       {/* Hero - Premium */}
-      <Section size="sm" className="relative overflow-hidden pt-8 pb-12">
+      <Section size="sm" className="relative overflow-hidden pt-6 pb-8">
         <div className="pointer-events-none absolute inset-0">
           <div className="ui-noise-soft absolute inset-0" />
           <div className="absolute -right-12 top-10 h-44 w-44 rounded-full bg-gold/10 blur-3xl" />
@@ -123,7 +123,7 @@ export default function ImmobilienPage() {
       </Section>
 
       {/* Filter - Refined */}
-      <Section size="sm" className="pt-0 pb-10">
+      <Section size="sm" className="pt-0 pb-2 md:pb-3">
         <div className="bg-card p-6 border border-border/40" data-reveal>
           <FilterBar
             filters={filters}
@@ -136,8 +136,8 @@ export default function ImmobilienPage() {
 
       {/* Featured */}
       {featuredListings.length > 0 && (
-        <Section variant="surface" size="lg">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12" data-reveal>
+        <Section variant="surface" size="default" className="pt-4 md:pt-6 lg:pt-8">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8 md:mb-10" data-reveal>
             <div>
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-px bg-gold" />
@@ -155,8 +155,8 @@ export default function ImmobilienPage() {
       )}
 
       {/* All Listings */}
-      <Section size="lg">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12" data-reveal>
+      <Section size="default">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8 md:mb-10" data-reveal>
           <div>
             <h2 className="font-serif">Alle Objekte</h2>
             <p className="text-muted-foreground mt-2">
@@ -207,9 +207,9 @@ export default function ImmobilienPage() {
       </Section>
 
       {/* Search Request - Premium */}
-      <Section variant="surface" size="lg" id="suchauftrag">
+      <Section variant="surface" size="default" id="suchauftrag">
         <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 md:mb-10">
             <div className="flex items-center justify-center gap-4 mb-6">
               <div className="w-12 h-px bg-gold" />
               <span className="text-gold text-sm uppercase tracking-[0.15em]">Suchauftrag</span>
@@ -283,8 +283,8 @@ export default function ImmobilienPage() {
       </Section>
 
       {/* FAQ */}
-      <Section size="lg">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16" data-split-reveal>
+      <Section size="sm" className="pb-6 md:pb-8">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-10" data-split-reveal>
           <div className="lg:col-span-4" data-split-left>
             <div className="flex items-center gap-4 mb-4">
               <div className="w-12 h-px bg-gold" />

@@ -27,6 +27,7 @@ export function Footer({ variant = 'default' }: FooterProps) {
   const { openSettings } = useConsent();
   const currentYear = new Date().getFullYear();
   const showHomeVisual = variant === 'home-visual';
+  const compactHome = showHomeVisual;
 
   return (
     <footer className="bg-primary text-primary-foreground relative">
@@ -53,7 +54,10 @@ export function Footer({ variant = 'default' }: FooterProps) {
             />
             <div className="ui-visual-overlay absolute inset-0" />
             <div className="ui-visual-blur-rim absolute inset-0 pointer-events-none" />
-            <div className="absolute left-4 right-4 bottom-6 border border-cream/25 bg-primary/70 px-4 py-3 backdrop-blur-md">
+            <div className={cn(
+              'absolute left-4 right-4 border border-cream/25 bg-primary/70 px-4 backdrop-blur-md',
+              compactHome ? 'bottom-4 py-2.5' : 'bottom-6 py-3'
+            )}>
               <span className="block text-2xs uppercase tracking-[0.16em] text-cream/70">Rhein-Neckar-Kreis</span>
               <span className="font-serif text-lg text-cream leading-tight">Seit 15+ Jahren lokal verankert</span>
             </div>
@@ -61,32 +65,42 @@ export function Footer({ variant = 'default' }: FooterProps) {
         </div>
       )}
 
-      <div className={cn('container relative py-16 md:py-20', showHomeVisual && 'lg:pr-[28%]')}>
-        <div className="grid grid-cols-12 gap-8 lg:gap-12">
+      <div className={cn(
+        'container relative',
+        compactHome ? 'py-6 md:py-8' : 'py-16 md:py-20',
+        showHomeVisual && 'lg:pr-[28%]'
+      )}>
+        <div className={cn('grid grid-cols-12', compactHome ? 'gap-4 lg:gap-6' : 'gap-8 lg:gap-12')}>
           {/* Brand - Takes more space */}
-          <div className="col-span-12 lg:col-span-5 space-y-6">
-            <div className="flex items-center gap-4">
+          <div className={cn('col-span-12', compactHome ? 'lg:col-span-7 space-y-3' : 'lg:col-span-5 space-y-6')}>
+            <div className={cn('flex items-center', compactHome ? 'gap-3' : 'gap-4')}>
               <div className="relative">
-                <div className="w-14 h-14 bg-cream flex items-center justify-center text-primary font-serif text-2xl">
+                <div className={cn(
+                  'bg-cream flex items-center justify-center text-primary font-serif',
+                  compactHome ? 'w-12 h-12 text-xl' : 'w-14 h-14 text-2xl'
+                )}>
                   ED
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-gold" />
               </div>
               <div>
-                <span className="font-serif text-2xl block text-cream">{siteConfig.brandName}</span>
+                <span className={cn('font-serif block text-cream', compactHome ? 'text-xl' : 'text-2xl')}>{siteConfig.brandName}</span>
                 <span className="text-cream/50 text-xs uppercase tracking-[0.2em]">{siteConfig.region}</span>
               </div>
             </div>
-            <p className="font-serif text-xl text-cream/70 leading-relaxed max-w-sm">
-              Exzellenz in jedem Detail. Vertrauen durch Transparenz.
-            </p>
+            {!compactHome && (
+              <p className={cn('font-serif text-cream/70 leading-relaxed max-w-sm', compactHome ? 'text-lg' : 'text-xl')}>
+                Exzellenz in jedem Detail. Vertrauen durch Transparenz.
+              </p>
+            )}
             <div className="w-16 h-px bg-gold-light/50" />
           </div>
 
           {/* Services */}
-          <div className="col-span-12 sm:col-span-6 lg:col-span-2">
-            <h3 className="font-serif text-lg mb-6 text-cream">Leistungen</h3>
-            <ul className="space-y-4">
+          {!compactHome && (
+            <div className="col-span-12 sm:col-span-6 lg:col-span-2">
+            <h3 className={cn('font-serif text-lg text-cream', compactHome ? 'mb-4' : 'mb-6')}>Leistungen</h3>
+            <ul className={cn(compactHome ? 'space-y-3' : 'space-y-4')}>
               {services.map((item) => (
                 <li key={item.name}>
                   <Link
@@ -99,12 +113,14 @@ export function Footer({ variant = 'default' }: FooterProps) {
                 </li>
               ))}
             </ul>
-          </div>
+            </div>
+          )}
 
           {/* Navigation */}
-          <div className="col-span-12 sm:col-span-6 lg:col-span-2">
-            <h3 className="font-serif text-lg mb-6 text-cream">Navigation</h3>
-            <ul className="space-y-4">
+          {!compactHome && (
+            <div className="col-span-12 sm:col-span-6 lg:col-span-2">
+            <h3 className={cn('font-serif text-lg text-cream', compactHome ? 'mb-4' : 'mb-6')}>Navigation</h3>
+            <ul className={cn(compactHome ? 'space-y-3' : 'space-y-4')}>
               {navigation.map((item) => (
                 <li key={item.name}>
                   <Link
@@ -117,14 +133,19 @@ export function Footer({ variant = 'default' }: FooterProps) {
                 </li>
               ))}
             </ul>
-          </div>
+            </div>
+          )}
 
           {/* Contact */}
-          <div className="col-span-12 lg:col-span-3">
-            <h3 className="font-serif text-lg mb-6 text-cream">Kontakt</h3>
-            <ul className="space-y-5 text-sm">
-              <li className="flex items-start gap-4">
-                <div className="w-9 h-9 rounded-full border border-gold-light/40 flex items-center justify-center flex-shrink-0">
+          <div className={cn('col-span-12', compactHome ? 'lg:col-span-5' : 'lg:col-span-3')}>
+            <h3 className={cn('font-serif text-lg text-cream', compactHome ? 'mb-4' : 'mb-6')}>Kontakt</h3>
+            <ul className={cn('text-sm', compactHome ? 'space-y-4' : 'space-y-5')}>
+              {!compactHome && (
+                <li className={cn('flex items-start', compactHome ? 'gap-3' : 'gap-4')}>
+                <div className={cn(
+                  'rounded-full border border-gold-light/40 flex items-center justify-center flex-shrink-0',
+                  compactHome ? 'w-8 h-8' : 'w-9 h-9'
+                )}>
                   <MapPin className="w-4 h-4 text-gold-light" />
                 </div>
                 <div>
@@ -132,8 +153,12 @@ export function Footer({ variant = 'default' }: FooterProps) {
                   <span className="text-cream/80">{siteConfig.addressText}</span>
                 </div>
               </li>
-              <li className="flex items-start gap-4">
-                <div className="w-9 h-9 rounded-full border border-gold-light/40 flex items-center justify-center flex-shrink-0">
+              )}
+              <li className={cn('flex items-start', compactHome ? 'gap-3' : 'gap-4')}>
+                <div className={cn(
+                  'rounded-full border border-gold-light/40 flex items-center justify-center flex-shrink-0',
+                  compactHome ? 'w-8 h-8' : 'w-9 h-9'
+                )}>
                   <Phone className="w-4 h-4 text-gold-light" />
                 </div>
                 <div>
@@ -141,8 +166,11 @@ export function Footer({ variant = 'default' }: FooterProps) {
                   <span className="text-cream/80">{siteConfig.phone}</span>
                 </div>
               </li>
-              <li className="flex items-start gap-4">
-                <div className="w-9 h-9 rounded-full border border-gold-light/40 flex items-center justify-center flex-shrink-0">
+              <li className={cn('flex items-start', compactHome ? 'gap-3' : 'gap-4')}>
+                <div className={cn(
+                  'rounded-full border border-gold-light/40 flex items-center justify-center flex-shrink-0',
+                  compactHome ? 'w-8 h-8' : 'w-9 h-9'
+                )}>
                   <Mail className="w-4 h-4 text-gold-light" />
                 </div>
                 <div>
@@ -150,8 +178,12 @@ export function Footer({ variant = 'default' }: FooterProps) {
                   <span className="text-cream/80">{siteConfig.email}</span>
                 </div>
               </li>
-              <li className="flex items-start gap-4">
-                <div className="w-9 h-9 rounded-full border border-gold-light/40 flex items-center justify-center flex-shrink-0">
+              {!compactHome && (
+                <li className={cn('flex items-start', compactHome ? 'gap-3' : 'gap-4')}>
+                <div className={cn(
+                  'rounded-full border border-gold-light/40 flex items-center justify-center flex-shrink-0',
+                  compactHome ? 'w-8 h-8' : 'w-9 h-9'
+                )}>
                   <Clock className="w-4 h-4 text-gold-light" />
                 </div>
                 <div>
@@ -159,17 +191,18 @@ export function Footer({ variant = 'default' }: FooterProps) {
                   <span className="text-cream/80">{siteConfig.openingHoursText}</span>
                 </div>
               </li>
+              )}
             </ul>
           </div>
         </div>
 
         {/* Divider */}
-        <div className="my-12 h-px bg-cream/10" />
+        <div className={cn('h-px bg-cream/10', compactHome ? 'my-5 md:my-6' : 'my-12')} />
 
         {/* Bottom */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm">
+        <div className={cn('flex flex-col sm:flex-row justify-between items-center text-sm', compactHome ? 'gap-3' : 'gap-4')}>
           <p className="text-cream/40">© {currentYear} ED Immobilien. Alle Rechte vorbehalten.</p>
-          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-8">
+          <div className={cn('flex flex-col sm:flex-row items-center gap-3', compactHome ? 'sm:gap-6' : 'sm:gap-8')}>
             <Link to="/impressum" className="text-cream/40 hover:text-gold-light transition-colors">
               Impressum
             </Link>
