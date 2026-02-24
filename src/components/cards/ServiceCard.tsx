@@ -13,16 +13,22 @@ interface ServiceCardProps {
 
 export function ServiceCard({ icon: Icon, title, description, features, ctaText, ctaHref }: ServiceCardProps) {
   return (
-    <article className="ui-interactive-card relative bg-card border border-border/40 p-8 md:p-10 flex flex-col h-full group hover:border-gold/40" data-stagger-item>
+    <article className="ui-interactive-card relative bg-card border border-border/40 p-8 md:p-10 flex flex-col h-full group hover:border-gold/40 overflow-hidden" data-stagger-item>
+      {/* Gold top line - animates on hover */}
+      <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-gold/0 via-gold to-gold/0 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out" />
+
       {/* Gold corner accent */}
       <div className="absolute top-0 right-0 w-20 h-20 overflow-hidden pointer-events-none">
         <div className="absolute top-0 right-0 w-px h-10 bg-gold/30 group-hover:bg-gold/50 transition-colors" />
         <div className="absolute top-0 right-0 h-px w-10 bg-gold/30 group-hover:bg-gold/50 transition-colors" />
       </div>
 
-      {/* Icon with gold ring */}
-      <div className="w-16 h-16 rounded-full border-2 border-gold/30 flex items-center justify-center mb-8 group-hover:border-gold/60 transition-colors">
-        <Icon className="w-7 h-7 text-gold" />
+      {/* Subtle background glow on hover */}
+      <div className="absolute -top-20 -right-20 w-40 h-40 bg-gold/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+      {/* Icon with gold ring + filled bg */}
+      <div className="relative w-16 h-16 rounded-full border-2 border-gold/30 bg-gold/5 flex items-center justify-center mb-8 group-hover:border-gold/60 group-hover:bg-gold/10 transition-all duration-300">
+        <Icon className="w-7 h-7 text-gold transition-transform duration-300 group-hover:scale-110" />
       </div>
 
       {/* Content */}
