@@ -37,7 +37,6 @@ export default function LeistungenPage() {
 
       {/* Hero section */}
       <Section size="sm" className="relative overflow-hidden pt-8 pb-6">
-        {/* Decorative elements */}
         <div className="pointer-events-none absolute inset-0">
           <div className="ui-noise-soft absolute inset-0" />
           <div
@@ -45,8 +44,6 @@ export default function LeistungenPage() {
             data-parallax-soft
             data-parallax-speed="0.03"
           />
-          <div className="absolute left-0 top-1/2 w-32 h-32 border border-gold/8 rounded-full hidden lg:block" />
-          <div className="absolute right-20 bottom-0 w-48 h-48 border border-gold/6 rounded-full hidden lg:block" />
         </div>
 
         <div className="relative max-w-3xl" data-reveal>
@@ -55,7 +52,7 @@ export default function LeistungenPage() {
             <span className="text-gold text-sm uppercase tracking-[0.2em] font-medium">Leistungen</span>
           </div>
           <h1 className="font-serif mb-4">Alles aus einer Hand</h1>
-          <p className="text-lg text-muted-foreground/90 leading-relaxed mb-10">
+          <p className="text-lg text-muted-foreground/90 leading-relaxed mb-8">
             Wählen Sie den passenden Service – wir kümmern uns um die nächsten Schritte und melden uns
             innerhalb von 24 Stunden.
           </p>
@@ -81,8 +78,7 @@ export default function LeistungenPage() {
       <ServiceSection showHeader={false} />
 
       {/* Bottom CTA */}
-      <Section size="default" className="bg-cream relative overflow-hidden">
-        <div className="absolute top-8 right-12 w-24 h-24 border border-gold/10 rounded-full pointer-events-none hidden lg:block" />
+      <Section size="sm" className="bg-cream">
         <div className="text-center max-w-2xl mx-auto" data-reveal data-reveal-once="true">
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="w-16 h-px bg-gradient-to-r from-transparent to-gold" />
@@ -93,15 +89,13 @@ export default function LeistungenPage() {
           <p className="text-muted-foreground text-lg leading-relaxed mb-8">
             Kein Problem – rufen Sie uns an oder schreiben Sie uns. Wir beraten Sie unverbindlich und finden gemeinsam die beste Lösung.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" asChild className="group rounded-none">
-              <Link to="/kontakt">
-                <Phone className="w-4 h-4 mr-2" />
-                Kostenlose Beratung
-                <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-200 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none" />
-              </Link>
-            </Button>
-          </div>
+          <Button size="lg" asChild className="group rounded-none">
+            <Link to="/kontakt">
+              <Phone className="w-4 h-4 mr-2" />
+              Kostenlose Beratung
+              <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-200 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none" />
+            </Link>
+          </Button>
         </div>
       </Section>
     </Layout>

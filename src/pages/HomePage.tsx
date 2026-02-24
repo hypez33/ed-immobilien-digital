@@ -337,11 +337,7 @@ export default function HomePage() {
 
       {/* Process - Vertical Timeline */}
       <Section size="default" className="bg-cream relative overflow-hidden">
-        {/* Decorative background elements */}
-        <div className="absolute top-12 left-8 w-32 h-32 border border-gold/10 rounded-full pointer-events-none hidden lg:block" />
-        <div className="absolute bottom-12 right-8 w-48 h-48 border border-gold/8 rounded-full pointer-events-none hidden lg:block" />
-
-        <div className="text-center mb-12 md:mb-16">
+        <div className="text-center mb-10 md:mb-14">
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="w-16 h-px bg-gradient-to-r from-transparent to-gold" />
             <span className="text-gold text-sm uppercase tracking-[0.2em] font-medium">Prozess</span>
