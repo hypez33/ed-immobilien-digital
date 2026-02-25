@@ -140,6 +140,15 @@ export function ServiceSection({
     >
       {backgroundImage && (
         <div aria-hidden className="pointer-events-none absolute inset-0">
+          {/* Outer frame border */}
+          <div className="absolute inset-4 sm:inset-6 md:inset-8 border border-gold/20 z-[2] pointer-events-none" />
+          <div className="absolute inset-4 sm:inset-6 md:inset-8 z-[2] pointer-events-none">
+            {/* Corner accents */}
+            <div className="absolute -top-px -left-px w-6 h-6 border-t-2 border-l-2 border-gold/50" />
+            <div className="absolute -top-px -right-px w-6 h-6 border-t-2 border-r-2 border-gold/50" />
+            <div className="absolute -bottom-px -left-px w-6 h-6 border-b-2 border-l-2 border-gold/50" />
+            <div className="absolute -bottom-px -right-px w-6 h-6 border-b-2 border-r-2 border-gold/50" />
+          </div>
           <ProgressiveImage
             src={backgroundImage}
             alt={backgroundAlt}
