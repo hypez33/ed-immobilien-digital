@@ -158,11 +158,11 @@ export function ServiceSection({
           </div>
           {/* Outer frame flush with section edges */}
           <div aria-hidden className="pointer-events-none absolute inset-0 z-[2]">
-            <div className="absolute inset-0 border border-gold/20" />
-            <div className="absolute -top-px -left-px w-8 h-8 border-t-2 border-l-2 border-gold/40" />
-            <div className="absolute -top-px -right-px w-8 h-8 border-t-2 border-r-2 border-gold/40" />
-            <div className="absolute -bottom-px -left-px w-8 h-8 border-b-2 border-l-2 border-gold/40" />
-            <div className="absolute -bottom-px -right-px w-8 h-8 border-b-2 border-r-2 border-gold/40" />
+            <div className="absolute inset-0 border-2 border-gold/25" />
+            <div className="absolute -top-px -left-px w-10 h-10 border-t-[3px] border-l-[3px] border-gold/50" />
+            <div className="absolute -top-px -right-px w-10 h-10 border-t-[3px] border-r-[3px] border-gold/50" />
+            <div className="absolute -bottom-px -left-px w-10 h-10 border-b-[3px] border-l-[3px] border-gold/50" />
+            <div className="absolute -bottom-px -right-px w-10 h-10 border-b-[3px] border-r-[3px] border-gold/50" />
           </div>
         </>
       )}
