@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Section } from '@/components/ui/Section';
 import { Button } from '@/components/ui/button';
 import { ProgressiveImage } from '@/components/ui/ProgressiveImage';
@@ -6,6 +6,8 @@ import { Service, services } from '@/data/services';
 import { ServiceCard } from './ServiceCard';
 import { ServiceInquiryForm } from './ServiceInquiryForm';
 import { cn } from '@/lib/utils';
+import { ChevronDown } from 'lucide-react';
+import gsap from 'gsap';
 
 interface ServiceSectionProps {
   showHeader?: boolean;
@@ -21,6 +23,8 @@ export function ServiceSection({
   const [open, setOpen] = useState(false);
   const [activeService, setActiveService] = useState<Service | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
+  const isAnimating = useRef(false);
 
   const handleStart = (service: Service) => {
     setActiveService(service);
@@ -30,6 +34,102 @@ export function ServiceSection({
   const primaryServices = services.slice(0, 3);
   const extraServices = services.slice(3);
   const canToggle = extraServices.length > 0;
+
+  const toggleExpand = useCallback(() => {
+    const container = moreRef.current;
+    if (!container || isAnimating.current) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!expanded) {
+      // Expand
+      isAnimating.current = true;
+      setExpanded(true);
+      container.style.display = 'block';
+      const items = container.querySelectorAll<HTMLElement>('[data-stagger-item]');
+
+      if (reduceMotion) {
+        container.style.height = 'auto';
+        container.style.opacity = '1';
+        gsap.set(items, { opacity: 1, y: 0 });
+        isAnimating.current = false;
+        return;
+      }
+
+      // Measure natural height
+      container.style.height = 'auto';
+      const naturalHeight = container.scrollHeight;
+      container.style.height = '0px';
+      container.style.opacity = '0';
+
+      gsap.set(items, { opacity: 0, y: 32 });
+
+      const tl = gsap.timeline({
+        onComplete: () => {
+          container.style.height = 'auto';
+          isAnimating.current = false;
+        },
+      });
+
+      tl.to(container, {
+        height: naturalHeight,
+        opacity: 1,
+        duration: 0.55,
+        ease: 'power3.out',
+      });
+
+      tl.to(
+        items,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          stagger: 0.09,
+          ease: 'power2.out',
+        },
+        '-=0.25'
+      );
+    } else {
+      // Collapse
+      isAnimating.current = true;
+      const items = container.querySelectorAll<HTMLElement>('[data-stagger-item]');
+
+      if (reduceMotion) {
+        container.style.height = '0px';
+        container.style.opacity = '0';
+        container.style.display = 'none';
+        setExpanded(false);
+        isAnimating.current = false;
+        return;
+      }
+
+      const tl = gsap.timeline({
+        onComplete: () => {
+          container.style.display = 'none';
+          setExpanded(false);
+          isAnimating.current = false;
+        },
+      });
+
+      tl.to(items, {
+        opacity: 0,
+        y: -16,
+        duration: 0.3,
+        stagger: 0.04,
+        ease: 'power2.in',
+      });
+
+      tl.to(
+        container,
+        {
+          height: 0,
+          opacity: 0,
+          duration: 0.4,
+          ease: 'power3.inOut',
+        },
+        '-=0.15'
+      );
+    }
+  }, [expanded]);
 
   return (
     <Section
@@ -43,15 +143,15 @@ export function ServiceSection({
           <ProgressiveImage
             src={backgroundImage}
             alt={backgroundAlt}
-            containerClassName="absolute inset-x-0 -top-[6%] h-[112%] w-full"
-            className="ui-parallax-soft will-change-transform"
+            containerClassName="absolute inset-x-0 -top-[10%] h-[120%] w-full"
+            className="will-change-transform"
             imgProps={{
-              'data-parallax-soft': true,
-              'data-parallax-speed': '0.035',
+              'data-parallax': true,
+              'data-parallax-speed': '0.09',
             }}
           />
-          <div className="absolute inset-0 bg-background/74" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/62 via-background/72 to-background/84" />
+          <div className="absolute inset-0 bg-background/72" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/58 via-background/70 to-background/82" />
           <div className="absolute inset-0 ui-noise-soft" />
         </div>
       )}
@@ -80,14 +180,13 @@ export function ServiceSection({
 
         {canToggle && (
           <div
+            ref={moreRef}
             id="services-more"
             aria-hidden={!expanded}
-            className={cn(
-              'overflow-hidden transition-[max-height,opacity,transform] transition-duration-[420ms] transition-ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
-              expanded ? 'max-h-[2000px] opacity-100 translate-y-0 mt-6' : 'max-h-0 opacity-0 -translate-y-2'
-            )}
+            className="overflow-hidden mt-6"
+            style={{ display: 'none', height: 0, opacity: 0 }}
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" data-stagger data-stagger-once="true">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
               {extraServices.map((service) => (
                 <ServiceCard key={service.id} service={service} onStart={handleStart} />
               ))}
@@ -101,12 +200,16 @@ export function ServiceSection({
               type="button"
               variant="outline"
               size="lg"
-              onClick={() => setExpanded((prev) => !prev)}
-              className="rounded-none border-gold/40 text-gold hover:bg-gold/10 hover:border-gold"
+              onClick={toggleExpand}
+              className="group rounded-none border-gold/40 text-gold hover:bg-gold/10 hover:border-gold gap-2"
               aria-expanded={expanded}
               aria-controls="services-more"
             >
               {expanded ? 'Weniger anzeigen' : 'Mehr Leistungen'}
+              <ChevronDown className={cn(
+                'w-4 h-4 transition-transform duration-300 ease-out',
+                expanded && 'rotate-180'
+              )} />
             </Button>
           </div>
         )}
