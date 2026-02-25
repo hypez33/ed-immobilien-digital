@@ -139,30 +139,32 @@ export function ServiceSection({
       className={cn('relative overflow-hidden', backgroundImage && 'isolate')}
     >
       {backgroundImage && (
-        <div aria-hidden className="pointer-events-none absolute inset-0">
-          {/* Outer frame border */}
-          <div className="absolute inset-4 sm:inset-6 md:inset-8 border border-gold/20 z-[2] pointer-events-none" />
-          <div className="absolute inset-4 sm:inset-6 md:inset-8 z-[2] pointer-events-none">
-            {/* Corner accents */}
-            <div className="absolute -top-px -left-px w-6 h-6 border-t-2 border-l-2 border-gold/50" />
-            <div className="absolute -top-px -right-px w-6 h-6 border-t-2 border-r-2 border-gold/50" />
-            <div className="absolute -bottom-px -left-px w-6 h-6 border-b-2 border-l-2 border-gold/50" />
-            <div className="absolute -bottom-px -right-px w-6 h-6 border-b-2 border-r-2 border-gold/50" />
+        <>
+          {/* Background image with parallax */}
+          <div aria-hidden className="pointer-events-none absolute inset-0">
+            <ProgressiveImage
+              src={backgroundImage}
+              alt={backgroundAlt}
+              containerClassName="absolute inset-x-0 -top-[10%] h-[120%] w-full"
+              className="will-change-transform"
+              imgProps={{
+                'data-parallax-soft': true,
+                'data-parallax-speed': '0.04',
+              }}
+            />
+            <div className="absolute inset-0 bg-background/72" />
+            <div className="absolute inset-0 bg-gradient-to-b from-background/58 via-background/70 to-background/82" />
+            <div className="absolute inset-0 ui-noise-soft" />
           </div>
-          <ProgressiveImage
-            src={backgroundImage}
-            alt={backgroundAlt}
-            containerClassName="absolute inset-x-0 -top-[10%] h-[120%] w-full"
-            className="will-change-transform"
-            imgProps={{
-              'data-parallax': true,
-              'data-parallax-speed': '0.09',
-            }}
-          />
-          <div className="absolute inset-0 bg-background/72" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/58 via-background/70 to-background/82" />
-          <div className="absolute inset-0 ui-noise-soft" />
-        </div>
+          {/* Outer frame flush with section edges */}
+          <div aria-hidden className="pointer-events-none absolute inset-0 z-[2]">
+            <div className="absolute inset-0 border border-gold/20" />
+            <div className="absolute -top-px -left-px w-8 h-8 border-t-2 border-l-2 border-gold/40" />
+            <div className="absolute -top-px -right-px w-8 h-8 border-t-2 border-r-2 border-gold/40" />
+            <div className="absolute -bottom-px -left-px w-8 h-8 border-b-2 border-l-2 border-gold/40" />
+            <div className="absolute -bottom-px -right-px w-8 h-8 border-b-2 border-r-2 border-gold/40" />
+          </div>
+        </>
       )}
 
       <div className="relative z-[1]">
